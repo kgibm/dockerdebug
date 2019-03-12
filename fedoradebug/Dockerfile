@@ -5,12 +5,13 @@
 # Requires Docker >= 18.09
 # Step 1: Create remotepassword.txt in the directory with this Dockerfile with the VNC/root password
 # Step 2: Build the Docker image:
-#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug:20190311 .
+#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug:20190312 .
 # Step 3: Run the Docker image:
-#   docker run -p 3389:3389 -p 5901:5901 -it fedoradebug:20190311
+#   docker run -p 3389:3389 -p 5901:5901 -it fedoradebug:20190312
 # 
 # Linux: vncviewer -AutoSelect 0 -QualityLevel 9 -CompressLevel 0 localhost:5901
 # Mac: open vnc://localhost:5901
+# Windows: Remote desktop to localhost and use root/remotepassword
 
 FROM fedora:latest
 
