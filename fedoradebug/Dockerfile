@@ -3,7 +3,7 @@
 # usage:
 # 
 # DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug:20190311 .
-# docker run -p 5901:5901 -it fedoradebug:20190311
+# docker run -p 3389:3389 -p 5901:5901 -it fedoradebug:20190311
 # 
 # Linux: vncviewer -AutoSelect 0 -QualityLevel 9 -CompressLevel 0 localhost:5901
 # Mac: open vnc://localhost:5901
@@ -80,6 +80,7 @@ RUN dnf install -y \
       sysstat \
       strace \
       sudo \
+      supervisor \
       systemtap \
       tc \
       tcpdump \
@@ -89,15 +90,21 @@ RUN dnf install -y \
       util-linux \
       vim \
       wget \
-      @xfce && \
-    dnf debuginfo-install -y \
+      @xfce \
+      xrdp \
+    && dnf debuginfo-install -y \
       glibc \
       kernel
 
 RUN --mount=type=secret,id=remotepassword,required \
     mkdir /root/.vnc && \
     cat /run/secrets/remotepassword | vncpasswd -f > /root/.vnc/passwd && \
-    chmod 600 /root/.vnc/passwd
+    chmod 600 /root/.vnc/passwd && \
+    echo "startxfce4" > /root/.Xclients && \
+    chmod +x /root/.Xclients && \
+    echo "root:$(cat /run/secrets/remotepassword)" | chpasswd && \
+    sed -i '/TerminalServerUsers/d' /etc/xrdp/sesman.ini && \
+    sed -i '/TerminalServerAdmins/d' /etc/xrdp/sesman.ini
 
 RUN printf '#!/bin/sh\n\
 unset SESSION_MANAGER\n\
@@ -107,8 +114,6 @@ exec xfce4-session\n'\
 
 RUN chmod a+x /root/.vnc/xstartup
 
-RUN dnf install -y supervisor
-
 RUN printf '\n\
 [unix_http_server]\n\
 file=/tmp/supervisor.sock\n\
@@ -116,7 +121,7 @@ file=/tmp/supervisor.sock\n\
 [supervisord]\n\
 logfile=/dev/stdout\n\
 logfile_maxbytes=0\n\
-loglevel=warn\n\
+loglevel=info\n\
 pidfile=/tmp/supervisord.pid\n\
 minfds=1024\n\
 minprocs=200\n\
@@ -141,12 +146,30 @@ redirect_stderr=true\n\
 \n'\
 >> vncserver.supervisord.conf
 
+RUN printf '\n\
+[program:xrdp-sesman]\n\
+command=/usr/sbin/xrdp-sesman --nodaemon\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+\n'\
+>> xrdp-sesman.supervisord.conf
+
+RUN printf '\n\
+[program:xrdp]\n\
+command=/usr/sbin/xrdp -nodaemon\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+\n'\
+>> xrdp.supervisord.conf
+
 # polkit crashes on login. There is a discussion on the Fedora mailing list with
 # the only workaround being to start vncserver through SSH. Removing it
 # from startup doesn't seem to hurt.
 RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.desktop.disabled
 
-EXPOSE 5901
+EXPOSE 3389 5901
 
 # https://docs.docker.com/config/containers/multi-service_container/
 CMD ["/usr/bin/supervisord", "-n", "-c", "supervisord.conf"]
