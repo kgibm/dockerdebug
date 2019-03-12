@@ -127,13 +127,19 @@ supervisor.rpcinterface_factory=supervisor.rpcinterface:make_main_rpcinterface\n
 [supervisorctl]\n\
 serverurl=unix:///tmp/supervisor.sock\n\
 \n\
+[include]\n\
+files=*.supervisord.conf\n\
+\n'\
+>> supervisord.conf
+
+RUN printf '\n\
 [program:vncserver]\n\
 command=/usr/bin/vncserver -fg\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
 \n'\
->> supervisord.conf
+>> vncserver.supervisord.conf
 
 # polkit crashes on login. There is a discussion on the Fedora mailing list with
 # the only workaround being to start vncserver through SSH. Removing it
@@ -143,4 +149,4 @@ RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.des
 EXPOSE 5901
 
 # https://docs.docker.com/config/containers/multi-service_container/
-CMD ["supervisord", "-n", "-c", "supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-n", "-c", "supervisord.conf"]
