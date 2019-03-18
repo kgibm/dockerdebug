@@ -5,9 +5,9 @@
 # Requires Docker >= 18.09
 # Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
-#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug:20190312 .
+#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug:20190318 .
 # Step 3: Run the Docker image:
-#   docker run -p 3389:3389 -p 5901:5901 -it fedoradebug:20190312
+#   docker run -p 3389:3389 -p 5901:5901 -p 22:22 -it fedoradebug:20190318
 # Step 4: Remote into the docker image
 #   Linux: vncviewer -AutoSelect 0 -QualityLevel 9 -CompressLevel 0 localhost:5901
 #   Mac: open vnc://localhost:5901
@@ -75,6 +75,7 @@ RUN dnf install -y \
       nmap-ncat \
       nmon \
       ntp \
+      openssh-server \
       patch \
       perf \
       perl \
@@ -122,7 +123,9 @@ RUN --mount=type=secret,id=remotepassword,required \
     chmod +x /root/.Xclients && \
     echo "root:$(cat /run/secrets/remotepassword)" | chpasswd && \
     sed -i '/TerminalServerUsers/d' /etc/xrdp/sesman.ini && \
-    sed -i '/TerminalServerAdmins/d' /etc/xrdp/sesman.ini
+    sed -i '/TerminalServerAdmins/d' /etc/xrdp/sesman.ini && \
+    adduser -m user1 && \
+    cat /run/secrets/remotepassword | passwd --stdin user1
 
 RUN printf '#!/bin/sh\n\
 unset SESSION_MANAGER\n\
@@ -189,16 +192,26 @@ redirect_stderr=true\n\
 \n'\
 >> xrdp.supervisord.conf
 
+RUN printf '\n\
+[program:ssh]\n\
+command=/usr/sbin/sshd -D\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+\n'\
+>> ssh.supervisord.conf
+
 # If a CMD is specified or a program through `docker run`,
 # then dynamically generate a supervisord config for it
 
 RUN printf '#!/bin/sh\n\
+ssh-keygen -A\n\
 if [ "$#" -gt 0 ]; then\n\
   printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" > cmd.supervisord.conf\n\
 fi\n\
 /usr/bin/supervisord -n -c supervisord.conf\n\
 \n'\
->> /tmp/entrypoint.sh && chmod +x /tmp/entrypoint.sh
+>> /entrypoint.sh && chmod +x /entrypoint.sh
 
 ######################
 # XFCE configuration #
@@ -213,6 +226,6 @@ RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.des
 # General #
 ###########
 
-EXPOSE 3389 5901
+EXPOSE 22 3389 5901
 
-ENTRYPOINT ["/tmp/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
