@@ -12,6 +12,8 @@
 #   Linux: vncviewer -AutoSelect 0 -QualityLevel 9 -CompressLevel 0 localhost:5901
 #   Mac: open vnc://localhost:5901
 #   Windows: Remote desktop to localhost and use root/remotepassword
+#
+# Purpose: This is not designed for production usage but instead as a comprehensive debugging and learning container.
 
 FROM fedora:latest
 
@@ -117,23 +119,23 @@ RUN dnf install -y \
 
 RUN --mount=type=secret,id=remotepassword,required \
     mkdir /root/.vnc && \
-    cat /run/secrets/remotepassword | vncpasswd -f > /root/.vnc/passwd && \
+    echo -n "$(head -n 1 /run/secrets/remotepassword)" | vncpasswd -f > /root/.vnc/passwd && \
     chmod 600 /root/.vnc/passwd && \
     echo "startxfce4" > /root/.Xclients && \
     chmod +x /root/.Xclients && \
-    echo "root:$(cat /run/secrets/remotepassword)" | chpasswd && \
+    echo "root:$(echo -n "$(head -n 1 /run/secrets/remotepassword)")" | chpasswd && \
     sed -i '/TerminalServerUsers/d' /etc/xrdp/sesman.ini && \
     sed -i '/TerminalServerAdmins/d' /etc/xrdp/sesman.ini && \
     adduser -m user1 && \
-    cat /run/secrets/remotepassword | passwd --stdin user1
+    usermod -a -G wheel user1 && \
+    sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers && \
+    echo -n "$(head -n 1 /run/secrets/remotepassword)" | passwd --stdin user1
 
 RUN printf '#!/bin/sh\n\
 unset SESSION_MANAGER\n\
 unset DBUS_SESSION_BUS_ADDRESS\n\
 exec xfce4-session\n'\
->> /root/.vnc/xstartup
-
-RUN chmod a+x /root/.vnc/xstartup
+>> /root/.vnc/xstartup && chmod a+x /root/.vnc/xstartup
 
 #########################
 # Configure supervisord #
@@ -141,28 +143,31 @@ RUN chmod a+x /root/.vnc/xstartup
 
 # https://docs.docker.com/config/containers/multi-service_container/
 
-RUN printf '\n\
-[unix_http_server]\n\
-file=/tmp/supervisor.sock\n\
-\n\
+RUN --mount=type=secret,id=remotepassword,required \
+    printf '\n\
 [supervisord]\n\
 user=root\n\
 logfile=/dev/stdout\n\
 logfile_maxbytes=0\n\
 loglevel=info\n\
-pidfile=/tmp/supervisord.pid\n\
+pidfile=/var/run/supervisor/supervisord.pid\n\
 minfds=1024\n\
 minprocs=200\n\
+\n\
+[unix_http_server]\n\
+file=/var/run/supervisor/supervisor.sock\n\
+username=root\n\
+password={SHA}%s\n\
 \n\
 [rpcinterface:supervisor]\n\
 supervisor.rpcinterface_factory=supervisor.rpcinterface:make_main_rpcinterface\n\
 \n\
 [supervisorctl]\n\
-serverurl=unix:///tmp/supervisor.sock\n\
+serverurl=unix:///var/run/supervisor/supervisor.sock\n\
 \n\
 [include]\n\
 files=*.supervisord.conf\n\
-\n'\
+\n' "$(echo -n "$(head -n 1 /run/secrets/remotepassword)" | sha1sum | awk '{print $1}')" \
 >> supervisord.conf
 
 RUN printf '\n\
