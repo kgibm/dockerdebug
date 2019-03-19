@@ -1,19 +1,23 @@
 # syntax=docker/dockerfile:1.0.0-experimental
-
-# usage:
-# 
-# Requires Docker >= 18.09
+# Purpose: This is not designed for production usage but instead as adebugging and learning container.
+# usage (Requires Docker >= 18.09):
+# ======
 # Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
-#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug:20190318 .
+#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug:20190319 .
 # Step 3: Run the Docker image:
-#   docker run -p 3389:3389 -p 5901:5901 -p 22:22 -it fedoradebug:20190318
+#   docker run -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug:20190319
 # Step 4: Remote into the docker image
-#   Linux: vncviewer -AutoSelect 0 -QualityLevel 9 -CompressLevel 0 localhost:5901
-#   Mac: open vnc://localhost:5901
-#   Windows: Remote desktop to localhost and use root/remotepassword
+#   Linux:
+#     root: vncviewer localhost:5901
+#     user1: vncviewer localhost:5902
+#     Use the password from remotepassword.txt
+#   Mac:
+#     root: open vnc://localhost:5901
+#     user1: open vnc://localhost:5902
+#     Use the password from remotepassword.txt
+#   Windows: Remote desktop to localhost and use the username of root or user1 and the password from remotepassword.txt
 #
-# Purpose: This is not designed for production usage but instead as a comprehensive debugging and learning container.
 
 FROM fedora:latest
 
@@ -91,6 +95,7 @@ RUN dnf install -y \
       python3-statsmodels \
       R \
       R-devel \
+      rsyslog \
       ruby \
       sendmail \
       speedtest-cli \
@@ -102,6 +107,7 @@ RUN dnf install -y \
       tc \
       tcpdump \
       telnet \
+      tigervnc \
       tigervnc-server \
       traceroute \
       util-linux \
@@ -128,6 +134,12 @@ RUN --mount=type=secret,id=remotepassword,required \
     sed -i '/TerminalServerAdmins/d' /etc/xrdp/sesman.ini && \
     adduser -m user1 && \
     usermod -a -G wheel user1 && \
+    mkdir /home/user1/.vnc && \
+    echo -n "$(head -n 1 /run/secrets/remotepassword)" | vncpasswd -f > /home/user1/.vnc/passwd && \
+    chmod -R go-rwx /home/user1/.vnc && \
+    echo "startxfce4" > /home/user1/.Xclients && \
+    chmod +x /home/user1/.Xclients && \
+    chown -R user1:user1 /home/user1/ && \
     sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers && \
     echo -n "$(head -n 1 /run/secrets/remotepassword)" | passwd --stdin user1
 
@@ -135,7 +147,18 @@ RUN printf '#!/bin/sh\n\
 unset SESSION_MANAGER\n\
 unset DBUS_SESSION_BUS_ADDRESS\n\
 exec xfce4-session\n'\
->> /root/.vnc/xstartup && chmod a+x /root/.vnc/xstartup
+>> /root/.vnc/xstartup && \
+   chmod a+x /root/.vnc/xstartup && \
+   cp /root/.vnc/xstartup /home/user1/.vnc/xstartup && \
+   chown user1:user1 /home/user1/.vnc/xstartup
+
+#####################
+# Configure rsyslog #
+#####################
+
+RUN sed -i 's/\(.*imjournal.*\)/#\1/g' /etc/rsyslog.conf && \
+    sed -i 's/\(.*SysSock.Use.*\)/#\1/g' /etc/rsyslog.conf && \
+    sed -i 's/imuxsock"/imuxsock")/g' /etc/rsyslog.conf
 
 #########################
 # Configure supervisord #
@@ -171,22 +194,14 @@ files=*.supervisord.conf\n\
 >> supervisord.conf
 
 RUN printf '\n\
-[program:vncserver]\n\
-command=/usr/bin/vncserver -fg\n\
+[program:rsyslog]\n\
+command=/usr/sbin/rsyslogd -n\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
+priority=1\n\
 \n'\
->> vncserver.supervisord.conf
-
-RUN printf '\n\
-[program:xrdp-sesman]\n\
-command=/usr/sbin/xrdp-sesman --nodaemon\n\
-stdout_logfile=/dev/stdout\n\
-stdout_logfile_maxbytes=0\n\
-redirect_stderr=true\n\
-\n'\
->> xrdp-sesman.supervisord.conf
+>> rsyslog.supervisord.conf
 
 RUN printf '\n\
 [program:xrdp]\n\
@@ -194,8 +209,19 @@ command=/usr/sbin/xrdp -nodaemon\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
+priority=20\n\
 \n'\
 >> xrdp.supervisord.conf
+
+RUN printf '\n\
+[program:xrdp-sesman]\n\
+command=/usr/sbin/xrdp-sesman --nodaemon\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+priority=25\n\
+\n'\
+>> xrdp-sesman.supervisord.conf
 
 RUN printf '\n\
 [program:ssh]\n\
@@ -203,8 +229,29 @@ command=/usr/sbin/sshd -D\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
+priority=30\n\
 \n'\
 >> ssh.supervisord.conf
+
+RUN printf '\n\
+[program:vncserver1]\n\
+command=/usr/bin/vncserver :1 -fg\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+priority=50\n\
+\n'\
+>> vncserver1.supervisord.conf
+
+RUN printf '\n\
+[program:vncserver2]\n\
+command=/usr/sbin/runuser -l user1 -c "/usr/bin/vncserver :2 -fg"\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+priority=50\n\
+\n'\
+>> vncserver2.supervisord.conf
 
 # If a CMD is specified or a program through `docker run`,
 # then dynamically generate a supervisord config for it
@@ -231,6 +278,6 @@ RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.des
 # General #
 ###########
 
-EXPOSE 22 3389 5901
+EXPOSE 22 3389 5901 5902
 
 ENTRYPOINT ["/entrypoint.sh"]
