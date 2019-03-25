@@ -1,12 +1,12 @@
 # syntax=docker/dockerfile:1.0.0-experimental
-# Purpose: This is not designed for production usage but instead as adebugging and learning container.
+# Purpose: This is not designed for production usage but instead as a debugging and learning container.
 # usage (Requires Docker >= 18.09):
 # ======
 # Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
-#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug:20190319 .
+#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug:20190325 .
 # Step 3: Run the Docker image:
-#   docker run -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug:20190319
+#   docker run -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug:20190325
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -42,6 +42,7 @@ RUN dnf install -y \
       bison-devel \
       cmake \
       collectl \
+      dnf-plugins-core \
       e2fsprogs \
       file-devel \
       firefox \
@@ -119,9 +120,9 @@ RUN dnf install -y \
       glibc \
       kernel
 
-##############################################
-# Configure VNC, XRDP, and the root password #
-##############################################
+######################################
+# Configure VNC, XRDP, and the users #
+######################################
 
 RUN --mount=type=secret,id=remotepassword,required \
     mkdir /root/.vnc && \
