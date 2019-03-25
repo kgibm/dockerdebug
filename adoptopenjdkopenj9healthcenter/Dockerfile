@@ -8,13 +8,11 @@ FROM adoptopenjdk/openjdk12-openj9:latest
 
 LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
-RUN mkdir -p /opt/java/healthcenter/
-
 COPY healthcenter.zip /opt/java/healthcenter/
 
 RUN cd /opt/java/healthcenter/ && \
     jar xvf healthcenter.zip && \
-    cp jre/lib/amd64/* /opt/java/openjdk/lib/ && \
+    cp jre/lib/*/*.so /opt/java/openjdk/lib/ && \
     cp jre/lib/healthcenter.properties /opt/java/openjdk/lib/healthcenter.properties
 
 ENV OPENJ9_JAVA_OPTIONS="-Xbootclasspath/a:/opt/java/healthcenter/jre/lib/ext/healthcenter.jar"
