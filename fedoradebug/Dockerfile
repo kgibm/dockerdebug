@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile:1.0.0-experimental
+#
 # Purpose: This is not designed for production usage but instead as a debugging and learning container.
+#
 # usage (Requires Docker >= 18.09):
 # ======
 # Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the file to the password used for VNC/RDP/root
@@ -255,14 +257,26 @@ priority=50\n\
 >> vncserver2.supervisord.conf
 
 # If a CMD is specified or a program through `docker run`,
-# then dynamically generate a supervisord config for it
+# then start supervisord in the background and run the CMD
 
 RUN printf '#!/bin/sh\n\
 ssh-keygen -A\n\
+\n\
 if [ "$#" -gt 0 ]; then\n\
-  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" > cmd.supervisord.conf\n\
+  /usr/bin/supervisord -n -c supervisord.conf > /supervisord.log 2>&1 &\n\
+  cmd=$1\n\
+  shift\n\
+  ${cmd} "$@"\n\
+else\n\
+  /usr/bin/supervisord -n -c supervisord.conf\n\
 fi\n\
-/usr/bin/supervisord -n -c supervisord.conf\n\
+\n\
+#Old code when CMD was added as a supervised program\n\
+#if [ "$#" -gt 0 ]; then\n\
+#  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" > cmd.supervisord.conf\n\
+#fi\n\
+#Old code when CMD was added as a supervised program\n\
+#/usr/bin/supervisord -n -c supervisord.conf\n\
 \n'\
 >> /entrypoint.sh && chmod +x /entrypoint.sh
 
