@@ -263,24 +263,29 @@ priority=50\n\
 # Otherwise (the default), run supervisord in the foreground.
 
 RUN printf '#!/bin/sh\n\
-ssh-keygen -A\n\
+sudo ssh-keygen -A\n\
+\n\
+if [ -e /extended_entrypoint.sh ]; then\n\
+  sudo chmod a+x /extended_entrypoint.sh\n\
+  /extended_entrypoint.sh\n\
+fi\n\
 \n\
 if [ "$#" -gt 0 ]; then\n\
-  /usr/bin/supervisord -n -c supervisord.conf > /supervisord.log 2>&1 &\n\
+  sudo sh -c "/usr/bin/supervisord -n -c supervisord.conf > /supervisord.log 2>&1" &\n\
   cmd=$1\n\
   shift\n\
   ${cmd} "$@"\n\
 else\n\
-  /usr/bin/supervisord -n -c supervisord.conf\n\
+  sh -c "sudo /usr/bin/supervisord -n -c supervisord.conf"\n\
 fi\n\
 \n\
 #Old code when CMD was added as a supervised program\n\
 #if [ "$#" -gt 0 ]; then\n\
-#  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" > cmd.supervisord.conf\n\
+#  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" | sudo tee cmd.supervisord.conf > /dev/null\n\
 #fi\n\
-#/usr/bin/supervisord -n -c supervisord.conf\n\
+#sudo sh -c "/usr/bin/supervisord -n -c supervisord.conf"\n\
 \n'\
->> /entrypoint.sh && chmod +x /entrypoint.sh
+>> /entrypoint.sh && chmod a+rx /entrypoint.sh
 
 ######################
 # XFCE configuration #

@@ -6,6 +6,9 @@
 #   docker run -it fedorajavadebug java -version
 
 FROM kgibm/fedoradebug
+
+LABEL maintainer="kevin.grigorenko@us.ibm.com"
+
 COPY --from=ibmjava:8-sdk /opt/ibm/java /opt/ibm/java
 
 RUN for i in java javac jar javah javap javadoc javaws jconsole jdmpview keytool jdb ControlPanel; do \
