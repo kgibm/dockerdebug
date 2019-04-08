@@ -36,6 +36,6 @@ ENV LOG_DIR=/logs \
     JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/" \
     PATH=/opt/ibm/wlp/bin:/opt/ibm/helpers/build:$PATH
 
-RUN --mount=type=secret,id=remotepassword,required echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
+RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
 CMD ["/opt/ibm/wlp/bin/server", "run", "defaultServer"]

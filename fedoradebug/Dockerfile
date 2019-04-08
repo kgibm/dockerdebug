@@ -126,11 +126,15 @@ RUN dnf install -y \
 
 RUN printf '#!/bin/sh\n\
 read password\n\
+if [ "${password}" = "" ]; then\n\
+  password=$(cat /dev/urandom | tr -dc "a-z0-9" | fold -w 8 | head -n 1)\n\
+  echo "${password}" > /root/password.txt\n\
+fi\n\
 echo -n "${password}" | sudo sh -c "vncpasswd -f > /root/.vnc/passwd" || exit 1\n\
 echo "root:$(echo -n "${password}")" | sudo sh -c "chpasswd" || exit 1\n\
 echo -n "${password}" | sudo sh -c "vncpasswd -f > /home/default/.vnc/passwd" || exit 1\n\
 echo -n "${password}" | sudo sh -c "passwd --stdin default" || exit 1\n\
-sudo sed -i "s/REPLACEPASSWORD/$(echo -n "${password}" | sha1sum | awk "{print \\$1}")/g" /supervisord.conf || exit 1\n\
+sudo sed -i "s/password={SHA}.*/password={SHA}$(echo -n "${password}" | sha1sum | awk "{print \\$1}")/g" /supervisord.conf || exit 1\n\
 sudo chmod 600 /root/.vnc/passwd || exit 1\n\
 sudo chmod -R go-rwx /home/default/.vnc || exit 1\n\
 sudo chown -R default:root /home/default/ || exit 1\n\
@@ -299,7 +303,7 @@ fi\n\
 # from startup doesn't seem to hurt too much.
 RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.desktop.disabled
 
-RUN --mount=type=secret,id=remotepassword,required echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
+RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
 ###########
 # General #
