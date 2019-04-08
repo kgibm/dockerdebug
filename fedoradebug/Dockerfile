@@ -128,7 +128,7 @@ RUN printf '#!/bin/sh\n\
 read password\n\
 if [ "${password}" = "" ]; then\n\
   password=$(cat /dev/urandom | tr -dc "a-z0-9" | fold -w 8 | head -n 1)\n\
-  echo "${password}" > /root/password.txt\n\
+  echo "${password}" | sudo tee /generated_password.txt\n\
 fi\n\
 echo -n "${password}" | sudo sh -c "vncpasswd -f > /root/.vnc/passwd" || exit 1\n\
 echo "root:$(echo -n "${password}")" | sudo sh -c "chpasswd" || exit 1\n\
