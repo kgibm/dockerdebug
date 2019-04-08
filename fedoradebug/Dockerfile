@@ -299,7 +299,7 @@ fi\n\
 # from startup doesn't seem to hurt too much.
 RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.desktop.disabled
 
-RUN --mount=type=secret,id=remotepassword,required echo -n "$(head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
+RUN --mount=type=secret,id=remotepassword,required echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
 ###########
 # General #
