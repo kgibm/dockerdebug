@@ -1,8 +1,12 @@
+# syntax=docker/dockerfile:1.0.0-experimental
+#
 # usage:
 # ======
-# Step 1: Build the Docker image:
-#   docker build -t fedorawasdebug .
-# Step 2: Run the Docker image:
+# Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the
+#         file to the password used for VNC/RDP/root
+# Step 2: Build the Docker image:
+#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedorawasdebug .
+# Step 3: Run the Docker image:
 #   docker run -p 80:9080 -p 443:9443 -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedorawasdebug
 
 FROM kgibm/fedorajavadebug
@@ -31,5 +35,7 @@ ENV LOG_DIR=/logs \
     RANDFILE=/tmp/.rnd \
     JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/" \
     PATH=/opt/ibm/wlp/bin:/opt/ibm/helpers/build:$PATH
+
+RUN --mount=type=secret,id=remotepassword,required echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
 CMD ["/opt/ibm/wlp/bin/server", "run", "defaultServer"]

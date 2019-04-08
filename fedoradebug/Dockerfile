@@ -124,29 +124,33 @@ RUN dnf install -y \
       glibc \
       kernel
 
+RUN printf '#!/bin/sh\n\
+read password\n\
+echo -n "${password}" | sudo sh -c "vncpasswd -f > /root/.vnc/passwd" || exit 1\n\
+echo "root:$(echo -n "${password}")" | sudo sh -c "chpasswd" || exit 1\n\
+echo -n "${password}" | sudo sh -c "vncpasswd -f > /home/default/.vnc/passwd" || exit 1\n\
+echo -n "${password}" | sudo sh -c "passwd --stdin default" || exit 1\n\
+sudo sed -i "s/REPLACEPASSWORD/$(echo -n "${password}" | sha1sum | awk "{print \\$1}")/g" /supervisord.conf || exit 1\n\
+sudo chmod 600 /root/.vnc/passwd || exit 1\n\
+sudo chmod -R go-rwx /home/default/.vnc || exit 1\n\
+sudo chown -R default:root /home/default/ || exit 1\n\
+\n' > /setpassword.sh && chmod +x /setpassword.sh
+
 ######################################
 # Configure VNC, XRDP, and the users #
 ######################################
 
-RUN --mount=type=secret,id=remotepassword,required \
-    mkdir /root/.vnc && \
-    echo -n "$(head -n 1 /run/secrets/remotepassword)" | vncpasswd -f > /root/.vnc/passwd && \
-    chmod 600 /root/.vnc/passwd && \
+RUN mkdir /root/.vnc && \
     echo "startxfce4" > /root/.Xclients && \
     chmod +x /root/.Xclients && \
-    echo "root:$(echo -n "$(head -n 1 /run/secrets/remotepassword)")" | chpasswd && \
     sed -i '/TerminalServerUsers/d' /etc/xrdp/sesman.ini && \
     sed -i '/TerminalServerAdmins/d' /etc/xrdp/sesman.ini && \
     adduser -u 1001 -r -g 0 -m default && \
     usermod -a -G wheel default && \
     mkdir /home/default/.vnc && \
-    echo -n "$(head -n 1 /run/secrets/remotepassword)" | vncpasswd -f > /home/default/.vnc/passwd && \
-    chmod -R go-rwx /home/default/.vnc && \
     echo "startxfce4" > /home/default/.Xclients && \
     chmod +x /home/default/.Xclients && \
-    chown -R default:root /home/default/ && \
-    sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers && \
-    echo -n "$(head -n 1 /run/secrets/remotepassword)" | passwd --stdin default
+    sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers
 
 RUN printf '#!/bin/sh\n\
 unset SESSION_MANAGER\n\
@@ -171,8 +175,7 @@ RUN sed -i 's/\(.*imjournal.*\)/#\1/g' /etc/rsyslog.conf && \
 
 # https://docs.docker.com/config/containers/multi-service_container/
 
-RUN --mount=type=secret,id=remotepassword,required \
-    printf '\n\
+RUN printf '\n\
 [supervisord]\n\
 user=root\n\
 logfile=/dev/stdout\n\
@@ -185,7 +188,7 @@ minprocs=200\n\
 [unix_http_server]\n\
 file=/var/run/supervisor/supervisor.sock\n\
 username=root\n\
-password={SHA}%s\n\
+password={SHA}REPLACEPASSWORD\n\
 \n\
 [rpcinterface:supervisor]\n\
 supervisor.rpcinterface_factory=supervisor.rpcinterface:make_main_rpcinterface\n\
@@ -195,7 +198,7 @@ serverurl=unix:///var/run/supervisor/supervisor.sock\n\
 \n\
 [include]\n\
 files=*.supervisord.conf\n\
-\n' "$(echo -n "$(head -n 1 /run/secrets/remotepassword)" | sha1sum | awk '{print $1}')" \
+\n' \
 >> supervisord.conf
 
 RUN printf '\n\
@@ -263,27 +266,27 @@ priority=50\n\
 # Otherwise (the default), run supervisord in the foreground.
 
 RUN printf '#!/bin/sh\n\
-sudo ssh-keygen -A\n\
+sudo ssh-keygen -A || exit 1\n\
 \n\
 if [ -e /extended_entrypoint.sh ]; then\n\
   sudo chmod a+x /extended_entrypoint.sh\n\
-  /extended_entrypoint.sh\n\
+  /extended_entrypoint.sh || exit 1\n\
 fi\n\
 \n\
 if [ "$#" -gt 0 ]; then\n\
   sudo sh -c "/usr/bin/supervisord -n -c supervisord.conf > /supervisord.log 2>&1" &\n\
   cmd=$1\n\
   shift\n\
-  ${cmd} "$@"\n\
+  ${cmd} "$@" || exit 1\n\
 else\n\
-  sh -c "sudo /usr/bin/supervisord -n -c supervisord.conf"\n\
+  sh -c "sudo /usr/bin/supervisord -n -c supervisord.conf" || exit 1\n\
 fi\n\
 \n\
 #Old code when CMD was added as a supervised program\n\
 #if [ "$#" -gt 0 ]; then\n\
 #  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" | sudo tee cmd.supervisord.conf > /dev/null\n\
 #fi\n\
-#sudo sh -c "/usr/bin/supervisord -n -c supervisord.conf"\n\
+#sudo sh -c "/usr/bin/supervisord -n -c supervisord.conf" || exit 1\n\
 \n'\
 >> /entrypoint.sh && chmod a+rx /entrypoint.sh
 
@@ -295,6 +298,8 @@ fi\n\
 # the only workaround being to start vncserver through SSH. Removing it
 # from startup doesn't seem to hurt too much.
 RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.desktop.disabled
+
+RUN --mount=type=secret,id=remotepassword,required echo -n "$(head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
 ###########
 # General #
