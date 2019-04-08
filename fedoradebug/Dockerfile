@@ -221,7 +221,7 @@ priority=1\n\
 RUN printf '\n\
 [program:xrdp]\n\
 command=/usr/sbin/xrdp -nodaemon\n\
-stdout_logfile=/dev/stdout\n\
+stdout_logfile=/var/log/supervised_xrdp.log\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
 priority=20\n\
@@ -231,7 +231,7 @@ priority=20\n\
 RUN printf '\n\
 [program:xrdp-sesman]\n\
 command=/usr/sbin/xrdp-sesman --nodaemon\n\
-stdout_logfile=/dev/stdout\n\
+stdout_logfile=/var/log/supervised_xrdp_sesman.log\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
 priority=25\n\
@@ -281,7 +281,7 @@ if [ -e /extended_entrypoint.sh ]; then\n\
 fi\n\
 \n\
 if [ "$#" -gt 0 ]; then\n\
-  sudo sh -c "/usr/bin/supervisord -n -c supervisord.conf > /supervisord.log 2>&1" &\n\
+  sudo sh -c "/usr/bin/supervisord -c supervisord.conf &> /supervisord.log" || exit 1 &\n\
   exec "$@" || exit 1\n\
 else\n\
   sh -c "sudo /usr/bin/supervisord -n -c supervisord.conf" || exit 1\n\

@@ -41,4 +41,4 @@ ENV LOG_DIR=/logs \
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
-CMD ["/opt/ibm/wlp/bin/server", "run", "defaultServer"]
+# /opt/ibm/wlp/bin/server start defaultServer
