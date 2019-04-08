@@ -13,13 +13,13 @@
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
-#     user1: vncviewer localhost:5902
+#     default: vncviewer localhost:5902
 #     Use the password from remotepassword.txt
 #   Mac:
 #     root: open vnc://localhost:5901
-#     user1: open vnc://localhost:5902
+#     default: open vnc://localhost:5902
 #     Use the password from remotepassword.txt
-#   Windows: Remote desktop to localhost and use the username of root or user1
+#   Windows: Remote desktop to localhost and use the username of root or default
 #            and the password from remotepassword.txt
 #
 
@@ -137,16 +137,16 @@ RUN --mount=type=secret,id=remotepassword,required \
     echo "root:$(echo -n "$(head -n 1 /run/secrets/remotepassword)")" | chpasswd && \
     sed -i '/TerminalServerUsers/d' /etc/xrdp/sesman.ini && \
     sed -i '/TerminalServerAdmins/d' /etc/xrdp/sesman.ini && \
-    adduser -m user1 && \
-    usermod -a -G wheel user1 && \
-    mkdir /home/user1/.vnc && \
-    echo -n "$(head -n 1 /run/secrets/remotepassword)" | vncpasswd -f > /home/user1/.vnc/passwd && \
-    chmod -R go-rwx /home/user1/.vnc && \
-    echo "startxfce4" > /home/user1/.Xclients && \
-    chmod +x /home/user1/.Xclients && \
-    chown -R user1:user1 /home/user1/ && \
+    adduser -u 1001 -r -g 0 -m default && \
+    usermod -a -G wheel default && \
+    mkdir /home/default/.vnc && \
+    echo -n "$(head -n 1 /run/secrets/remotepassword)" | vncpasswd -f > /home/default/.vnc/passwd && \
+    chmod -R go-rwx /home/default/.vnc && \
+    echo "startxfce4" > /home/default/.Xclients && \
+    chmod +x /home/default/.Xclients && \
+    chown -R default:root /home/default/ && \
     sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers && \
-    echo -n "$(head -n 1 /run/secrets/remotepassword)" | passwd --stdin user1
+    echo -n "$(head -n 1 /run/secrets/remotepassword)" | passwd --stdin default
 
 RUN printf '#!/bin/sh\n\
 unset SESSION_MANAGER\n\
@@ -154,8 +154,8 @@ unset DBUS_SESSION_BUS_ADDRESS\n\
 exec xfce4-session\n'\
 >> /root/.vnc/xstartup && \
    chmod a+x /root/.vnc/xstartup && \
-   cp /root/.vnc/xstartup /home/user1/.vnc/xstartup && \
-   chown user1:user1 /home/user1/.vnc/xstartup
+   cp /root/.vnc/xstartup /home/default/.vnc/xstartup && \
+   chown default:root /home/default/.vnc/xstartup
 
 #####################
 # Configure rsyslog #
@@ -250,7 +250,7 @@ priority=50\n\
 
 RUN printf '\n\
 [program:vncserver2]\n\
-command=/usr/sbin/runuser -l user1 -c "/usr/bin/vncserver :2 -fg"\n\
+command=/usr/sbin/runuser -l default -c "/usr/bin/vncserver :2 -fg"\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
