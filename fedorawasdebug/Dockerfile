@@ -16,13 +16,18 @@ FROM kgibm/fedorajavadebug
 
 LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
-COPY --from=websphere-liberty:latest --chown=default:root /opt/ibm/helpers /opt/ibm/helpers
-COPY --from=websphere-liberty:latest --chown=default:root /opt/ibm/wlp /opt/ibm/wlp
-COPY --from=websphere-liberty:latest --chown=default:root /logs /logs
-COPY --from=websphere-liberty:latest --chown=default:root /licenses /licenses
-COPY --from=websphere-liberty:latest --chown=default:root /etc/wlp /etc/wlp
-COPY --from=websphere-liberty:latest --chown=default:root /output /output
-COPY --from=websphere-liberty:latest --chown=default:root /config /config
+COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
+COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
+COPY --from=websphere-liberty:latest --chown=was:root /logs /logs
+COPY --from=websphere-liberty:latest --chown=was:root /licenses /licenses
+COPY --from=websphere-liberty:latest --chown=was:root /etc/wlp /etc/wlp
+COPY --from=websphere-liberty:latest --chown=was:root /output /output
+COPY --from=websphere-liberty:latest --chown=was:root /config /config
+
+COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /work /work
+COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /licenses/
+COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /opt/IBM /opt/IBM
+COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /etc/websphere /etc/websphere
 
 EXPOSE 9080 9443
 
@@ -37,7 +42,11 @@ ENV LOG_DIR=/logs \
     KEYSTORE_REQUIRED=true \
     RANDFILE=/tmp/.rnd \
     JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/" \
-    PATH=/opt/ibm/wlp/bin:/opt/ibm/helpers/build:$PATH
+    PATH=/opt/ibm/wlp/bin:/opt/ibm/helpers/build:/opt/IBM/WebSphere/AppServer/bin:$PATH \
+    PROFILE_NAME=AppSrv01 \
+    SERVER_NAME=DefaultCell01 \
+    ADMIN_USER_NAME=wsadmin \
+    EXTRACT_PORT_FROM_HOST_HEADER=true
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 

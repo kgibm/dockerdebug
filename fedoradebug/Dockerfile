@@ -16,13 +16,13 @@
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
-#     default: vncviewer localhost:5902
+#     was: vncviewer localhost:5902
 #     Use the password from remotepassword.txt
 #   Mac:
 #     root: open vnc://localhost:5901
-#     default: open vnc://localhost:5902
+#     was: open vnc://localhost:5902
 #     Use the password from remotepassword.txt
-#   Windows: Remote desktop to localhost and use the username of root or default
+#   Windows: Remote desktop to localhost and use the username of root or was
 #            and the password from remotepassword.txt
 #
 
@@ -135,12 +135,12 @@ if [ "${password}" = "" ]; then\n\
 fi\n\
 echo -n "${password}" | sudo sh -c "vncpasswd -f > /root/.vnc/passwd" || exit 1\n\
 echo "root:$(echo -n "${password}")" | sudo sh -c "chpasswd" || exit 1\n\
-echo -n "${password}" | sudo sh -c "vncpasswd -f > /home/default/.vnc/passwd" || exit 1\n\
-echo -n "${password}" | sudo sh -c "passwd --stdin default" || exit 1\n\
+echo -n "${password}" | sudo sh -c "vncpasswd -f > /home/was/.vnc/passwd" || exit 1\n\
+echo -n "${password}" | sudo sh -c "passwd --stdin was" || exit 1\n\
 sudo sed -i "s/password={SHA}.*/password={SHA}$(echo -n "${password}" | sha1sum | awk "{print \\$1}")/g" /supervisord.conf || exit 1\n\
 sudo chmod 600 /root/.vnc/passwd || exit 1\n\
-sudo chmod -R go-rwx /home/default/.vnc || exit 1\n\
-sudo chown -R default:root /home/default/ || exit 1\n\
+sudo chmod -R go-rwx /home/was/.vnc || exit 1\n\
+sudo chown -R was:root /home/was/ || exit 1\n\
 \n' > /setpassword.sh && chmod +x /setpassword.sh
 
 ######################################
@@ -152,11 +152,11 @@ RUN mkdir /root/.vnc && \
     chmod +x /root/.Xclients && \
     sed -i '/TerminalServerUsers/d' /etc/xrdp/sesman.ini && \
     sed -i '/TerminalServerAdmins/d' /etc/xrdp/sesman.ini && \
-    adduser -u 1001 -r -g 0 -m default && \
-    usermod -a -G wheel default && \
-    mkdir /home/default/.vnc && \
-    echo "startxfce4" > /home/default/.Xclients && \
-    chmod +x /home/default/.Xclients && \
+    adduser -u 1001 -r -g 0 -m was && \
+    usermod -a -G wheel was && \
+    mkdir /home/was/.vnc && \
+    echo "startxfce4" > /home/was/.Xclients && \
+    chmod +x /home/was/.Xclients && \
     sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers
 
 RUN printf '#!/bin/sh\n\
@@ -165,8 +165,8 @@ unset DBUS_SESSION_BUS_ADDRESS\n\
 exec xfce4-session\n'\
 >> /root/.vnc/xstartup && \
    chmod a+x /root/.vnc/xstartup && \
-   cp /root/.vnc/xstartup /home/default/.vnc/xstartup && \
-   chown default:root /home/default/.vnc/xstartup
+   cp /root/.vnc/xstartup /home/was/.vnc/xstartup && \
+   chown was:root /home/was/.vnc/xstartup
 
 #####################
 # Configure rsyslog #
@@ -221,7 +221,7 @@ priority=1\n\
 RUN printf '\n\
 [program:xrdp]\n\
 command=/usr/sbin/xrdp -nodaemon\n\
-stdout_logfile=/var/log/supervised_xrdp.log\n\
+stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
 priority=20\n\
@@ -231,7 +231,7 @@ priority=20\n\
 RUN printf '\n\
 [program:xrdp-sesman]\n\
 command=/usr/sbin/xrdp-sesman --nodaemon\n\
-stdout_logfile=/var/log/supervised_xrdp_sesman.log\n\
+stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
 priority=25\n\
@@ -260,7 +260,7 @@ priority=50\n\
 
 RUN printf '\n\
 [program:vncserver2]\n\
-command=/usr/sbin/runuser -l default -c "/usr/bin/vncserver :2 -fg"\n\
+command=/usr/sbin/runuser -l was -c "/usr/bin/vncserver :2 -fg"\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
@@ -270,7 +270,7 @@ priority=50\n\
 
 # If a CMD is specified or a program through `docker run`,
 # then start supervisord in the background and run the CMD.
-# Otherwise (the default), run supervisord in the foreground.
+# Otherwise (the was), run supervisord in the foreground.
 
 RUN printf '#!/bin/sh\n\
 sudo ssh-keygen -A || exit 1\n\
