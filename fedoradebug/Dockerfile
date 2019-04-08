@@ -4,7 +4,8 @@
 #
 # usage (Requires Docker >= 18.09):
 # ======
-# Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the file to the password used for VNC/RDP/root
+# Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the
+#         file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
 #   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug .
 # Step 3: Run the Docker image:
@@ -18,7 +19,8 @@
 #     root: open vnc://localhost:5901
 #     user1: open vnc://localhost:5902
 #     Use the password from remotepassword.txt
-#   Windows: Remote desktop to localhost and use the username of root or user1 and the password from remotepassword.txt
+#   Windows: Remote desktop to localhost and use the username of root or user1
+#            and the password from remotepassword.txt
 #
 
 FROM fedora:latest
@@ -257,7 +259,8 @@ priority=50\n\
 >> vncserver2.supervisord.conf
 
 # If a CMD is specified or a program through `docker run`,
-# then start supervisord in the background and run the CMD
+# then start supervisord in the background and run the CMD.
+# Otherwise (the default), run supervisord in the foreground.
 
 RUN printf '#!/bin/sh\n\
 ssh-keygen -A\n\
@@ -275,7 +278,6 @@ fi\n\
 #if [ "$#" -gt 0 ]; then\n\
 #  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" > cmd.supervisord.conf\n\
 #fi\n\
-#Old code when CMD was added as a supervised program\n\
 #/usr/bin/supervisord -n -c supervisord.conf\n\
 \n'\
 >> /entrypoint.sh && chmod +x /entrypoint.sh
@@ -286,7 +288,7 @@ fi\n\
 
 # polkit crashes on login. There is a discussion on the Fedora mailing list with
 # the only workaround being to start vncserver through SSH. Removing it
-# from startup doesn't seem to hurt.
+# from startup doesn't seem to hurt too much.
 RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.desktop.disabled
 
 ###########
