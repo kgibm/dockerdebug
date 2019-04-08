@@ -4,10 +4,13 @@
 #
 # usage (Requires Docker >= 18.09):
 # ======
-# Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the
+# Step 1: Optionally, create remotepassword.txt in the directory with this Dockerfile and set the contents of the
 #         file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
-#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug .
+#   Without remotepassword.txt:
+#     DOCKER_BUILDKIT=1 docker build -t fedoradebug .
+#   With remotepassword.txt:
+#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug .
 # Step 3: Run the Docker image:
 #   docker run -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug
 # Step 4: Remote into the docker image
@@ -279,9 +282,7 @@ fi\n\
 \n\
 if [ "$#" -gt 0 ]; then\n\
   sudo sh -c "/usr/bin/supervisord -n -c supervisord.conf > /supervisord.log 2>&1" &\n\
-  cmd=$1\n\
-  shift\n\
-  ${cmd} "$@" || exit 1\n\
+  exec "$@" || exit 1\n\
 else\n\
   sh -c "sudo /usr/bin/supervisord -n -c supervisord.conf" || exit 1\n\
 fi\n\

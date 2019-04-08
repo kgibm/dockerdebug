@@ -2,10 +2,13 @@
 #
 # usage:
 # ======
-# Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the
+# Step 1: Optionally, create remotepassword.txt in the directory with this Dockerfile and set the contents of the
 #         file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
-#   DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedorawasdebug .
+#   Without remotepassword.txt:
+#     DOCKER_BUILDKIT=1 docker build -t fedorawasdebug .
+#   With remotepassword.txt:
+#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedorawasdebug .
 # Step 3: Run the Docker image:
 #   docker run -p 80:9080 -p 443:9443 -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedorawasdebug
 
