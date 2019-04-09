@@ -51,6 +51,7 @@ RUN dnf install -y \
       collectl \
       dnf-plugins-core \
       e2fsprogs \
+      eclipse \
       file-devel \
       firefox \
       ftp \
@@ -79,6 +80,7 @@ RUN dnf install -y \
       make \
       man \
       man-pages \
+      maven \
       mtr \
       multitail \
       ncurses \

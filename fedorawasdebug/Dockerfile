@@ -45,19 +45,22 @@ ENV LOG_DIR=/logs \
     PATH=/opt/ibm/wlp/bin:/opt/ibm/helpers/build:/opt/IBM/WebSphere/AppServer/bin:$PATH \
     WAS_CELL=DefaultCell01 \
     NODE_NAME=DefaultNode01 \
-    SERVER_NAME=DefaultCell01 \
+    SERVER_NAME=server1 \
     HOST_NAME=localhost \
     PROFILE_NAME=AppSrv01 \
     ADMIN_USER_NAME=wsadmin \
     EXTRACT_PORT_FROM_HOST_HEADER=true \
     ENABLE_BASIC_LOGGING=true
 
-RUN sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/"7276"/"7277"/g' /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/"7286"/"7287"/g' /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/"9080"/"9081"/g' /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/"2809"/"2810"/g' /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/"9402"/"9404"/g' /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml
+RUN sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/"7276"/"7277"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/"7286"/"7287"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/"9080"/"9081"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/"2809"/"2810"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/"9402"/"9404"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/9080/9081/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
+    sed -i 's/9443/9444/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
+    sed -i "s/ps -C .*/pgrep -f 'WsServer ')/g" /work/start_server.sh
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
@@ -71,6 +74,8 @@ startretries=0\n\
 autorestart=false\n\
 startsecs=5\n\
 priority=50\n\
+user=was\n\
+autostart=true\n\
 \n'\
 | sudo tee liberty.supervisord.conf
 
@@ -84,5 +89,8 @@ startsecs=120\n\
 startretries=0\n\
 autorestart=false\n\
 priority=50\n\
+user=was\n\
+autostart=true\n\
+environment=ENABLE_BASIC_LOGGING=true\n\
 \n'\
 | sudo tee twas.supervisord.conf
