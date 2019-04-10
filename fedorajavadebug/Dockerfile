@@ -20,11 +20,13 @@ RUN for i in java javac jar javah javap javadoc javaws jconsole jdmpview keytool
     (cd /opt/ && sudo unzip -q MemoryAnalyzer.zip && sudo rm -f /opt/MemoryAnalyzer.zip)
 
 # Install DTFJ
-RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/dtfj/ \
+RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.director \
+                                 -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/dtfj/ \
                                  -installIU com.ibm.dtfj.feature.feature.group
 
 # Install IEMA
-RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/iema/ \
+RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.director \
+                                 -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/iema/ \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.cognosbi.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.ctg.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.jse.feature.feature.group \
@@ -34,13 +36,41 @@ RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.d
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group
 
 # Install various utilities
-RUN (sudo mkdir /opt/heapanalyzer/; cd /opt/heapanalyzer/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha456.jar) && \
-    (sudo mkdir /opt/tmda/; cd /opt/tmda/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca463.jar) && \
-    (sudo mkdir /opt/classloaderanalyzer/; cd /opt/classloaderanalyzer/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/ica/ica107.jar) && \
-    (sudo mkdir /opt/pmat/; cd /opt/pmat/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/pmat/ga458.jar) && \
-    (sudo mkdir /opt/surgery/; cd /opt/surgery/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/surgery/surgery.jar) && \
-    (sudo mkdir /opt/tracerequestanalyzer/; cd /opt/tracerequestanalyzer/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/tra/tra303.jar) && \
-    (sudo mkdir /opt/trapit/; cd /opt/trapit/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/trapit/trapit.ear)
+RUN ( \
+      sudo mkdir /opt/heapanalyzer/ && \
+      cd /opt/heapanalyzer/ && \
+      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha456.jar \
+    )
+RUN ( \
+      sudo mkdir /opt/tmda/ && \
+      cd /opt/tmda/ && \
+      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca463.jar \
+    )
+RUN ( \
+      sudo mkdir /opt/classloaderanalyzer/ && \
+      cd /opt/classloaderanalyzer/ && \
+      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/ica/ica107.jar \
+    )
+RUN ( \
+      sudo mkdir /opt/pmat/ && \
+      cd /opt/pmat/ && \
+      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/pmat/ga458.jar \
+    )
+RUN ( \
+      sudo mkdir /opt/surgery/ && \
+      cd /opt/surgery/ && \
+      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/surgery/surgery.jar \
+    )
+RUN ( \
+      sudo mkdir /opt/tracerequestanalyzer/ && \
+      cd /opt/tracerequestanalyzer/ && \
+      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/tra/tra303.jar \
+    )
+RUN ( \
+      sudo mkdir /opt/trapit/ && \
+      cd /opt/trapit/ && \
+      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/trapit/trapit.ear \
+    )
 
 # Allow running Eclipse from root
 RUN sudo sed -i '/^-protect$/d' /etc/eclipse.ini && \
@@ -50,16 +80,17 @@ RUN sudo sed -i '/^-protect$/d' /etc/eclipse.ini && \
 
 # Install GCMV
 RUN sudo /usr/bin/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/gcmv/ \
-                          -installIU com.ibm.java.diagnostics.visualizer.feature.feature.group
+                          -installIU com.ibm.java.diagnostics.visualizer.feature.feature.group \
+                            2>&1 | grep -v "Fragment directory should be read only"
 
 # Install Health Center
 RUN sudo /usr/bin/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/healthcenter/ \
                           -installIU com.ibm.java.diagnostics.healthcenter.core.feature.feature.group \
-                          -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group
+                          -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group \
+                            2>&1 | grep -v "Fragment directory should be read only"
 
 # Install IDDE
 RUN sudo /usr/bin/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/idde/ \
                           -installIU com.ibm.java.diagnostics.idde.feature.feature.group \
-                          -installIU com.ibm.java.diagnostics.idde.extensions.feature.feature.group
-
-RUN (cd /opt/; sudo wget -q https://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-5.1.1.zip && sudo unzip -q apache-jmeter*.zip && sudo rm -f apache-jmeter*.zip && sudo mv apache-jmeter* apache-jmeter)
+                          -installIU com.ibm.java.diagnostics.idde.extensions.feature.feature.group \
+                            2>&1 | grep -v "Fragment directory should be read only"

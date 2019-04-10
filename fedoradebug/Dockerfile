@@ -121,6 +121,7 @@ RUN dnf install -y \
       tigervnc \
       tigervnc-server \
       traceroute \
+      tuned \
       util-linux \
       vim \
       wget \
@@ -311,6 +312,46 @@ fi\n\
 # the only workaround being to start vncserver through SSH. Removing it
 # from startup doesn't seem to hurt too much.
 RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.desktop.disabled
+
+#############
+# Utilities #
+#############
+
+RUN ( \
+      cd /opt/ && \
+      sudo wget -q https://www-eu.apache.org/dist//ant/binaries/apache-ant-1.10.5-bin.zip && \
+      sudo unzip -q apache-ant*.zip && \
+      sudo rm -f apache-ant*.zip && \
+      sudo mv apache-ant* apache-ant \
+    )
+
+RUN ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/brendangregg/FlameGraph \
+    )
+
+RUN ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/nmonvisualizer/nmonvisualizer && \
+      cd /opt/nmonvisualizer/ && \
+      sudo ANT_OPTS=-Dfile.encoding=iso-8859-1 /opt/apache-ant/bin/ant && \
+      sudo mv NMONVisualizer*.jar NMONVisualizer.jar \
+    )
+
+RUN ( \
+      sudo mkdir /opt/linperf/ && \
+      cd /opt/linperf/ && \
+      sudo wget -q -O linperf.sh "http://www-01.ibm.com/support/docview.wss?uid=swg21115785&aid=1" && \
+      sudo chmod a+x linperf.sh \
+    )
+
+RUN ( \
+      cd /opt/ && \
+      sudo wget -q https://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-5.1.1.zip && \
+      sudo unzip -q apache-jmeter*.zip && \
+      sudo rm -f apache-jmeter*.zip && \
+      sudo mv apache-jmeter* apache-jmeter \
+    )
 
 ####################
 # Update passwords #
