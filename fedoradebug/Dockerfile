@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug .
 # Step 3: Run the Docker image:
-#   docker run -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug
+#   docker run --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -43,6 +43,7 @@ RUN dnf install -y \
       atop \
       autoconf \
       bc \
+      bcc-tools \
       bind-utils \
       bindfs \
       bison \
@@ -129,11 +130,15 @@ RUN dnf install -y \
       glibc \
       kernel
 
+###############################################
+# Create the script that can update passwords #
+###############################################
+
 RUN printf '#!/bin/sh\n\
 read password\n\
+echo "${password}" | sudo tee /root/password.txt\n\
 if [ "${password}" = "" ]; then\n\
   password=$(cat /dev/urandom | tr -dc "a-z0-9" | fold -w 8 | head -n 1)\n\
-  echo "${password}" | sudo tee /generated_password.txt\n\
 fi\n\
 echo -n "${password}" | sudo sh -c "vncpasswd -f > /root/.vnc/passwd" || exit 1\n\
 echo "root:$(echo -n "${password}")" | sudo sh -c "chpasswd" || exit 1\n\
@@ -272,7 +277,7 @@ priority=50\n\
 
 # If a CMD is specified or a program through `docker run`,
 # then start supervisord in the background and run the CMD.
-# Otherwise (the was), run supervisord in the foreground.
+# Otherwise (the default), run supervisord in the foreground.
 
 RUN printf '#!/bin/sh\n\
 sudo ssh-keygen -A || exit 1\n\
@@ -305,6 +310,10 @@ fi\n\
 # the only workaround being to start vncserver through SSH. Removing it
 # from startup doesn't seem to hurt too much.
 RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.desktop.disabled
+
+####################
+# Update passwords #
+####################
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
