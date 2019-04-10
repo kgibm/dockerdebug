@@ -340,7 +340,9 @@ RUN ( \
       sudo git clone https://github.com/nmonvisualizer/nmonvisualizer && \
       cd /opt/nmonvisualizer/ && \
       sudo ANT_OPTS=-Dfile.encoding=iso-8859-1 /opt/apache-ant/bin/ant && \
-      sudo mv NMONVisualizer*.jar NMONVisualizer.jar \
+      sudo mv NMONVisualizer*.jar NMONVisualizer.jar && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=NMON Visualizer\nExec=java -jar /opt/nmonvisualizer/NMONVisualizer.jar\nPath=~/\nTerminal=false\n' >> nmonvisualizer.desktop && \
+      sudo chmod a+x nmonvisualizer.desktop \
     )
 
 # http://www-01.ibm.com/support/docview.wss?uid=swg21115785
@@ -357,18 +359,12 @@ RUN ( \
       sudo wget -q https://www.apache.org/dist/jmeter/binaries/apache-jmeter-5.1.1.zip && \
       sudo unzip -q apache-jmeter*.zip && \
       sudo rm -f apache-jmeter*.zip && \
-      sudo mv apache-jmeter* apache-jmeter \
+      sudo mv apache-jmeter* apache-jmeter && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=JMeter\nExec=java -jar /opt/apache-jmeter/bin/jmeter\nPath=~/\nTerminal=false\n' >> jmeter.desktop && \
+      sudo chmod a+x jmeter.desktop \
     )
 
-####################
-# Update passwords #
-####################
-
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
-
-###########
-# General #
-###########
 
 EXPOSE 22 3389 5901 5902
 

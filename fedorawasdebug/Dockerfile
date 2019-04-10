@@ -19,6 +19,7 @@ FROM kgibm/fedorajavadebug
 
 LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
+# "Install" Liberty
 COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
 COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
 COPY --from=websphere-liberty:latest --chown=was:root /logs /logs
@@ -27,12 +28,11 @@ COPY --from=websphere-liberty:latest --chown=was:root /etc/wlp /etc/wlp
 COPY --from=websphere-liberty:latest --chown=was:root /output /output
 COPY --from=websphere-liberty:latest --chown=was:root /config /config
 
+# "Install" Traditional WAS
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /work /work
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /licenses/
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /opt/IBM /opt/IBM
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /etc/websphere /etc/websphere
-
-EXPOSE 9080 9443
 
 RUN printf '#!/bin/sh\n\
 /opt/ibm/helpers/runtime/docker-server.sh\n\
@@ -64,8 +64,6 @@ RUN sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_N
     sed -i 's/9080/9081/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
     sed -i 's/9443/9444/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
     sed -i "s/ps -C .*/pgrep -f 'WsServer ')/g" /work/start_server.sh
-
-RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
 # https://www-01.ibm.com/support/docview.wss?uid=swg21644180
 RUN ( \
@@ -145,3 +143,7 @@ user=was\n\
 autostart=true\n\
 environment=ENABLE_BASIC_LOGGING=true\n\
 \n' | sudo tee twas.supervisord.conf
+
+RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
+
+EXPOSE 9080 9081 9443 9444
