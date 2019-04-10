@@ -73,6 +73,7 @@ RUN dnf install -y \
       kernel-devel \
       kexec-tools \
       less \
+      libreoffice \
       lsof \
       lzo \
       lzo-devel \
@@ -92,6 +93,7 @@ RUN dnf install -y \
       nmap-ncat \
       nmon \
       ntp \
+      openldap-clients \
       openssh-server \
       patch \
       perf \

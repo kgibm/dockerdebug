@@ -101,4 +101,3 @@ RUN sudo /usr/bin/eclipse -nosplash -application org.eclipse.equinox.p2.director
                           -installIU com.ibm.java.diagnostics.idde.feature.feature.group \
                           -installIU com.ibm.java.diagnostics.idde.extensions.feature.feature.group \
                             2>&1 | grep -v "Fragment directory should be read only"
-

@@ -10,7 +10,10 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedorawasdebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --rm -p 80:9080 -p 443:9443 -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedorawasdebug
+#   docker run --cap-add SYS_PTRACE --rm -p 80:9080 -p 443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedorawasdebug
+#
+#   Optional:
+#     For Traditional WAS, to specify the wsadmin password, create a PASSWORD file and use: -v $(pwd)/PASSWORD:/tmp/PASSWORD
 
 FROM kgibm/fedorajavadebug
 
@@ -123,6 +126,11 @@ user=was\n\
 autostart=true\n\
 \n' | sudo tee liberty.supervisord.conf
 
+# https://localhost:9043/ibm/console
+# User = wsadmin
+# Password = /tmp/PASSWORD
+#
+# Deployed applications at http://localhost:9081/ and https://localhost:9444/
 RUN printf '\n\
 [program:twas]\n\
 command=/work/start_server.sh\n\
