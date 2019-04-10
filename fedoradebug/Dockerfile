@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug .
 # Step 3: Run the Docker image:
-#   docker run --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug
+#   docker run --cap-add SYS_PTRACE --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -124,6 +124,7 @@ RUN dnf install -y \
       util-linux \
       vim \
       wget \
+      wireshark \
       @xfce \
       xrdp \
     && dnf debuginfo-install -y \

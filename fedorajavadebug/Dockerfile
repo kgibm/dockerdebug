@@ -3,7 +3,7 @@
 # Step 1: Build the Docker image:
 #   docker build -t fedorajavadebug .
 # Step 2: Run the Docker image:
-#   docker run -it fedorajavadebug java -version
+#   docker run --cap-add SYS_PTRACE --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedorajavadebug java -version
 
 FROM kgibm/fedoradebug
 
@@ -14,4 +14,52 @@ COPY --from=ibmjava:8-sdk /opt/ibm/java /opt/ibm/java
 RUN for i in java javac jar javah javap javadoc javaws jconsole jdmpview keytool jdb ControlPanel; do \
         alternatives --install /usr/bin/$i $i /opt/ibm/java/bin/$i 99999999 --family ibmjava && \
         alternatives --auto $i; \
-    done || exit 1
+    done && \
+    sudo mkdir /opt/mat/ && \
+    sudo wget -q -O /opt/MemoryAnalyzer.zip $(curl -s https://www.eclipse.org/mat/downloads.php | grep "Linux (x86_64/GTK+) RCP" | sed 's/.*href="//g' | sed 's/".*//g' | sed 's/^http:/https:/g' | sed 's/$/\&r=1/g') && \
+    (cd /opt/ && sudo unzip -q MemoryAnalyzer.zip && sudo rm -f /opt/MemoryAnalyzer.zip)
+
+# Install DTFJ
+RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/dtfj/ \
+                                 -installIU com.ibm.dtfj.feature.feature.group
+
+# Install IEMA
+RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/iema/ \
+                                 -installIU com.ibm.java.diagnostics.memory.analyzer.cognosbi.feature.feature.group \
+                                 -installIU com.ibm.java.diagnostics.memory.analyzer.ctg.feature.feature.group \
+                                 -installIU com.ibm.java.diagnostics.memory.analyzer.jse.feature.feature.group \
+                                 -installIU com.ibm.java.diagnostics.memory.analyzer.util.feature.feature.group \
+                                 -installIU com.ibm.java.diagnostics.memory.analyzer.was.feature.feature.group \
+                                 -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
+                                 -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group
+
+# Install various utilities
+RUN (sudo mkdir /opt/heapanalyzer/; cd /opt/heapanalyzer/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha456.jar) && \
+    (sudo mkdir /opt/tmda/; cd /opt/tmda/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca463.jar) && \
+    (sudo mkdir /opt/classloaderanalyzer/; cd /opt/classloaderanalyzer/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/ica/ica107.jar) && \
+    (sudo mkdir /opt/pmat/; cd /opt/pmat/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/pmat/ga458.jar) && \
+    (sudo mkdir /opt/surgery/; cd /opt/surgery/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/surgery/surgery.jar) && \
+    (sudo mkdir /opt/tracerequestanalyzer/; cd /opt/tracerequestanalyzer/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/tra/tra303.jar) && \
+    (sudo mkdir /opt/trapit/; cd /opt/trapit/; sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/trapit/trapit.ear)
+
+# Allow running Eclipse from root
+RUN sudo sed -i '/^-protect$/d' /etc/eclipse.ini && \
+    sudo sed -i '/^-protect$/d' /usr/lib/eclipse/eclipse.ini && \
+    sudo sed -i '/^root$/d' /etc/eclipse.ini && \
+    sudo sed -i '/^root$/d' /usr/lib/eclipse/eclipse.ini
+
+# Install GCMV
+RUN sudo /usr/bin/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/gcmv/ \
+                          -installIU com.ibm.java.diagnostics.visualizer.feature.feature.group
+
+# Install Health Center
+RUN sudo /usr/bin/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/healthcenter/ \
+                          -installIU com.ibm.java.diagnostics.healthcenter.core.feature.feature.group \
+                          -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group
+
+# Install IDDE
+RUN sudo /usr/bin/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/idde/ \
+                          -installIU com.ibm.java.diagnostics.idde.feature.feature.group \
+                          -installIU com.ibm.java.diagnostics.idde.extensions.feature.feature.group
+
+RUN (cd /opt/; sudo wget -q https://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-5.1.1.zip && sudo unzip -q apache-jmeter*.zip && sudo rm -f apache-jmeter*.zip && sudo mv apache-jmeter* apache-jmeter)
