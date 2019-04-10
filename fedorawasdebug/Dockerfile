@@ -64,6 +64,51 @@ RUN sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_N
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
+# https://www-01.ibm.com/support/docview.wss?uid=swg21644180
+RUN ( \
+      sudo mkdir /opt/trapit/ && \
+      cd /opt/trapit/ && \
+      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/trapit/trapit.ear \
+    )
+
+# https://github.com/kgibm/java_web_hello_world
+RUN ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/kgibm/java_web_hello_world && \
+      cd /opt/java_web_hello_world && \
+      sudo mvn -q clean install \
+    )
+
+# https://github.com/kgibm/problemdetermination
+RUN ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/kgibm/problemdetermination \
+    )
+
+# https://github.com/skliche/request-metrics-analyzer-next
+RUN ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/skliche/request-metrics-analyzer-next && \
+      cd /opt/request-metrics-analyzer-next && \
+      sudo mvn -q clean install \
+    )
+
+# https://www-01.ibm.com/support/docview.wss?uid=swg22010928
+RUN ( \
+      sudo mkdir /opt/wasconfigcomparison/ && \
+      sudo wget -q -O /opt/wasconfigcomparison/cct-20190325.tar.gz "https://www-01.ibm.com/support/docview.wss?uid=swg22010928&aid=1" && \
+      cd /opt/wasconfigcomparison/ && \
+      sudo tar xzf cct-20190325.tar.gz \
+    )
+
+# https://www-01.ibm.com/support/docview.wss?uid=swg21442487
+RUN ( \
+      sudo mkdir /opt/manageprofilesinteractive/ && \
+      sudo wget -q -O /opt/manageprofilesinteractive/manageprofilesInteractive.zip "https://www-01.ibm.com/support/docview.wss?uid=swg21442487&aid=3" && \
+      cd /opt/manageprofilesinteractive/ && \
+      sudo unzip -q manageprofilesInteractive.zip \
+    )
+
 RUN printf '\n\
 [program:liberty]\n\
 command=/opt/ibm/wlp/bin/server run defaultServer\n\
@@ -76,8 +121,7 @@ startsecs=5\n\
 priority=50\n\
 user=was\n\
 autostart=true\n\
-\n'\
-| sudo tee liberty.supervisord.conf
+\n' | sudo tee liberty.supervisord.conf
 
 RUN printf '\n\
 [program:twas]\n\
@@ -92,5 +136,4 @@ priority=50\n\
 user=was\n\
 autostart=true\n\
 environment=ENABLE_BASIC_LOGGING=true\n\
-\n'\
-| sudo tee twas.supervisord.conf
+\n' | sudo tee twas.supervisord.conf

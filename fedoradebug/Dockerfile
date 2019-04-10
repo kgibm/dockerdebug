@@ -317,19 +317,22 @@ RUN mv /etc/xdg/autostart/xfce-polkit.desktop /etc/xdg/autostart/xfce-polkit.des
 # Utilities #
 #############
 
+# https://ant.apache.org/
 RUN ( \
       cd /opt/ && \
-      sudo wget -q https://www-eu.apache.org/dist//ant/binaries/apache-ant-1.10.5-bin.zip && \
+      sudo wget -q https://www.apache.org/dist/ant/binaries/apache-ant-1.10.5-bin.zip && \
       sudo unzip -q apache-ant*.zip && \
       sudo rm -f apache-ant*.zip && \
       sudo mv apache-ant* apache-ant \
     )
 
+# https://github.com/brendangregg/FlameGraph
 RUN ( \
       cd /opt/ && \
       sudo git clone https://github.com/brendangregg/FlameGraph \
     )
 
+# https://github.com/nmonvisualizer/nmonvisualizer
 RUN ( \
       cd /opt/ && \
       sudo git clone https://github.com/nmonvisualizer/nmonvisualizer && \
@@ -338,6 +341,7 @@ RUN ( \
       sudo mv NMONVisualizer*.jar NMONVisualizer.jar \
     )
 
+# http://www-01.ibm.com/support/docview.wss?uid=swg21115785
 RUN ( \
       sudo mkdir /opt/linperf/ && \
       cd /opt/linperf/ && \
@@ -345,9 +349,10 @@ RUN ( \
       sudo chmod a+x linperf.sh \
     )
 
+# https://jmeter.apache.org/
 RUN ( \
       cd /opt/ && \
-      sudo wget -q https://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-5.1.1.zip && \
+      sudo wget -q https://www.apache.org/dist/jmeter/binaries/apache-jmeter-5.1.1.zip && \
       sudo unzip -q apache-jmeter*.zip && \
       sudo rm -f apache-jmeter*.zip && \
       sudo mv apache-jmeter* apache-jmeter \
