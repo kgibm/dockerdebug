@@ -20,9 +20,13 @@ RUN for i in java javac jar javah javap javadoc javaws jconsole jdmpview keytool
 # https://www.eclipse.org/mat/
 RUN sudo mkdir /opt/mat/ && \
     sudo wget -q -O /opt/MemoryAnalyzer.zip $(curl -s https://www.eclipse.org/mat/downloads.php | grep "Linux (x86_64/GTK+) RCP" | sed 's/.*href="//g' | sed 's/".*//g' | sed 's/^http:/https:/g' | sed 's/$/\&r=1/g') && \
-    (cd /opt/ && sudo unzip -q MemoryAnalyzer.zip && sudo rm -f /opt/MemoryAnalyzer.zip) && \
-    sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=java -jar /opt/mat/MemoryAnalyzer\nPath=~/\nTerminal=false\n' >> mat.desktop && \
-    sudo chmod a+x mat.desktop
+    ( \
+      cd /opt/ && \
+      sudo unzip -q MemoryAnalyzer.zip && sudo rm -f /opt/MemoryAnalyzer.zip && \
+      cd /opt/mat && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=/opt/mat/MemoryAnalyzer\nPath=~/\nTerminal=false\n' >> mat.desktop && \
+      sudo chmod a+x mat.desktop \
+    )
 
 # Install DTFJ
 RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.director \

@@ -127,6 +127,12 @@ RUN ( \
       sudo unzip -q manageprofilesInteractive.zip \
     )
 
+# https://github.com/kgibm/was_data_mining/
+RUN ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/kgibm/was_data_mining/ \
+    )
+
 ##################
 # Configure tWAS #
 ##################
