@@ -3,7 +3,7 @@
 # Step 1: Build the Docker image:
 #   docker build -t fedorajavadebug .
 # Step 2: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedorajavadebug java -version
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedorajavadebug java -version
 
 FROM kgibm/fedoradebug
 
@@ -20,7 +20,9 @@ RUN for i in java javac jar javah javap javadoc javaws jconsole jdmpview keytool
 # https://www.eclipse.org/mat/
 RUN sudo mkdir /opt/mat/ && \
     sudo wget -q -O /opt/MemoryAnalyzer.zip $(curl -s https://www.eclipse.org/mat/downloads.php | grep "Linux (x86_64/GTK+) RCP" | sed 's/.*href="//g' | sed 's/".*//g' | sed 's/^http:/https:/g' | sed 's/$/\&r=1/g') && \
-    (cd /opt/ && sudo unzip -q MemoryAnalyzer.zip && sudo rm -f /opt/MemoryAnalyzer.zip)
+    (cd /opt/ && sudo unzip -q MemoryAnalyzer.zip && sudo rm -f /opt/MemoryAnalyzer.zip) && \
+    sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=java -jar /opt/mat/MemoryAnalyzer\nPath=~/\nTerminal=false\n' >> mat.desktop && \
+    sudo chmod a+x mat.desktop
 
 # Install DTFJ
 RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.director \

@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -281,30 +281,50 @@ priority=50\n\
 \n'\
 >> vncserver2.supervisord.conf
 
+# Print environment variables inherited by supervisord-spawned programs
+RUN printf '\n\
+[program:debugsupervisord]\n\
+command=/usr/bin/env\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+autorestart=false\n\
+startretries=0\n\
+startsecs=0\n\
+priority=1\n\
+user=was\n\
+environment=\n\
+    HOME="/home/was",\n\
+    USER="was",\n\
+\n' | sudo tee debugsupervisord.supervisord.conf
+
 # If a CMD is specified or a program through `docker run`,
 # then start supervisord in the background and run the CMD.
 # Otherwise (the default), run supervisord in the foreground.
-
+# This is required to run as root to properly inherit core
+# dump ulimits, so child containers must always go back to
+# `USER root` before ENTRYPOINT/CMD is run. Attempted
+# with sudo but ulimits don't pass through.
 RUN printf '#!/bin/sh\n\
-sudo ssh-keygen -A || exit 1\n\
+ssh-keygen -A || exit 1\n\
 \n\
 if [ -e /extended_entrypoint.sh ]; then\n\
-  sudo chmod a+x /extended_entrypoint.sh\n\
+  chmod a+x /extended_entrypoint.sh\n\
   /extended_entrypoint.sh || exit 1\n\
 fi\n\
 \n\
 if [ "$#" -gt 0 ]; then\n\
-  sudo sh -c "/usr/bin/supervisord -c supervisord.conf &> /supervisord.log" || exit 1 &\n\
+  /usr/bin/supervisord -c supervisord.conf &> /supervisord.log || exit 1 &\n\
   exec "$@" || exit 1\n\
 else\n\
-  sudo sh -c "/usr/bin/supervisord -n -c supervisord.conf" || exit 1\n\
+  /usr/bin/supervisord -n -c supervisord.conf || exit 1\n\
 fi\n\
 \n\
 #Old code when CMD was added as a supervised program\n\
 #if [ "$#" -gt 0 ]; then\n\
-#  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" | sudo tee cmd.supervisord.conf > /dev/null\n\
+#  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" | tee cmd.supervisord.conf > /dev/null\n\
 #fi\n\
-#sudo sh -c "/usr/bin/supervisord -n -c supervisord.conf" || exit 1\n\
+#/usr/bin/supervisord -n -c supervisord.conf || exit 1\n\
 \n'\
 >> /entrypoint.sh && chmod a+rx /entrypoint.sh
 
