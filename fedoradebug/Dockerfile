@@ -158,6 +158,7 @@ sudo chown -R was:root /home/was/ || exit 1\n\
 # Configure VNC, XRDP, and the users #
 ######################################
 
+# Change the default of sudo to use -E and pass all environment variables
 RUN mkdir /root/.vnc && \
     echo "startxfce4" > /root/.Xclients && \
     chmod +x /root/.Xclients && \
@@ -168,7 +169,8 @@ RUN mkdir /root/.vnc && \
     mkdir /home/was/.vnc && \
     echo "startxfce4" > /home/was/.Xclients && \
     chmod +x /home/was/.Xclients && \
-    sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers
+    sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers && \
+    sed -i 's/^\(Defaults.*env_reset\)/#\1/g' /etc/sudoers
 
 RUN printf '#!/bin/sh\n\
 unset SESSION_MANAGER\n\
@@ -295,7 +297,7 @@ if [ "$#" -gt 0 ]; then\n\
   sudo sh -c "/usr/bin/supervisord -c supervisord.conf &> /supervisord.log" || exit 1 &\n\
   exec "$@" || exit 1\n\
 else\n\
-  sh -c "sudo /usr/bin/supervisord -n -c supervisord.conf" || exit 1\n\
+  sudo sh -c "/usr/bin/supervisord -n -c supervisord.conf" || exit 1\n\
 fi\n\
 \n\
 #Old code when CMD was added as a supervised program\n\
