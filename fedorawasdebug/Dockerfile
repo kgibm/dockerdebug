@@ -217,13 +217,10 @@ environment=\n\
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
 # https://github.com/WASdev/sample.daytrader7
-RUN sudo dnf install -y gradle && \
-    ( \
+RUN ( \
       cd /opt/ && \
       sudo git clone https://github.com/WASdev/sample.daytrader7 daytrader7 && \
       cd /opt/daytrader7 && \
-      sudo sed -i 's/other/derby/g' daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/TradeConfigServlet.java && \
-      sudo sed -i 's/other/derby/g' daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/jsf/TradeConfigJSF.java && \
       sudo gradle build \
     )
 
@@ -330,6 +327,8 @@ RUN printf '\n\
 </server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/users.xml
 
 RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
+
+RUN sudo sed -i 's/\[mysqld\]/[mysqld]\nlower_case_table_names=1/g' /etc/my.cnf.d/mariadb-server.cnf
 
 EXPOSE 9080 9081 9443 9444
 
