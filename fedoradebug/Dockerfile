@@ -8,11 +8,11 @@
 #         file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
 #   Without remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build -t fedoradebug .
+#     DOCKER_BUILDKIT=1 docker build -t kgibm/fedoradebug .
 #   With remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedoradebug .
+#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedoradebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedoradebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it kgibm/fedoradebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901

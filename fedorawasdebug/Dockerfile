@@ -6,15 +6,11 @@
 #         file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
 #   Without remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build -t fedorawasdebug .
+#     DOCKER_BUILDKIT=1 docker build -t kgibm/fedorawasdebug .
 #   With remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t fedorawasdebug .
+#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorawasdebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 80:9080 -p 443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedorawasdebug
-#
-#   Optional:
-#     For Traditional WAS, to specify the wsadmin password, create a PASSWORD file (or use the same remotepassword.txt) and use: -v $(pwd)/remotepassword.txt:/tmp/PASSWORD
-#
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 80:9080 -p 443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it kgibm/fedorawasdebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -47,7 +43,10 @@ ENV LOG_DIR=/logs \
     EXTRACT_PORT_FROM_HOST_HEADER=true \
     ENABLE_BASIC_LOGGING=true
 
-# "Install" Liberty
+#####################
+# "Install" Liberty #
+#####################
+
 COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
 COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
 COPY --from=websphere-liberty:latest --chown=was:root /logs /logs
@@ -59,7 +58,20 @@ RUN ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     ln -s /opt/ibm /liberty && \
     ln -s /opt/ibm/wlp/usr/shared/resources/lib.index.cache /lib.index.cache
 
-# "Install" Traditional WAS
+# In case the user restarts Liberty from the command line instead of supervisord, we need
+# to set the right envars
+RUN printf '\n\
+LOG_DIR=/logs\n\
+WLP_OUTPUT_DIR=/opt/ibm/wlp/output\n\
+KEYSTORE_REQUIRED=true\n\
+RANDFILE=/tmp/.rnd\n\
+JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/"\n\
+\n' >> /config/server.env
+
+#############################
+# "Install" Traditional WAS #
+#############################
+
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /work /work
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /licenses/
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /opt/IBM /opt/IBM
@@ -144,6 +156,8 @@ serverName = serverName[:serverName.find("(")]\n\
 # https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/rxml_taskoptions.html\n\
 AdminApp.install("/opt/problemdetermination/swat.ear", ["-appname", "swat", "-node", nodeName, "-server", serverName, "-usedefaultbindings"])\n\
 AdminConfig.save()\n' > /work/config/install_app.py
+
+RUN --mount=type=secret,id=remotepassword if [ "$(sudo head -n 1 /run/secrets/remotepassword)" != "" ]; then echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" > /tmp/PASSWORD; fi
 
 RUN /work/configure.sh
 

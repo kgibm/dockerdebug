@@ -1,9 +1,9 @@
 # usage:
 # ======
 # Step 1: Build the Docker image:
-#   docker build -t fedorajavadebug .
+#   docker build -t kgibm/fedorajavadebug .
 # Step 2: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it fedorajavadebug java -version
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it kgibm/fedorajavadebug java -version
 
 FROM kgibm/fedoradebug
 
