@@ -10,7 +10,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorawasdebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 80:9080 -p 443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it kgibm/fedorawasdebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it kgibm/fedorawasdebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -47,11 +47,12 @@ ENV LOG_DIR=/logs \
 # "Install" Liberty #
 #####################
 
-COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
-COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
-COPY --from=websphere-liberty:latest --chown=was:root /logs /logs
-COPY --from=websphere-liberty:latest --chown=was:root /licenses /licenses
-COPY --from=websphere-liberty:latest --chown=was:root /etc/wlp /etc/wlp
+# 19.0.0.3 has a bug installing adminCenter-1.0 so we use the latest beta
+#COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
+COPY --from=websphere-liberty:beta --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
+COPY --from=websphere-liberty:beta --chown=was:root /logs /logs
+#COPY --from=websphere-liberty:latest --chown=was:root /licenses /licenses
+COPY --from=websphere-liberty:beta --chown=was:root /etc/wlp /etc/wlp
 
 RUN ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     ln -s /opt/ibm/wlp/usr/servers/defaultServer /config && \
@@ -79,7 +80,9 @@ COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /etc/websphere 
 
 # Run Liberty initialization script at startup:
 RUN printf '#!/bin/sh\n\
-/opt/ibm/helpers/runtime/docker-server.sh\n\
+if [ -e /opt/ibm/helpers/runtime/docker-server.sh ]; then\n\
+    /opt/ibm/helpers/runtime/docker-server.sh\n\
+fi\n\
 \n' > /extended_entrypoint.sh
 
 USER was
@@ -205,13 +208,128 @@ startretries=0\n\
 autorestart=false\n\
 priority=50\n\
 user=was\n\
-autostart=true\n\
+autostart=false\n\
 environment=\n\
     HOME="/home/was",\n\
     USER="was",\n\
 \n' | sudo tee twas.supervisord.conf
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
+
+# https://github.com/WASdev/sample.daytrader7
+RUN sudo dnf install -y gradle && \
+    ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/WASdev/sample.daytrader7 daytrader7 && \
+      cd /opt/daytrader7 && \
+      sudo sed -i 's/other/derby/g' daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/TradeConfigServlet.java && \
+      sudo sed -i 's/other/derby/g' daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/jsf/TradeConfigJSF.java && \
+      sudo gradle build \
+    )
+
+# DayTrader7 is JEE7, but install JEE8 in case another server is created that needs it
+RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense javaee-8.0 && \
+    mkdir -p /config/configDropins/overrides/ && \
+    sed -i 's/webProfile-8.0/webProfile-7.0/g' /config/server.xml
+
+RUN cp /opt/daytrader7/daytrader-ee7/build/libs/daytrader-ee7.ear /config/dropins/
+
+RUN sudo dnf install -y mariadb-server mariadb-java-client && \
+    sudo mysql_install_db --skip-test-db --user=mysql
+
+RUN printf '\n\
+UPDATE mysql.user SET Password = PASSWORD("%s") WHERE User = "root";\n\
+FLUSH PRIVILEGES;\n\
+CREATE DATABASE TradeDB;\n\
+\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" | sudo tee /var/lib/mysql/init.sql
+
+# https://mariadb.com/kb/en/library/mysqld-options/
+RUN printf '\n\
+[program:mysql]\n\
+command=/usr/bin/mysqld_safe --init-file=/var/lib/mysql/init.sql\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+startsecs=5\n\
+startretries=0\n\
+autorestart=false\n\
+priority=25\n\
+user=mysql\n\
+autostart=true\n\
+stopsignal=KILL\n\
+environment=\n\
+    HOME="/var/lib/mysql",\n\
+    USER="mysql",\n\
+\n' | sudo tee mysqld.supervisord.conf
+
+# https://github.com/WASdev/sample.daytrader7/blob/master/daytrader-ee7-wlpcfg/servers/daytrader7Sample/server.xml
+RUN printf '\n\
+<server>\n\
+    <featureManager>\n\
+        <feature>ejb-3.2</feature>\n\
+        <feature>servlet-3.1</feature>\n\
+        <feature>jsf-2.2</feature>\n\
+        <feature>jpa-2.1</feature>\n\
+        <feature>mdb-3.2</feature>\n\
+        <feature>wasJmsServer-1.0</feature>\n\
+        <feature>wasJmsClient-2.0</feature>\n\
+        <feature>cdi-1.2</feature>\n\
+        <feature>websocket-1.1</feature>\n\
+        <feature>concurrent-1.0</feature>\n\
+        <feature>jsonp-1.0</feature>\n\
+        <feature>beanValidation-1.1</feature>\n\
+        <feature>localConnector-1.0</feature>\n\
+    </featureManager>\n\
+    <connectionManager agedTimeout="-1" connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100" minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1"/>\n\
+    <authData id="TradeDataSourceAuthData" user="root" password="%s" />\n\
+    <authData id="TradeAdminAuthData" user="root" password="%s" />\n\
+    <dataSource id="DefaultDataSource" jndiName="jdbc/TradeDataSource">\n\
+        <jdbcDriver libraryRef="MariaDBLib" />\n\
+        <properties databaseName="TradeDB" serverName="localhost" user="root" password="%s" portNumber="3306" />\n\
+    </dataSource>\n\
+    <library id="MariaDBLib">\n\
+        <file name="/usr/lib/java/mariadb-java-client.jar" />\n\
+    </library>\n\
+	<messagingEngine id="defaultME">\n\
+		<queue id="TradeBrokerQueue"/>\n\
+		<topicSpace id="TradeTopicSpace"/>\n\
+	</messagingEngine>\n\
+	<jmsQueueConnectionFactory connectionManagerRef="ConMgr3" jndiName="jms/TradeBrokerQCF">\n\
+		<properties.wasJms/>\n\
+	</jmsQueueConnectionFactory>\n\
+	<connectionManager id="ConMgr3" maxPoolSize="20"/>\n\
+	<jmsTopicConnectionFactory connectionManagerRef="ConMgr4" jndiName="jms/TradeStreamerTCF">\n\
+		<properties.wasJms/>\n\
+	</jmsTopicConnectionFactory>\n\
+	<connectionManager id="ConMgr4" maxPoolSize="20"/>\n\
+	<jmsQueue id="jms/TradeBrokerQueue" jndiName="jms/TradeBrokerQueue">\n\
+		<properties.wasJms deliveryMode="NonPersistent" queueName="TradeBrokerQueue"/>\n\
+	</jmsQueue>\n\
+	<jmsTopic id="TradeStreamerTopic" jndiName="jms/TradeStreamerTopic">\n\
+		<properties.wasJms deliveryMode="NonPersistent" topicSpace="TradeTopicSpace"/>\n\
+	</jmsTopic>\n\
+	<jmsActivationSpec id="eis/TradeBrokerMDB">\n\
+		<properties.wasJms destinationRef="jms/TradeBrokerQueue"/>\n\
+	</jmsActivationSpec>\n\
+	<jmsActivationSpec id="eis/TradeStreamerMDB">\n\
+		<properties.wasJms destinationRef="TradeStreamerTopic" destinationType="javax.jms.Topic"/>\n\
+    </jmsActivationSpec>\n\
+</server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/daytrader.xml
+
+RUN printf '\n\
+<server>\n\
+    <basicRegistry>\n\
+        <user name="was" password="%s"/>\n\
+        <group name="AllAuthenticated">\n\
+            <member name="was" />\n\
+        </group>\n\
+    </basicRegistry>\n\
+    <administrator-role>\n\
+        <user>was</user>\n\
+    </administrator-role>\n\
+</server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/users.xml
+
+RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
 
 EXPOSE 9080 9081 9443 9444
 

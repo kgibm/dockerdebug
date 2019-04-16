@@ -62,6 +62,7 @@ RUN dnf install -y \
       git \
       gnupg \
       gnuplot \
+      gradle \
       hostname \
       htop \
       iftop \
