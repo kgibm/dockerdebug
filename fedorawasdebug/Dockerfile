@@ -328,6 +328,7 @@ RUN printf '\n\
 
 RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
 
+# https://mariadb.com/kb/en/library/identifier-case-sensitivity/
 RUN sudo sed -i 's/\[mysqld\]/[mysqld]\nlower_case_table_names=1/g' /etc/my.cnf.d/mariadb-server.cnf
 
 EXPOSE 9080 9081 9443 9444

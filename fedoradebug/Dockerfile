@@ -171,7 +171,8 @@ RUN mkdir /root/.vnc && \
     echo "startxfce4" > /home/was/.Xclients && \
     chmod +x /home/was/.Xclients && \
     sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers && \
-    sed -i 's/^\(Defaults.*env_reset\)/#\1/g' /etc/sudoers
+    sed -i 's/^\(Defaults.*env_reset\)/#\1/g' /etc/sudoers && \
+    mkdir /opt/programs/
 
 RUN printf '#!/bin/sh\n\
 unset SESSION_MANAGER\n\
@@ -365,7 +366,8 @@ RUN ( \
       sudo ANT_OPTS=-Dfile.encoding=iso-8859-1 /opt/apache-ant/bin/ant && \
       sudo mv NMONVisualizer*.jar NMONVisualizer.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=NMON Visualizer\nExec=java -jar /opt/nmonvisualizer/NMONVisualizer.jar\nPath=~/\nTerminal=false\n' >> nmonvisualizer.desktop && \
-      sudo chmod a+x nmonvisualizer.desktop \
+      sudo chmod a+x nmonvisualizer.desktop && \
+      sudo ln -s /opt/nmonvisualizer/nmonvisualizer.desktop /opt/programs/ \
     )
 
 # http://www-01.ibm.com/support/docview.wss?uid=swg21115785
@@ -383,8 +385,10 @@ RUN ( \
       sudo unzip -q apache-jmeter*.zip && \
       sudo rm -f apache-jmeter*.zip && \
       sudo mv apache-jmeter* apache-jmeter && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=JMeter\nExec=java -jar /opt/apache-jmeter/bin/jmeter\nPath=~/\nTerminal=false\n' >> jmeter.desktop && \
-      sudo chmod a+x jmeter.desktop \
+      cd /opt/apache-jmeter/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=JMeter\nExec=/opt/apache-jmeter/bin/jmeter\nPath=~/\nTerminal=false\n' >> jmeter.desktop && \
+      sudo chmod a+x jmeter.desktop && \
+      sudo ln -s /opt/apache-jmeter/jmeter.desktop /opt/programs/ \
     )
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
