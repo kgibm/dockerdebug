@@ -1,9 +1,28 @@
+# syntax=docker/dockerfile:1.0.0-experimental
+#
 # usage:
 # ======
-# Step 1: Build the Docker image:
-#   docker build -t kgibm/fedorajavadebug .
-# Step 2: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it kgibm/fedorajavadebug java -version
+# Step 1: Optionally, create remotepassword.txt in the directory with this Dockerfile and set the contents of the
+#         file to the password used for VNC/RDP/root
+# Step 2: Build the Docker image:
+#   Without remotepassword.txt:
+#     DOCKER_BUILDKIT=1 docker build -t kgibm/fedorajavadebug .
+#   With remotepassword.txt:
+#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorajavadebug .
+# Step 3: Run the Docker image:
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it kgibm/fedorajavadebug
+# Step 4: Remote into the docker image
+#   Linux:
+#     root: vncviewer localhost:5901
+#     was: vncviewer localhost:5902
+#     Use the password from remotepassword.txt
+#   Mac:
+#     root: open vnc://localhost:5901
+#     was: open vnc://localhost:5902
+#     Use the password from remotepassword.txt
+#   Windows: Remote desktop to localhost and use the username of root or was
+#            and the password from remotepassword.txt
+#
 
 FROM kgibm/fedoradebug
 
@@ -25,7 +44,8 @@ RUN sudo mkdir /opt/mat/ && \
       sudo unzip -q MemoryAnalyzer.zip && sudo rm -f /opt/MemoryAnalyzer.zip && \
       cd /opt/mat && \
       sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=/opt/mat/MemoryAnalyzer\nPath=~/\nTerminal=false\n' >> mat.desktop && \
-      sudo chmod a+x mat.desktop \
+      sudo chmod a+x mat.desktop && \
+      sudo ln -s /opt/mat/mat.desktop /opt/programs/ \
     )
 
 # Install DTFJ
@@ -73,7 +93,8 @@ RUN ( \
       cd /opt/heapanalyzer/ && \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha456.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=Heap Analyzer\nExec=java -jar /opt/heapanalyzer/ha456.jar\nPath=~/\nTerminal=false\n' >> ha.desktop && \
-      sudo chmod a+x ha.desktop \
+      sudo chmod a+x ha.desktop && \
+      sudo ln -s /opt/heapanalyzer/ha.desktop /opt/programs/ \
     )
 
 # https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=2245aa39-fa5c-4475-b891-14c205f7333c
@@ -82,7 +103,8 @@ RUN ( \
       cd /opt/tmda/ && \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca463.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca463.jar\nPath=~/\nTerminal=false\n' >> tmda.desktop && \
-      sudo chmod a+x tmda.desktop \
+      sudo chmod a+x tmda.desktop && \
+      sudo ln -s /opt/tmda/tmda.desktop /opt/programs/ \
     )
 
 # https://www.ibm.com/developerworks/community/groups/service/html/communitystart?communityUuid=a0a94b0d-38fe-4f4e-b2e6-4504b9d3f596
@@ -91,7 +113,8 @@ RUN ( \
       cd /opt/classloaderanalyzer/ && \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/ica/ica107.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=Classloader Analyzer\nExec=java -jar /opt/classloaderanalyzer/ica107.jar\nPath=~/\nTerminal=false\n' >> cla.desktop && \
-      sudo chmod a+x cla.desktop \
+      sudo chmod a+x cla.desktop && \
+      sudo ln -s /opt/classloaderanalyzer/cla.desktop /opt/programs/ \
     )
 
 # https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=22d56091-3a7b-4497-b36e-634b51838e11
@@ -100,7 +123,8 @@ RUN ( \
       cd /opt/pmat/ && \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/pmat/ga458.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=PMAT\nExec=java -jar /opt/pmat/ga458.jar\nPath=~/\nTerminal=false\n' >> pmat.desktop && \
-      sudo chmod a+x pmat.desktop \
+      sudo chmod a+x pmat.desktop && \
+      sudo ln -s /opt/pmat/pmat.desktop /opt/programs/ \
     )
 
 # https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=7d3dc078-131f-404c-8b4d-68b3b9ddd07a
@@ -115,5 +139,8 @@ RUN ( \
       cd /opt/tracerequestanalyzer/ && \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/tra/tra303.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=Trace and Request Analyzer\nExec=java -jar /opt/tracerequestanalyzer/tra303.jar\nPath=~/\nTerminal=false\n' >> tra.desktop && \
-      sudo chmod a+x tra.desktop \
+      sudo chmod a+x tra.desktop && \
+      sudo ln -s /opt/tracerequestanalyzer/tra.desktop /opt/programs/ \
     )
+
+RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
