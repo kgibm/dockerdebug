@@ -303,13 +303,22 @@ RUN printf '\n\
     <connectionManager agedTimeout="-1" connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100" minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1"/>\n\
     <authData id="TradeDataSourceAuthData" user="root" password="%s" />\n\
     <authData id="TradeAdminAuthData" user="root" password="%s" />\n\
+    <connectionManager agedTimeout="-1" connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100" minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1" />\n\
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />\n\
+    <library filesetRef="DerbyFileset" id="DerbyLib" />\n\
+    <fileset dir="/opt/derby/lib/" id="DerbyFileset" includes="derby.jar" />\n\
+    <dataSource connectionManagerRef="conMgr1" id="DefaultDataSource" isolationLevel="TRANSACTION_READ_COMMITTED" jdbcDriverRef="DerbyEmbedded" jndiName="jdbc/TradeDataSource" statementCacheSize="60">\n\
+        <properties.derby.embedded createDatabase="create" databaseName="${shared.resource.dir}/data/tradedb" user="root" password="%s" />\n\
+    </dataSource>\n\
+    \n\
+    <!--<library id="MariaDBLib">\n\
+        <file name="/usr/lib/java/mariadb-java-client.jar" />\n\
+    </library>\n\
     <dataSource id="DefaultDataSource" jndiName="jdbc/TradeDataSource">\n\
         <jdbcDriver libraryRef="MariaDBLib" />\n\
         <properties databaseName="TradeDB" serverName="localhost" user="root" password="%s" portNumber="3306" />\n\
-    </dataSource>\n\
-    <library id="MariaDBLib">\n\
-        <file name="/usr/lib/java/mariadb-java-client.jar" />\n\
-    </library>\n\
+    </dataSource>-->\n\
+    \n\
 	<messagingEngine id="defaultME">\n\
 		<queue id="TradeBrokerQueue"/>\n\
 		<topicSpace id="TradeTopicSpace"/>\n\
@@ -334,7 +343,7 @@ RUN printf '\n\
 	<jmsActivationSpec id="eis/TradeStreamerMDB">\n\
 		<properties.wasJms destinationRef="TradeStreamerTopic" destinationType="javax.jms.Topic"/>\n\
     </jmsActivationSpec>\n\
-</server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/daytrader.xml
+</server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/daytrader.xml
 
 RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
 
@@ -345,6 +354,15 @@ RUN sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
     sudo sed -i 's/THREADS,50/THREADS,4/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
     sudo chmod -R a+w /opt/daytrader7/jmeter_files && \
     sudo sed -i 's/\(ResultCollector.*StatVisualizer.*enabled="\)false/\1true/g' /opt/daytrader7/jmeter_files/daytrader7.jmx
+
+# https://db.apache.org/derby/
+RUN ( \
+      cd /opt/ && \
+      sudo wget -q -O /opt/derby.zip https://www.apache.org/dist//db/derby/db-derby-10.14.2.0/db-derby-10.14.2.0-bin.zip && \
+      sudo unzip derby.zip && \
+      sudo rm derby.zip && \
+      sudo mv *derby* derby \
+    )
 
 EXPOSE 9080 9081 9443 9444
 
