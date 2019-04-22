@@ -248,8 +248,7 @@ RUN sudo mkdir /opt/cookbook && \
 
 # DayTrader7 is JEE7, but install JEE8 in case another server is created that needs it
 RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense javaee-8.0 && \
-    mkdir -p /config/configDropins/overrides/ && \
-    sed -i 's/webProfile-8.0/webProfile-7.0/g' /config/server.xml
+    mkdir -p /config/configDropins/overrides/
 
 RUN cp /opt/daytrader7/daytrader-ee7/build/libs/daytrader-ee7.ear /config/dropins/
 
@@ -280,6 +279,8 @@ environment=\n\
     HOME="/var/lib/mysql",\n\
     USER="mysql",\n\
 \n' | sudo tee mysqld.supervisord.conf
+
+RUN sed -i '/.*webProfile.*/d' /config/server.xml
 
 # https://github.com/WASdev/sample.daytrader7/blob/master/daytrader-ee7-wlpcfg/servers/daytrader7Sample/server.xml
 RUN printf '\n\
@@ -333,20 +334,7 @@ RUN printf '\n\
 	<jmsActivationSpec id="eis/TradeStreamerMDB">\n\
 		<properties.wasJms destinationRef="TradeStreamerTopic" destinationType="javax.jms.Topic"/>\n\
     </jmsActivationSpec>\n\
-</server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/daytrader.xml
-
-RUN printf '\n\
-<server>\n\
-    <basicRegistry>\n\
-        <user name="was" password="%s"/>\n\
-        <group name="AllAuthenticated">\n\
-            <member name="was" />\n\
-        </group>\n\
-    </basicRegistry>\n\
-    <administrator-role>\n\
-        <user>was</user>\n\
-    </administrator-role>\n\
-</server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/users.xml
+</server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/daytrader.xml
 
 RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
 
@@ -355,7 +343,8 @@ RUN sudo sed -i 's/\[mysqld\]/[mysqld]\nlower_case_table_names=1/g' /etc/my.cnf.
 
 RUN sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
     sudo sed -i 's/THREADS,50/THREADS,4/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
-    sudo chmod a+w /opt/daytrader7/jmeter_files/*.jmx
+    sudo chmod -R a+w /opt/daytrader7/jmeter_files && \
+    sudo sed -i 's/\(ResultCollector.*StatVisualizer.*enabled="\)false/\1true/g' /opt/daytrader7/jmeter_files/daytrader7.jmx
 
 EXPOSE 9080 9081 9443 9444
 
