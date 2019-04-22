@@ -52,7 +52,6 @@ RUN dnf install -y \
       collectl \
       dnf-plugins-core \
       e2fsprogs \
-      eclipse \
       file-devel \
       firefox \
       ftp \
@@ -388,7 +387,9 @@ RUN ( \
       cd /opt/apache-jmeter/ && \
       sudo printf '[Desktop Entry]\nType=Application\nName=JMeter\nExec=/opt/apache-jmeter/bin/jmeter\nPath=~/\nTerminal=false\n' >> jmeter.desktop && \
       sudo chmod a+x jmeter.desktop && \
-      sudo ln -s /opt/apache-jmeter/jmeter.desktop /opt/programs/ \
+      sudo ln -s /opt/apache-jmeter/jmeter.desktop /opt/programs/ && \
+      cd /opt/apache-jmeter/lib/ext && \
+      sudo wget -q https://bitbucket.org/pjtr/jmeter-websocket-samplers/downloads/JMeterWebSocketSamplers-1.2.1.jar \
     )
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh

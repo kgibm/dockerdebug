@@ -148,6 +148,24 @@ RUN ( \
       sudo git clone https://github.com/kgibm/was_data_mining/ \
     )
 
+###############
+# Install WDT #
+###############
+
+# https://marketplace.eclipse.org/content/ibm-liberty-developer-tools
+# https://marketplace.eclipse.org/node/1778478/api/p
+# http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/
+RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
+                              -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/2019-03_comp/,http://download.eclipse.org/releases/2019-03,http://download.eclipse.org/eclipse/updates/4.11,http://download.eclipse.org/webtools/repository/latest \
+                              -installIU com.ibm.wdt.ast.ws.tools.feature.feature.group \
+                              -installIU com.ibm.osgi.wdt.feature.feature.group \
+                              -installIU com.ibm.websphere.wdt.server.tools.main.feature.group \
+                              -installIU com.ibm.wdt.migration.tools.feature.feature.group \
+                              -installIU com.ibm.wdt.webtools.top.feature.feature.group
+
+# Required after installing anything into Eclipse
+RUN sudo chmod -R a+w /opt/eclipse/configuration
+
 ##################
 # Configure tWAS #
 ##################
@@ -223,6 +241,10 @@ RUN ( \
       cd /opt/daytrader7 && \
       sudo gradle build \
     )
+
+# https://publib.boulder.ibm.com/httpserv/cookbook/
+RUN sudo mkdir /opt/cookbook && \
+    sudo wget -q -O /opt/cookbook/WAS_Performance_Cookbook.pdf https://publib.boulder.ibm.com/httpserv/cookbook/WAS_Performance_Cookbook.pdf
 
 # DayTrader7 is JEE7, but install JEE8 in case another server is created that needs it
 RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense javaee-8.0 && \
@@ -330,6 +352,10 @@ RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
 
 # https://mariadb.com/kb/en/library/identifier-case-sensitivity/
 RUN sudo sed -i 's/\[mysqld\]/[mysqld]\nlower_case_table_names=1/g' /etc/my.cnf.d/mariadb-server.cnf
+
+RUN sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
+    sudo sed -i 's/THREADS,50/THREADS,4/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
+    sudo chmod a+w /opt/daytrader7/jmeter_files/*.jmx
 
 EXPOSE 9080 9081 9443 9444
 

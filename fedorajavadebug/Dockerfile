@@ -41,7 +41,8 @@ RUN sudo mkdir /opt/mat/ && \
     sudo wget -q -O /opt/MemoryAnalyzer.zip $(curl -s https://www.eclipse.org/mat/downloads.php | grep "Linux (x86_64/GTK+) RCP" | sed 's/.*href="//g' | sed 's/".*//g' | sed 's/^http:/https:/g' | sed 's/$/\&r=1/g') && \
     ( \
       cd /opt/ && \
-      sudo unzip -q MemoryAnalyzer.zip && sudo rm -f /opt/MemoryAnalyzer.zip && \
+      sudo unzip -q MemoryAnalyzer.zip && \
+      sudo rm -f /opt/MemoryAnalyzer.zip && \
       cd /opt/mat && \
       sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=/opt/mat/MemoryAnalyzer\nPath=~/\nTerminal=false\n' >> mat.desktop && \
       sudo chmod a+x mat.desktop && \
@@ -63,29 +64,6 @@ RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.d
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.was.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group
-
-# Allow running Eclipse from root
-RUN sudo sed -i '/^-protect$/d' /etc/eclipse.ini && \
-    sudo sed -i '/^-protect$/d' /usr/lib/eclipse/eclipse.ini && \
-    sudo sed -i '/^root$/d' /etc/eclipse.ini && \
-    sudo sed -i '/^root$/d' /usr/lib/eclipse/eclipse.ini
-
-# Install GCMV
-RUN sudo /usr/bin/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/gcmv/ \
-                          -installIU com.ibm.java.diagnostics.visualizer.feature.feature.group \
-                            2>&1 | grep -v "Fragment directory should be read only"
-
-# Install Health Center
-RUN sudo /usr/bin/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/healthcenter/ \
-                          -installIU com.ibm.java.diagnostics.healthcenter.core.feature.feature.group \
-                          -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group \
-                            2>&1 | grep -v "Fragment directory should be read only"
-
-# Install IDDE
-RUN sudo /usr/bin/eclipse -nosplash -application org.eclipse.equinox.p2.director -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/idde/ \
-                          -installIU com.ibm.java.diagnostics.idde.feature.feature.group \
-                          -installIU com.ibm.java.diagnostics.idde.extensions.feature.feature.group \
-                            2>&1 | grep -v "Fragment directory should be read only"
 
 # https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=4544bafe-c7a2-455f-9d43-eb866ea60091
 RUN ( \
@@ -142,5 +120,37 @@ RUN ( \
       sudo chmod a+x tra.desktop && \
       sudo ln -s /opt/tracerequestanalyzer/tra.desktop /opt/programs/ \
     )
+
+# https://www.eclipse.org/downloads/packages/release/2019-03/r/eclipse-ide-enterprise-java-developers
+RUN sudo wget -q -O /opt/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2019-03/R/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz&r=1" && \
+    ( \
+      cd /opt/ && \
+      sudo tar xzf eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz && \
+      sudo rm -f /opt/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz && \
+      cd /opt/eclipse && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=Eclipse\nExec=/opt/eclipse/eclipse\nPath=~/\nTerminal=false\n' >> eclipse.desktop && \
+      sudo chmod a+x eclipse.desktop && \
+      sudo ln -s /opt/eclipse/eclipse.desktop /opt/programs/ \
+    )
+
+# Install GCMV
+RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
+                              -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/gcmv/ \
+                              -installIU com.ibm.java.diagnostics.visualizer.feature.feature.group
+
+# Install Health Center
+RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
+                              -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/healthcenter/ \
+                              -installIU com.ibm.java.diagnostics.healthcenter.core.feature.feature.group \
+                              -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group
+
+# Install IDDE
+RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
+                              -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/idde/ \
+                              -installIU com.ibm.java.diagnostics.idde.feature.feature.group \
+                              -installIU com.ibm.java.diagnostics.idde.extensions.feature.feature.group
+
+# Required after installing anything into Eclipse
+RUN sudo chmod -R a+w /opt/eclipse/configuration
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
