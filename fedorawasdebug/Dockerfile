@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile:1.0.0-experimental
 #
+# Purpose: This is not designed for production usage but instead as a debugging and learning container.
+#
 # usage:
 # ======
 # Step 1: Optionally, create remotepassword.txt in the directory with this Dockerfile and set the contents of the
