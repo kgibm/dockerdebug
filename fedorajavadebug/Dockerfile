@@ -2,7 +2,7 @@
 #
 # Purpose: This is not designed for production usage but instead as a debugging and learning container.
 #
-# usage:
+# usage (Requires Docker >= 18.09):
 # ======
 # Step 1: Optionally, create remotepassword.txt in the directory with this Dockerfile and set the contents of the
 #         file to the password used for VNC/RDP/root
