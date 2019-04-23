@@ -83,6 +83,7 @@ RUN dnf install -y \
       man \
       man-pages \
       maven \
+      mousepad \
       mtr \
       multitail \
       ncurses \

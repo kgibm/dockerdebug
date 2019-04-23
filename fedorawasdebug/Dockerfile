@@ -47,6 +47,9 @@ ENV LOG_DIR=/logs \
 # "Install" Liberty #
 #####################
 
+# https://hub.docker.com/_/websphere-liberty
+# https://hub.docker.com/_/open-liberty
+
 # 19.0.0.3 has a bug installing adminCenter-1.0 so we use the latest beta
 #COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
 COPY --from=websphere-liberty:beta --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
@@ -72,6 +75,8 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/"\n\
 #############################
 # "Install" Traditional WAS #
 #############################
+
+# https://hub.docker.com/r/ibmcom/websphere-traditional
 
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /work /work
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /licenses/
