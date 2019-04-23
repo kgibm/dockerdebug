@@ -122,13 +122,14 @@ RUN ( \
     )
 
 # https://www.eclipse.org/downloads/packages/release/2019-03/r/eclipse-ide-enterprise-java-developers
+# https://help.eclipse.org/2019-03/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fruntime-options.html
 RUN sudo wget -q -O /opt/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2019-03/R/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz&r=1" && \
     ( \
       cd /opt/ && \
       sudo tar xzf eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz && \
       sudo rm -f /opt/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz && \
       cd /opt/eclipse && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=Eclipse\nExec=/opt/eclipse/eclipse\nPath=~/\nTerminal=false\n' >> eclipse.desktop && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=Eclipse\nExec=/opt/eclipse/eclipse -data workspace\nPath=~/\nTerminal=false\n' >> eclipse.desktop && \
       sudo chmod a+x eclipse.desktop && \
       sudo ln -s /opt/eclipse/eclipse.desktop /opt/programs/ \
     )
@@ -136,19 +137,31 @@ RUN sudo wget -q -O /opt/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz "https://
 # Install GCMV
 RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
                               -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/gcmv/ \
-                              -installIU com.ibm.java.diagnostics.visualizer.feature.feature.group
+                              -installIU com.ibm.java.diagnostics.visualizer.feature.feature.group && \
+    sudo printf '[Desktop Entry]\nType=Application\nName=GCMV\nExec=/opt/eclipse/eclipse -data workspace_gcmv -perspective com.ibm.java.diagnostics.visualizer.gui.perspective\nPath=~/\nTerminal=false\n' >> /opt/eclipse/gcmv.desktop && \
+    sudo chmod a+x /opt/eclipse/gcmv.desktop && \
+    sudo ln -s /opt/eclipse/gcmv.desktop /opt/programs/
 
 # Install Health Center
 RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
                               -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/healthcenter/ \
                               -installIU com.ibm.java.diagnostics.healthcenter.core.feature.feature.group \
-                              -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group
+                              -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group && \
+    sudo printf '[Desktop Entry]\nType=Application\nName=Health Center\nExec=/opt/eclipse/eclipse -data workspace_hc -perspective com.ibm.java.diagnostics.healthcenter.gui.perspective.status\nPath=~/\nTerminal=false\n' >> /opt/eclipse/hc.desktop && \
+    sudo chmod a+x /opt/eclipse/hc.desktop && \
+    sudo ln -s /opt/eclipse/hc.desktop /opt/programs/
 
 # Install IDDE
 RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
                               -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/idde/ \
                               -installIU com.ibm.java.diagnostics.idde.feature.feature.group \
-                              -installIU com.ibm.java.diagnostics.idde.extensions.feature.feature.group
+                              -installIU com.ibm.java.diagnostics.idde.extensions.feature.feature.group && \
+    sudo printf '[Desktop Entry]\nType=Application\nName=IDDE\nExec=/opt/eclipse/eclipse -data workspace_idde -perspective com.ibm.java.diagnostics.idde.perspective\nPath=~/\nTerminal=false\n' >> /opt/eclipse/idde.desktop && \
+    sudo chmod a+x /opt/eclipse/idde.desktop && \
+    sudo ln -s /opt/eclipse/idde.desktop /opt/programs/
+
+# Remove the welcome screen. No obvious way to do this less dramatically.
+RUN sudo rm /opt/eclipse/plugins/org.eclipse.ui.intro*
 
 # Required after installing anything into Eclipse
 RUN sudo chmod -R a+w /opt/eclipse/configuration
