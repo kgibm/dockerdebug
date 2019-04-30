@@ -38,6 +38,7 @@ RUN for i in java javac jar javah javap javadoc javaws jconsole jdmpview keytool
       alternatives --auto $i; \
     done
 
+# Eclipse Memory Analyzer Tool (MAT)
 # https://www.eclipse.org/mat/
 RUN sudo mkdir /opt/mat/ && \
     sudo wget -q -O /opt/MemoryAnalyzer.zip $(curl -s https://www.eclipse.org/mat/downloads.php | grep "Linux (x86_64/GTK+) RCP" | sed 's/.*href="//g' | sed 's/".*//g' | sed 's/^http:/https:/g' | sed 's/$/\&r=1/g') && \
@@ -51,12 +52,15 @@ RUN sudo mkdir /opt/mat/ && \
       sudo ln -s /opt/mat/mat.desktop /opt/programs/ \
     )
 
-# Install DTFJ
+# IBM Diagnostic Tool Framework for Java (DTFJ)
+# https://www.ibm.com/support/knowledgecenter/en/SSYKE2_8.0.0/com.ibm.java.vm.80.doc/docs/dtfj.html
+# https://developer.ibm.com/javasdk/tools/
 RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.director \
                                  -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/dtfj/ \
                                  -installIU com.ibm.dtfj.feature.feature.group
 
-# Install IEMA
+# IBM Monitoring and Diagnostic Tools - Extensions for Memory Analyzer (IEMA)
+# https://developer.ibm.com/javasdk/tools/
 RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.director \
                                  -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/iema/ \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.cognosbi.feature.feature.group \
@@ -67,6 +71,7 @@ RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.d
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group
 
+# IBM HeapAnalyzer
 # https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=4544bafe-c7a2-455f-9d43-eb866ea60091
 RUN ( \
       sudo mkdir /opt/heapanalyzer/ && \
@@ -77,6 +82,7 @@ RUN ( \
       sudo ln -s /opt/heapanalyzer/ha.desktop /opt/programs/ \
     )
 
+# IBM Thread and Monitor Dump Analyzer (TMDA)
 # https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=2245aa39-fa5c-4475-b891-14c205f7333c
 RUN ( \
       sudo mkdir /opt/tmda/ && \
@@ -87,6 +93,7 @@ RUN ( \
       sudo ln -s /opt/tmda/tmda.desktop /opt/programs/ \
     )
 
+# IBM ClassLoader Analyzer
 # https://www.ibm.com/developerworks/community/groups/service/html/communitystart?communityUuid=a0a94b0d-38fe-4f4e-b2e6-4504b9d3f596
 RUN ( \
       sudo mkdir /opt/classloaderanalyzer/ && \
@@ -97,6 +104,7 @@ RUN ( \
       sudo ln -s /opt/classloaderanalyzer/cla.desktop /opt/programs/ \
     )
 
+# IBM Pattern Modeling and Analysis Tool for Java Garbage Collector (PMAT)
 # https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=22d56091-3a7b-4497-b36e-634b51838e11
 RUN ( \
       sudo mkdir /opt/pmat/ && \
@@ -107,12 +115,15 @@ RUN ( \
       sudo ln -s /opt/pmat/pmat.desktop /opt/programs/ \
     )
 
+# IBM Runtime Diagnostic Code Injection for the Java Platform (RDCI or Java Surgery)
 # https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=7d3dc078-131f-404c-8b4d-68b3b9ddd07a
 RUN ( \
       sudo mkdir /opt/surgery/ && \
       cd /opt/surgery/ && \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/surgery/surgery.jar \
     )
+
+# IBM Trace and Request Analyzer for WebSphere Application Server
 # https://www.ibm.com/developerworks/community/groups/service/html/communitystart?communityUuid=39153aad-6203-40ef-b239-e41243e27792
 RUN ( \
       sudo mkdir /opt/tracerequestanalyzer/ && \
@@ -123,6 +134,36 @@ RUN ( \
       sudo ln -s /opt/tracerequestanalyzer/tra.desktop /opt/programs/ \
     )
 
+# Eclipse >= Neon has some strange StackOverflowErrors with Health Center, so we install HC separately
+# on Eclipse Luna:
+# https://www.eclipse.org/downloads/packages/release/photon/r/eclipse-ide-java-ee-developers
+# https://www.eclipse.org/downloads/packages/release
+RUN sudo wget -q -O /opt/eclipse_old.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/SR2/eclipse-java-luna-SR2-linux-gtk-x86_64.tar.gz&r=1" && \
+    ( \
+      cd /opt/ && \
+      sudo tar xzf eclipse_old.tar.gz && \
+      sudo rm -f /opt/eclipse_old.tar.gz && \
+      sudo mv /opt/eclipse /opt/eclipse_old \
+    )
+
+# IBM Monitoring and Diagnostic Tools - Health Center
+# https://www.ibm.com/support/knowledgecenter/en/SS3KLZ/com.ibm.java.diagnostics.healthcenter.doc/homepage/plugin-homepage-hc.html
+# https://developer.ibm.com/javasdk/tools/
+RUN sudo /opt/eclipse_old/eclipse -nosplash -application org.eclipse.equinox.p2.director \
+                                  -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/healthcenter/ \
+                                  -installIU com.ibm.java.diagnostics.healthcenter.core.feature.feature.group \
+                                  -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group && \
+    sudo printf '[Desktop Entry]\nType=Application\nName=Health Center\nExec=/opt/eclipse_old/eclipse -data workspace_hc -perspective com.ibm.java.diagnostics.healthcenter.gui.perspective.status\nPath=~/\nTerminal=false\n' >> /opt/eclipse_old/hc.desktop && \
+    sudo chmod a+x /opt/eclipse_old/hc.desktop && \
+    sudo ln -s /opt/eclipse_old/hc.desktop /opt/programs/
+
+# Remove the welcome screen. No obvious way to do this less dramatically.
+RUN sudo rm -rf /opt/eclipse_old/plugins/org.eclipse.ui.intro*
+
+# Required after installing anything into Eclipse
+RUN sudo chmod -R a+w /opt/eclipse_old/configuration
+
+# Eclipse 2019-03
 # https://www.eclipse.org/downloads/packages/release/2019-03/r/eclipse-ide-enterprise-java-developers
 # https://help.eclipse.org/2019-03/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fruntime-options.html
 RUN sudo wget -q -O /opt/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2019-03/R/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz&r=1" && \
@@ -136,7 +177,9 @@ RUN sudo wget -q -O /opt/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz "https://
       sudo ln -s /opt/eclipse/eclipse.desktop /opt/programs/ \
     )
 
-# Install GCMV
+# IBM Monitoring and Diagnostic Tools - Garbage Collection and Memory Visualizer (GCMV)
+# https://www.ibm.com/support/knowledgecenter/en/SS3KLZ/com.ibm.java.diagnostics.visualizer.doc/homepage/plugin-homepage-gcmv.html
+# https://developer.ibm.com/javasdk/tools/
 RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
                               -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/gcmv/ \
                               -installIU com.ibm.java.diagnostics.visualizer.feature.feature.group && \
@@ -144,16 +187,9 @@ RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.dire
     sudo chmod a+x /opt/eclipse/gcmv.desktop && \
     sudo ln -s /opt/eclipse/gcmv.desktop /opt/programs/
 
-# Install Health Center
-RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
-                              -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/healthcenter/ \
-                              -installIU com.ibm.java.diagnostics.healthcenter.core.feature.feature.group \
-                              -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group && \
-    sudo printf '[Desktop Entry]\nType=Application\nName=Health Center\nExec=/opt/eclipse/eclipse -data workspace_hc -perspective com.ibm.java.diagnostics.healthcenter.gui.perspective.status\nPath=~/\nTerminal=false\n' >> /opt/eclipse/hc.desktop && \
-    sudo chmod a+x /opt/eclipse/hc.desktop && \
-    sudo ln -s /opt/eclipse/hc.desktop /opt/programs/
-
-# Install IDDE
+# IBM Monitoring and Diagnostic Tools - Interactive Diagnostic Data Explorer (IDDE)
+# https://www.ibm.com/support/knowledgecenter/en/SS3KLZ/com.ibm.java.diagnostics.idde.doc/homepage/plugin-homepage-idde.html
+# https://developer.ibm.com/javasdk/tools/
 RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
                               -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/idde/ \
                               -installIU com.ibm.java.diagnostics.idde.feature.feature.group \
