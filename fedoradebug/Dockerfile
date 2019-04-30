@@ -55,6 +55,7 @@ RUN dnf install -y \
       file-devel \
       firefox \
       ftp \
+      galculator \
       gcc \
       gcc-c++ \
       gdb \
@@ -131,6 +132,7 @@ RUN dnf install -y \
       wireshark \
       @xfce \
       xrdp \
+      xreader \
     && dnf debuginfo-install -y \
       glibc \
       kernel
@@ -394,6 +396,23 @@ RUN ( \
     )
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
+
+############################
+# Final user configuration #
+############################
+
+# Set the default PDF reader to xreader; otherwise, the default
+# becomes LibreOffice Draw which isn't a great PDF viewer.
+
+USER was
+RUN xdg-mime default xreader.desktop application/pdf
+
+USER root
+RUN xdg-mime default xreader.desktop application/pdf
+
+################
+# Finalization #
+################
 
 EXPOSE 22 3389 5901 5902
 
