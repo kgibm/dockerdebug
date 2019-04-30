@@ -130,7 +130,10 @@ RUN ( \
       cd /opt/ && \
       sudo git clone https://github.com/skliche/request-metrics-analyzer-next && \
       cd /opt/request-metrics-analyzer-next && \
-      sudo mvn -q clean install \
+      sudo mvn -q clean install && \
+      printf '[Desktop Entry]\nType=Application\nName=Request Metrics Analyzer\nExec=java -jar /opt/request-metrics-analyzer-next/target/analyzer-next-0.0.1-SNAPSHOT-jar-with-dependencies.jar\nPath=~/\nTerminal=false\n' | sudo tee rma.desktop && \
+      sudo chmod a+x rma.desktop && \
+      sudo ln -s /opt/request-metrics-analyzer-next/rma.desktop /opt/programs/ \
     )
 
 # https://www-01.ibm.com/support/docview.wss?uid=swg22010928
@@ -248,6 +251,9 @@ RUN ( \
       cd /opt/daytrader7 && \
       sudo gradle build \
     )
+# Tried to fix the NoSuchEJBException but this didn't help. Instead, we just ignore the warnings in daytrader7logging.xml below.
+#      sudo sed -i 's/\(private void updateMarketSummary() {\)/\1 try {/g' daytrader-ee7-ejb/src/main/java/com/ibm/websphere/samples/daytrader/ejb3/MarketSummarySingleton.java && \
+#      sudo sed -i 's/\(setMarketSummaryDataBean(new MarketSummaryDataBean(TSIA, openTSIA, totalVolume, topGainers, topLosers));\)/\1 } catch (Throwable tt) { }/g' daytrader-ee7-ejb/src/main/java/com/ibm/websphere/samples/daytrader/ejb3/MarketSummarySingleton.java && \
 
 # https://publib.boulder.ibm.com/httpserv/cookbook/
 RUN sudo mkdir /opt/cookbook && \
@@ -287,6 +293,8 @@ environment=\n\
     USER="mysql",\n\
 \n' | sudo tee mysqld.supervisord.conf
 
+# The webProfile feature pulls in the appSecurity feature and we don't want to enable that for DayTrader7
+# (it does support it but requires a lot of extra configuration).
 RUN sed -i '/.*webProfile.*/d' /config/server.xml
 
 # https://github.com/WASdev/sample.daytrader7/blob/master/daytrader-ee7-wlpcfg/servers/daytrader7Sample/server.xml
@@ -351,6 +359,12 @@ RUN printf '\n\
 		<properties.wasJms destinationRef="TradeStreamerTopic" destinationType="javax.jms.Topic"/>\n\
     </jmsActivationSpec>\n\
 </server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/daytrader.xml
+
+# https://openliberty.io/docs/ref/config/#logging.html
+RUN printf '\n\
+<server>\n\
+    <logging traceSpecification="*=info" maxFileSize="250" maxFiles="4" hideMessage="CNTR0333W,CNTR0019E,CWWJP9991W" />\n\
+</server>\n' > /config/configDropins/overrides/daytrader7logging.xml
 
 RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
 
