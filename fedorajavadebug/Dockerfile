@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorajavadebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it kgibm/fedorajavadebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedorajavadebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -22,21 +22,42 @@
 #     root: open vnc://localhost:5901
 #     was: open vnc://localhost:5902
 #     Use the password from remotepassword.txt
-#   Windows: Remote desktop to localhost and use the username of root or was
-#            and the password from remotepassword.txt
+#   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
 #
 
 FROM kgibm/fedoradebug
 
 LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
-COPY --from=ibmjava:8-sdk /opt/ibm/java /opt/ibm/java
+####################
+# Install IBM Java #
+####################
+
+# 8.0.5.35 creates dumps that MAT DTFJ can't read, so use 8.0.5.31 until that's fixed (TS002204896).
+#COPY --from=ibmjava:8-sdk /opt/ibm/java /opt/ibm/java
+
+RUN printf 'INSTALLER_UI=silent\n\
+USER_INSTALL_DIR=/opt/ibm/java/\n\
+LICENSE_ACCEPTED=TRUE' > /tmp/ibm-java.properties
+
+RUN wget -q -O /tmp/ibm-java-sdk-archive.bin http://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/8.0.5.31/linux/x86_64/ibm-java-sdk-8.0-5.31-x86_64-archive.bin && \
+    chmod a+x /tmp/ibm-java-sdk-archive.bin && \
+    /tmp/ibm-java-sdk-archive.bin -f /tmp/ibm-java.properties && \
+    rm -f /tmp/ibm-java-sdk-archive.bin /tmp/ibm-java.properties
+
+########################
+# Put IBM Java on PATH #
+########################
 
 # https://fedoraproject.org/wiki/Alternatives_system
 RUN for i in java javac jar javah javap javadoc javaws jconsole jdmpview keytool jdb ControlPanel; do \
       alternatives --install /usr/bin/$i $i /opt/ibm/java/bin/$i 99999999 --family ibmjava && \
       alternatives --auto $i; \
     done
+
+###############
+# Install MAT #
+###############
 
 # Eclipse Memory Analyzer Tool (MAT)
 # https://www.eclipse.org/mat/
@@ -70,6 +91,10 @@ RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.d
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.was.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group
+
+#################
+# Various Tools #
+#################
 
 # IBM HeapAnalyzer
 # https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=4544bafe-c7a2-455f-9d43-eb866ea60091
@@ -134,8 +159,12 @@ RUN ( \
       sudo ln -s /opt/tracerequestanalyzer/tra.desktop /opt/programs/ \
     )
 
-# Eclipse >= Neon has some strange StackOverflowErrors with Health Center, so we install HC separately
-# on Eclipse Luna:
+#########################
+# Install Health Center #
+#########################
+
+# Eclipse > Luna has some strange StackOverflowErrors with Health Center, so we install an old Eclipse
+# for HC separately.
 # https://www.eclipse.org/downloads/packages/release/photon/r/eclipse-ide-java-ee-developers
 # https://www.eclipse.org/downloads/packages/release
 RUN sudo wget -q -O /opt/eclipse_old.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/SR2/eclipse-java-luna-SR2-linux-gtk-x86_64.tar.gz&r=1" && \
@@ -162,6 +191,10 @@ RUN sudo rm -rf /opt/eclipse_old/plugins/org.eclipse.ui.intro*
 
 # Required after installing anything into Eclipse
 RUN sudo chmod -R a+w /opt/eclipse_old/configuration
+
+#########################
+# Install GCMV and IDDE #
+#########################
 
 # Eclipse 2019-03
 # https://www.eclipse.org/downloads/packages/release/2019-03/r/eclipse-ide-enterprise-java-developers
@@ -203,5 +236,9 @@ RUN sudo rm /opt/eclipse/plugins/org.eclipse.ui.intro*
 
 # Required after installing anything into Eclipse
 RUN sudo chmod -R a+w /opt/eclipse/configuration
+
+############
+# Finalize #
+############
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
