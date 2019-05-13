@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedoradebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it kgibm/fedoradebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedoradebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -22,8 +22,7 @@
 #     root: open vnc://localhost:5901
 #     was: open vnc://localhost:5902
 #     Use the password from remotepassword.txt
-#   Windows: Remote desktop to localhost and use the username of root or was
-#            and the password from remotepassword.txt
+#   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
 #
 
 FROM fedora:latest
