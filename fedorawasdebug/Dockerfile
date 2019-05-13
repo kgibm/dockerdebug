@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorawasdebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 3389:3389 -p 5901:5901 -p 5902:5902 -p 22:22 -it kgibm/fedorawasdebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -it kgibm/fedorawasdebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -22,8 +22,7 @@
 #     root: open vnc://localhost:5901
 #     was: open vnc://localhost:5902
 #     Use the password from remotepassword.txt
-#   Windows: Remote desktop to localhost and use the username of root or was
-#            and the password from remotepassword.txt
+#   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
 #
 
 FROM kgibm/fedorajavadebug
@@ -51,13 +50,11 @@ ENV LOG_DIR=/logs \
 
 # https://hub.docker.com/_/websphere-liberty
 # https://hub.docker.com/_/open-liberty
-
-# 19.0.0.3 has a bug installing adminCenter-1.0 so we use the latest beta
-#COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
-COPY --from=websphere-liberty:beta --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
-COPY --from=websphere-liberty:beta --chown=was:root /logs /logs
-#COPY --from=websphere-liberty:latest --chown=was:root /licenses /licenses
-COPY --from=websphere-liberty:beta --chown=was:root /etc/wlp /etc/wlp
+COPY --from=websphere-liberty:19.0.0.4-javaee8 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
+COPY --from=websphere-liberty:19.0.0.4-javaee8 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
+COPY --from=websphere-liberty:19.0.0.4-javaee8 --chown=was:root /logs /logs
+COPY --from=websphere-liberty:19.0.0.4-javaee8 --chown=was:root /licenses /licenses
+COPY --from=websphere-liberty:19.0.0.4-javaee8 --chown=was:root /etc/wlp /etc/wlp
 
 RUN ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     ln -s /opt/ibm/wlp/usr/servers/defaultServer /config && \
@@ -74,6 +71,13 @@ RANDFILE=/tmp/.rnd\n\
 JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/"\n\
 \n' >> /config/server.env
 
+# Run Liberty initialization script at startup:
+RUN printf '#!/bin/sh\n\
+if [ -e /opt/ibm/helpers/runtime/docker-server.sh ]; then\n\
+    /opt/ibm/helpers/runtime/docker-server.sh\n\
+fi\n\
+\n' > /extended_entrypoint.sh
+
 #############################
 # "Install" Traditional WAS #
 #############################
@@ -84,13 +88,6 @@ COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /work /work
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /licenses/
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /opt/IBM /opt/IBM
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /etc/websphere /etc/websphere
-
-# Run Liberty initialization script at startup:
-RUN printf '#!/bin/sh\n\
-if [ -e /opt/ibm/helpers/runtime/docker-server.sh ]; then\n\
-    /opt/ibm/helpers/runtime/docker-server.sh\n\
-fi\n\
-\n' > /extended_entrypoint.sh
 
 USER was
 
@@ -103,6 +100,10 @@ RUN sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_N
     sed -i 's/9080/9081/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
     sed -i 's/9443/9444/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
     sed -i "s/ps -C .*/pgrep -f 'WsServer ')/g" /work/start_server.sh
+
+#################
+# Various tools #
+#################
 
 # https://www-01.ibm.com/support/docview.wss?uid=swg21644180
 RUN ( \
@@ -259,9 +260,7 @@ RUN ( \
 RUN sudo mkdir /opt/cookbook && \
     sudo wget -q -O /opt/cookbook/WAS_Performance_Cookbook.pdf https://publib.boulder.ibm.com/httpserv/cookbook/WAS_Performance_Cookbook.pdf
 
-# DayTrader7 is JEE7, but install JEE8 in case another server is created that needs it
-RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense javaee-8.0 && \
-    mkdir -p /config/configDropins/overrides/
+RUN mkdir -p /config/configDropins/overrides/
 
 RUN cp /opt/daytrader7/daytrader-ee7/build/libs/daytrader-ee7.ear /config/dropins/
 
@@ -295,7 +294,8 @@ environment=\n\
 
 # The webProfile feature pulls in the appSecurity feature and we don't want to enable that for DayTrader7
 # (it does support it but requires a lot of extra configuration).
-RUN sed -i '/.*webProfile.*/d' /config/server.xml
+RUN sed -i '/.*webProfile.*/d' /config/server.xml; \
+    sed -i '/.*javaee.*/d' /config/server.xml
 
 # https://github.com/WASdev/sample.daytrader7/blob/master/daytrader-ee7-wlpcfg/servers/daytrader7Sample/server.xml
 RUN printf '\n\
