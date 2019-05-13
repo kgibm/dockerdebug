@@ -92,6 +92,10 @@ RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.d
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group
 
+# MAT requires the welcome screen plugin, so we can't remove this.
+# Remove the welcome screen. No obvious way to do this less dramatically.
+#RUN sudo rm -rf /opt/mat/plugins/org.eclipse.ui.intro*
+
 #################
 # Various Tools #
 #################
