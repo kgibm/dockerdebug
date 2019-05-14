@@ -92,9 +92,19 @@ RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.d
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group
 
-# MAT requires the welcome screen plugin, so we can't remove this.
-# Remove the welcome screen. No obvious way to do this less dramatically.
-#RUN sudo rm -rf /opt/mat/plugins/org.eclipse.ui.intro*
+# Disable MAT welcome screen
+RUN sudo mkdir -p /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
+    sudo chown -R was /home/was/workspace/ && \
+    sudo mkdir -p /root/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/
+
+RUN printf 'bytes_display=Smart\n\
+eclipse.preferences.version=1\n\
+hideGettingStartedWizard=false\n\
+hide_welcome_screen=true\n\
+' > /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs
+
+RUN sudo cp /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs /root/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
+    sudo chown root /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs
 
 #################
 # Various Tools #
