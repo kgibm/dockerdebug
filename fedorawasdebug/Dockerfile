@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorawasdebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -it kgibm/fedorawasdebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9445:9445 -it kgibm/fedorawasdebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -386,7 +386,39 @@ RUN ( \
       sudo mv *derby* derby \
     )
 
-EXPOSE 9080 9081 9443 9444
+RUN ( \
+      echo "Version 6" && \
+      cd /opt/ && \
+      sudo git clone https://github.com/kgibm/jni_web_hello_world && \
+      cd /opt/jni_web_hello_world && \
+      sudo mvn -q clean install && \
+      cd src/main/c/ && \
+      sudo gcc -g -shared -fPIC -o ../../../target/libNativeWrapper.so -I/opt/ibm/java/include/ -I/opt/ibm/java/include/linux/ com_example_NativeWrapper.c && \
+      /opt/ibm/wlp/bin/server create test && \
+      cp /opt/jni_web_hello_world/target/jni_web_hello_world.war /opt/ibm/wlp/usr/servers/test/dropins/ && \
+      printf '--' '-Djava.library.path=/opt/jni_web_hello_world/target/' > /opt/ibm/wlp/usr/servers/test/jvm.options && \
+      printf '<?xml version="1.0"?><server><featureManager><feature>webProfile-8.0</feature></featureManager><httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9082" httpsPort="9445" /></server>' > /opt/ibm/wlp/usr/servers/test/server.xml \
+    )
+
+RUN printf '\n\
+[program:liberty2]\n\
+command=/opt/ibm/wlp/bin/server start test\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+startretries=0\n\
+autorestart=false\n\
+priority=60\n\
+user=was\n\
+autostart=true\n\
+environment=\n\
+    HOME="/home/was",\n\
+    USER="was",\n\
+    LOG_DIR="/opt/ibm/wlp/usr/servers/test/logs/",\n\
+    WLP_OUTPUT_DIR="/opt/ibm/wlp/usr/servers/",\n\
+\n' | sudo tee liberty2.supervisord.conf
+
+EXPOSE 9080 9081 9082 9443 9444 9445
 
 # Required for supervisord
 USER root
