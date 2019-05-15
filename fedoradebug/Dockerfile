@@ -64,6 +64,7 @@ RUN dnf install -y \
       gradle \
       hostname \
       htop \
+      httpd \
       iftop \
       iotop \
       iperf \
