@@ -421,6 +421,14 @@ environment=\n\
     WLP_OUTPUT_DIR="/opt/ibm/wlp/usr/servers/",\n\
 \n' | sudo tee liberty2.supervisord.conf
 
+RUN sudo mkdir /opt/docs/
+
+COPY ["WebSphere Application Server Troubleshooting and Performance Lab on Docker.pdf", "/opt/docs/"]
+
+RUN mkdir -p /home/was/Desktop && \
+    chown was /home/was/Desktop && \
+    ln -s "/opt/docs/WebSphere Application Server Troubleshooting and Performance Lab on Docker.pdf" "/home/was/Desktop/"
+
 EXPOSE 9080 9081 9082 9443 9444 9445
 
 # Required for supervisord
