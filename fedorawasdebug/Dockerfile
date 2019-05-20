@@ -23,7 +23,9 @@
 #     was: open vnc://localhost:5902
 #     Use the password from remotepassword.txt
 #   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
-#
+# Tips:
+#   * To access the host filesystem from the container, add the following to docker run:
+#     Linux: -v /:/host/
 
 FROM kgibm/fedorajavadebug
 
@@ -387,7 +389,7 @@ RUN ( \
     )
 
 RUN ( \
-      echo "Version 6" && \
+      echo "Version 9" && \
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/jni_web_hello_world && \
       cd /opt/jni_web_hello_world && \
@@ -396,7 +398,8 @@ RUN ( \
       sudo gcc -g -shared -fPIC -o ../../../target/libNativeWrapper.so -I/opt/ibm/java/include/ -I/opt/ibm/java/include/linux/ com_example_NativeWrapper.c && \
       /opt/ibm/wlp/bin/server create test && \
       cp /opt/jni_web_hello_world/target/jni_web_hello_world.war /opt/ibm/wlp/usr/servers/test/dropins/ && \
-      printf '--' '-Djava.library.path=/opt/jni_web_hello_world/target/' > /opt/ibm/wlp/usr/servers/test/jvm.options && \
+      cp /opt/problemdetermination/swat.ear /opt/ibm/wlp/usr/servers/test/dropins/ && \
+      printf '--' '-Xmx2g\n-Djava.library.path=/opt/jni_web_hello_world/target/\n-DSUPPRESS_INVOKE_MESSAGES=true\n-DJAVA_SURGERY_JAR_FILE=/opt/surgery/surgery.jar\n-DLEAK_TO_LIST=true\n' > /opt/ibm/wlp/usr/servers/test/jvm.options && \
       printf '<?xml version="1.0"?><server><featureManager><feature>webProfile-8.0</feature></featureManager><httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9082" httpsPort="9445" /></server>' > /opt/ibm/wlp/usr/servers/test/server.xml \
     )
 

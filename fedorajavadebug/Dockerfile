@@ -97,6 +97,9 @@ RUN sudo mkdir -p /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtim
     sudo chown -R was /home/was/workspace/ && \
     sudo mkdir -p /root/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/
 
+# Increase the default max heap size
+RUN sudo sed -i 's/-Xmx1024m/-Xmx4g/g' /opt/mat/MemoryAnalyzer.ini
+
 RUN printf 'bytes_display=Smart\n\
 eclipse.preferences.version=1\n\
 hideGettingStartedWizard=false\n\
