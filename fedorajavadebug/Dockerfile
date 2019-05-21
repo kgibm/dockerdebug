@@ -267,6 +267,66 @@ RUN sudo rm /opt/eclipse/plugins/org.eclipse.ui.intro*
 # Required after installing anything into Eclipse
 RUN sudo chmod -R a+w /opt/eclipse/configuration
 
+############################
+# OpenJDK + HotSpot/OpenJ9 #
+############################
+
+# https://adoptopenjdk.net/
+
+# https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=openj9#x64_linux
+RUN ( \
+      sudo mkdir /opt/openjdk8_openj9/ && \
+      sudo wget -q -O /opt/openjdk8_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b03_openj9-0.14.0/OpenJDK8U-jdk_x64_linux_openj9_8u212b03_openj9-0.14.0.tar.gz && \
+      cd /opt/openjdk8_openj9/ && \
+      sudo tar xzf /opt/openjdk8_openj9/openj9.tar.gz && \
+      sudo mv jdk* jdk \
+    )
+
+# https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_linux
+RUN ( \
+      sudo mkdir /opt/openjdk8_hotspot/ && \
+      sudo wget -q -O /opt/openjdk8_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b03/OpenJDK8U-jdk_x64_linux_hotspot_8u212b03.tar.gz && \
+      cd /opt/openjdk8_hotspot/ && \
+      sudo tar xzf /opt/openjdk8_hotspot/hotspot.tar.gz && \
+      sudo mv jdk* jdk \
+    )
+
+# https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=openj9#x64_linux
+RUN ( \
+      sudo mkdir /opt/openjdk11_openj9/ && \
+      sudo wget -q -O /opt/openjdk11_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7_openj9-0.14.0/OpenJDK11U-jdk_x64_linux_openj9_11.0.3_7_openj9-0.14.0.tar.gz && \
+      cd /opt/openjdk11_openj9/ && \
+      sudo tar xzf /opt/openjdk11_openj9/openj9.tar.gz && \
+      sudo mv jdk* jdk \
+    )
+
+# https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=hotspot#x64_linux
+RUN ( \
+      sudo mkdir /opt/openjdk11_hotspot/ && \
+      sudo wget -q -O /opt/openjdk11_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz && \
+      cd /opt/openjdk11_hotspot/ && \
+      sudo tar xzf /opt/openjdk11_hotspot/hotspot.tar.gz && \
+      sudo mv jdk* jdk \
+    )
+
+# https://adoptopenjdk.net/releases.html?variant=openjdk12&jvmVariant=openj9#x64_linux
+RUN ( \
+      sudo mkdir /opt/openjdk12_openj9/ && \
+      sudo wget -q -O /opt/openjdk12_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12.0.1%2B12_openj9-0.14.1/OpenJDK12U-jdk_x64_linux_openj9_12.0.1_12_openj9-0.14.1.tar.gz && \
+      cd /opt/openjdk12_openj9/ && \
+      sudo tar xzf /opt/openjdk12_openj9/openj9.tar.gz && \
+      sudo mv jdk* jdk \
+    )
+
+# https://adoptopenjdk.net/releases.html?variant=openjdk12&jvmVariant=hotspot#x64_linux
+RUN ( \
+      sudo mkdir /opt/openjdk12_hotspot/ && \
+      sudo wget -q -O /opt/openjdk12_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12.0.1%2B12/OpenJDK12U-jdk_x64_linux_hotspot_12.0.1_12.tar.gz && \
+      cd /opt/openjdk12_hotspot/ && \
+      sudo tar xzf /opt/openjdk12_hotspot/hotspot.tar.gz && \
+      sudo mv jdk* jdk \
+    )
+
 ############
 # Finalize #
 ############
