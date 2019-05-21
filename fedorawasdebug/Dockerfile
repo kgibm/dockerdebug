@@ -24,8 +24,9 @@
 #     Use the password from remotepassword.txt
 #   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
 # Tips:
-#   * To access the host filesystem from the container, add the following to docker run:
-#     Linux: -v /:/host/
+#   * To access the host filesystem from the container (and vice versa), add the following to docker run:
+#     Linux/macOS: -v /:/host/
+#     Windows: -v //c/:/host/
 
 FROM kgibm/fedorajavadebug
 

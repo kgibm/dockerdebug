@@ -23,7 +23,10 @@
 #     was: open vnc://localhost:5902
 #     Use the password from remotepassword.txt
 #   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
-#
+# Tips:
+#   * To access the host filesystem from the container (and vice versa), add the following to docker run:
+#     Linux/macOS: -v /:/host/
+#     Windows: -v //c/:/host/
 
 FROM fedora:latest
 
@@ -163,6 +166,7 @@ sudo chown -R was:root /home/was/ || exit 1\n\
 
 # Change the default of sudo to use -E and pass all environment variables
 RUN mkdir /root/.vnc && \
+    mkdir /root/Desktop && \
     echo "startxfce4" > /root/.Xclients && \
     chmod +x /root/.Xclients && \
     sed -i '/TerminalServerUsers/d' /etc/xrdp/sesman.ini && \
@@ -170,6 +174,7 @@ RUN mkdir /root/.vnc && \
     adduser -u 1001 -r -g 0 -m was && \
     usermod -a -G wheel was && \
     mkdir /home/was/.vnc && \
+    mkdir /home/was/Desktop && \
     echo "startxfce4" > /home/was/.Xclients && \
     chmod +x /home/was/.Xclients && \
     sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers && \
@@ -369,7 +374,8 @@ RUN ( \
       sudo mv NMONVisualizer*.jar NMONVisualizer.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=NMON Visualizer\nExec=java -jar /opt/nmonvisualizer/NMONVisualizer.jar\nPath=~/\nTerminal=false\n' >> nmonvisualizer.desktop && \
       sudo chmod a+x nmonvisualizer.desktop && \
-      sudo ln -s /opt/nmonvisualizer/nmonvisualizer.desktop /opt/programs/ \
+      sudo ln -s /opt/nmonvisualizer/nmonvisualizer.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/nmonvisualizer.desktop /home/was/Desktop/ \
     )
 
 # http://www-01.ibm.com/support/docview.wss?uid=swg21115785
@@ -391,6 +397,7 @@ RUN ( \
       sudo printf '[Desktop Entry]\nType=Application\nName=JMeter\nExec=/opt/apache-jmeter/bin/jmeter\nPath=~/\nTerminal=false\n' >> jmeter.desktop && \
       sudo chmod a+x jmeter.desktop && \
       sudo ln -s /opt/apache-jmeter/jmeter.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/jmeter.desktop /home/was/Desktop/ && \
       cd /opt/apache-jmeter/lib/ext && \
       sudo wget -q https://bitbucket.org/pjtr/jmeter-websocket-samplers/downloads/JMeterWebSocketSamplers-1.2.1.jar \
     )
