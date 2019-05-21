@@ -73,7 +73,8 @@ RUN sudo mkdir /opt/mat/ && \
       cd /opt/mat && \
       sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=/opt/mat/MemoryAnalyzer\nPath=~/\nTerminal=false\n' >> mat.desktop && \
       sudo chmod a+x mat.desktop && \
-      sudo ln -s /opt/mat/mat.desktop /opt/programs/ \
+      sudo ln -s /opt/mat/mat.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/mat.desktop /home/was/Desktop/ \
     )
 
 # IBM Diagnostic Tool Framework for Java (DTFJ)
@@ -124,7 +125,8 @@ RUN ( \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha456.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=Heap Analyzer\nExec=java -jar /opt/heapanalyzer/ha456.jar\nPath=~/\nTerminal=false\n' >> ha.desktop && \
       sudo chmod a+x ha.desktop && \
-      sudo ln -s /opt/heapanalyzer/ha.desktop /opt/programs/ \
+      sudo ln -s /opt/heapanalyzer/ha.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/ha.desktop /home/was/Desktop/ \
     )
 
 # IBM Thread and Monitor Dump Analyzer (TMDA)
@@ -135,7 +137,8 @@ RUN ( \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca463.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca463.jar\nPath=~/\nTerminal=false\n' >> tmda.desktop && \
       sudo chmod a+x tmda.desktop && \
-      sudo ln -s /opt/tmda/tmda.desktop /opt/programs/ \
+      sudo ln -s /opt/tmda/tmda.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/tmda.desktop /home/was/Desktop/ \
     )
 
 # IBM ClassLoader Analyzer
@@ -146,7 +149,8 @@ RUN ( \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/ica/ica107.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=Classloader Analyzer\nExec=java -jar /opt/classloaderanalyzer/ica107.jar\nPath=~/\nTerminal=false\n' >> cla.desktop && \
       sudo chmod a+x cla.desktop && \
-      sudo ln -s /opt/classloaderanalyzer/cla.desktop /opt/programs/ \
+      sudo ln -s /opt/classloaderanalyzer/cla.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/cla.desktop /home/was/Desktop/ \
     )
 
 # IBM Pattern Modeling and Analysis Tool for Java Garbage Collector (PMAT)
@@ -157,7 +161,8 @@ RUN ( \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/pmat/ga458.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=PMAT\nExec=java -jar /opt/pmat/ga458.jar\nPath=~/\nTerminal=false\n' >> pmat.desktop && \
       sudo chmod a+x pmat.desktop && \
-      sudo ln -s /opt/pmat/pmat.desktop /opt/programs/ \
+      sudo ln -s /opt/pmat/pmat.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/pmat.desktop /home/was/Desktop/ \
     )
 
 # IBM Runtime Diagnostic Code Injection for the Java Platform (RDCI or Java Surgery)
@@ -176,7 +181,8 @@ RUN ( \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/tra/tra303.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=Trace and Request Analyzer\nExec=java -jar /opt/tracerequestanalyzer/tra303.jar\nPath=~/\nTerminal=false\n' >> tra.desktop && \
       sudo chmod a+x tra.desktop && \
-      sudo ln -s /opt/tracerequestanalyzer/tra.desktop /opt/programs/ \
+      sudo ln -s /opt/tracerequestanalyzer/tra.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/tra.desktop /home/was/Desktop/ \
     )
 
 #########################
@@ -204,7 +210,8 @@ RUN sudo /opt/eclipse_old/eclipse -nosplash -application org.eclipse.equinox.p2.
                                   -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group && \
     sudo printf '[Desktop Entry]\nType=Application\nName=Health Center\nExec=/opt/eclipse_old/eclipse -data workspace_hc -perspective com.ibm.java.diagnostics.healthcenter.gui.perspective.status\nPath=~/\nTerminal=false\n' >> /opt/eclipse_old/hc.desktop && \
     sudo chmod a+x /opt/eclipse_old/hc.desktop && \
-    sudo ln -s /opt/eclipse_old/hc.desktop /opt/programs/
+    sudo ln -s /opt/eclipse_old/hc.desktop /opt/programs/ && \
+    sudo ln -s /opt/programs/hc.desktop /home/was/Desktop/
 
 # Remove the welcome screen. No obvious way to do this less dramatically.
 RUN sudo rm -rf /opt/eclipse_old/plugins/org.eclipse.ui.intro*
@@ -227,7 +234,8 @@ RUN sudo wget -q -O /opt/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz "https://
       cd /opt/eclipse && \
       sudo printf '[Desktop Entry]\nType=Application\nName=Eclipse\nExec=/opt/eclipse/eclipse -data workspace\nPath=~/\nTerminal=false\n' >> eclipse.desktop && \
       sudo chmod a+x eclipse.desktop && \
-      sudo ln -s /opt/eclipse/eclipse.desktop /opt/programs/ \
+      sudo ln -s /opt/eclipse/eclipse.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/eclipse.desktop /home/was/Desktop/ \
     )
 
 # IBM Monitoring and Diagnostic Tools - Garbage Collection and Memory Visualizer (GCMV)
@@ -238,7 +246,8 @@ RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.dire
                               -installIU com.ibm.java.diagnostics.visualizer.feature.feature.group && \
     sudo printf '[Desktop Entry]\nType=Application\nName=GCMV\nExec=/opt/eclipse/eclipse -data workspace_gcmv -perspective com.ibm.java.diagnostics.visualizer.gui.perspective\nPath=~/\nTerminal=false\n' >> /opt/eclipse/gcmv.desktop && \
     sudo chmod a+x /opt/eclipse/gcmv.desktop && \
-    sudo ln -s /opt/eclipse/gcmv.desktop /opt/programs/
+    sudo ln -s /opt/eclipse/gcmv.desktop /opt/programs/ && \
+    sudo ln -s /opt/programs/gcmv.desktop /home/was/Desktop/
 
 # IBM Monitoring and Diagnostic Tools - Interactive Diagnostic Data Explorer (IDDE)
 # https://www.ibm.com/support/knowledgecenter/en/SS3KLZ/com.ibm.java.diagnostics.idde.doc/homepage/plugin-homepage-idde.html
@@ -249,7 +258,8 @@ RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.dire
                               -installIU com.ibm.java.diagnostics.idde.extensions.feature.feature.group && \
     sudo printf '[Desktop Entry]\nType=Application\nName=IDDE\nExec=/opt/eclipse/eclipse -data workspace_idde -perspective com.ibm.java.diagnostics.idde.perspective\nPath=~/\nTerminal=false\n' >> /opt/eclipse/idde.desktop && \
     sudo chmod a+x /opt/eclipse/idde.desktop && \
-    sudo ln -s /opt/eclipse/idde.desktop /opt/programs/
+    sudo ln -s /opt/eclipse/idde.desktop /opt/programs/ && \
+    sudo ln -s /opt/programs/idde.desktop /home/was/Desktop/
 
 # Remove the welcome screen. No obvious way to do this less dramatically.
 RUN sudo rm /opt/eclipse/plugins/org.eclipse.ui.intro*
