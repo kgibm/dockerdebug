@@ -111,6 +111,7 @@ RUN dnf install -y \
       python3-pip \
       python3-scipy \
       python3-statsmodels \
+      qt5 \
       R \
       R-devel \
       rsyslog \
@@ -407,6 +408,24 @@ RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets
 ############################
 # Final user configuration #
 ############################
+
+RUN sudo chmod a+x /usr/share/applications/firefox.desktop && \
+    sudo ln -s /usr/share/applications/firefox.desktop /home/was/Desktop/ && \
+    sudo chmod a+x /usr/share/applications/mousepad.desktop && \
+    sudo ln -s /usr/share/applications/mousepad.desktop /home/was/Desktop/ && \
+    sudo chmod a+x /usr/share/applications/wireshark.desktop && \
+    sudo ln -s /usr/share/applications/wireshark.desktop /home/was/Desktop/ && \
+    sudo chmod a+x /usr/share/applications/galculator.desktop && \
+    sudo ln -s /usr/share/applications/galculator.desktop /home/was/Desktop/ && \
+    sudo chmod a+x /usr/share/applications/libreoffice-calc.desktop && \
+    sudo ln -s /usr/share/applications/libreoffice-calc.desktop /home/was/Desktop/ && \
+    sudo chmod a+x /usr/share/applications/libreoffice-writer.desktop && \
+    sudo ln -s /usr/share/applications/libreoffice-writer.desktop /home/was/Desktop/
+
+# Strange error trying to launch Wireshark:
+# error while loading shared libraries: libQt5Core.so.5: cannot open shared object file: No such file or directory
+# https://superuser.com/questions/1347723/
+RUN sudo strip --remove-section=.note.ABI-tag /usr/lib64/libQt5Core.so.5
 
 # Set the default PDF reader to xreader; otherwise, the default
 # becomes LibreOffice Draw which isn't a great PDF viewer.

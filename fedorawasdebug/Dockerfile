@@ -137,7 +137,8 @@ RUN ( \
       sudo mvn -q clean install && \
       printf '[Desktop Entry]\nType=Application\nName=Request Metrics Analyzer\nExec=java -jar /opt/request-metrics-analyzer-next/target/analyzer-next-0.0.1-SNAPSHOT-jar-with-dependencies.jar\nPath=~/\nTerminal=false\n' | sudo tee rma.desktop && \
       sudo chmod a+x rma.desktop && \
-      sudo ln -s /opt/request-metrics-analyzer-next/rma.desktop /opt/programs/ \
+      sudo ln -s /opt/request-metrics-analyzer-next/rma.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/rma.desktop /home/was/Desktop/ \
     )
 
 # https://www-01.ibm.com/support/docview.wss?uid=swg22010928
@@ -261,7 +262,8 @@ RUN ( \
 
 # https://publib.boulder.ibm.com/httpserv/cookbook/
 RUN sudo mkdir /opt/cookbook && \
-    sudo wget -q -O /opt/cookbook/WAS_Performance_Cookbook.pdf https://publib.boulder.ibm.com/httpserv/cookbook/WAS_Performance_Cookbook.pdf
+    sudo wget -q -O /opt/cookbook/WAS_Performance_Cookbook.pdf https://publib.boulder.ibm.com/httpserv/cookbook/WAS_Performance_Cookbook.pdf && \
+    sudo ln -s /opt/cookbook/WAS_Performance_Cookbook.pdf /home/was/Desktop/
 
 RUN mkdir -p /config/configDropins/overrides/
 
