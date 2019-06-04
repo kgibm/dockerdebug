@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorajavadebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedorajavadebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedorajavadebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -327,8 +327,17 @@ RUN ( \
       sudo mv jdk* jdk \
     )
 
+# https://github.com/kgibm/java_miscellaneous
+RUN ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/kgibm/java_miscellaneous \
+    )
+
 ############
 # Finalize #
 ############
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
+
+# Last statement must be switching to root for supervisord
+USER root

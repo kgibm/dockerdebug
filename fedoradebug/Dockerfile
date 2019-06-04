@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedoradebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedoradebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedoradebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -54,6 +54,7 @@ RUN dnf install -y \
       collectl \
       dnf-plugins-core \
       e2fsprogs \
+      emacs \
       file-devel \
       firefox \
       ftp \
@@ -64,6 +65,7 @@ RUN dnf install -y \
       git \
       gnupg \
       gnuplot \
+      golang \
       gradle \
       hostname \
       htop \
@@ -75,9 +77,11 @@ RUN dnf install -y \
       java-1.8.0-openjdk \
       java-1.8.0-openjdk-devel \
       kernel-devel \
+      kernel-headers \
       kexec-tools \
       less \
       libreoffice \
+      llvm \
       lsof \
       lzo \
       lzo-devel \
@@ -97,12 +101,14 @@ RUN dnf install -y \
       nfs-utils \
       nmap-ncat \
       nmon \
+      npm \
       ntp \
       openldap-clients \
       openssh-server \
       patch \
       perf \
       perl \
+      php \
       python3 \
       python3-devel \
       python3-matplotlib \
@@ -116,6 +122,11 @@ RUN dnf install -y \
       R-devel \
       rsyslog \
       ruby \
+      ruby-devel \
+      rubygem-mysql2 \
+      rubygem-rails \
+      rust \
+      scala \
       sendmail \
       speedtest-cli \
       sysstat \
@@ -403,12 +414,32 @@ RUN ( \
       sudo wget -q https://bitbucket.org/pjtr/jmeter-websocket-samplers/downloads/JMeterWebSocketSamplers-1.2.1.jar \
     )
 
+# https://github.com/iovisor/bcc
+# https://github.com/iovisor/bcc/issues/281
+# https://github.com/iovisor/bcc/pull/279/commits/c48f9d9c3d438e839eb2bfe0a2ed1a321b4e946d
+# Some kernels don't have CONFIG_TRACING=y CONFIG_EVENT_TRACING=y, so memleak.py won't work:
+# https://github.com/iovisor/bcc/issues/1530
+RUN ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/iovisor/bcc \
+    )
+
+# Install some Node basics
+RUN sudo npm install express --save
+
+# Some Docker hosts run a different kernel than what gets installed above. The following hack
+# won't always work but it might for some cases (e.g. bcc).
+# Useless anyway without CONFIG_TRACING, so don't bother with the hack.
+# See https://github.com/iovisor/bcc/issues/1000
+#RUN [ ! -d "/lib/modules/$(uname -r)" ] && sudo ln -s /lib/modules/* "/lib/modules/$(uname -r)"
+
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
 ############################
 # Final user configuration #
 ############################
 
+# root's Desktop cannot take links (it doesn't work in this image seemingly because of some D-Bus/XFCE issue)
 RUN sudo chmod a+x /usr/share/applications/firefox.desktop && \
     sudo ln -s /usr/share/applications/firefox.desktop /home/was/Desktop/ && \
     sudo chmod a+x /usr/share/applications/mousepad.desktop && \
@@ -427,6 +458,10 @@ RUN sudo chmod a+x /usr/share/applications/firefox.desktop && \
 # https://superuser.com/questions/1347723/
 RUN sudo strip --remove-section=.note.ABI-tag /usr/lib64/libQt5Core.so.5
 
+# Allow the was user to perform Wireshark captures:
+# This doesn't seem to actually work; instead, use command line tcpdump. Leaving here for completeness.
+RUN sudo usermod -a -G wireshark was
+
 # Set the default PDF reader to xreader; otherwise, the default
 # becomes LibreOffice Draw which isn't a great PDF viewer.
 
@@ -441,5 +476,8 @@ RUN xdg-mime default xreader.desktop application/pdf
 ################
 
 EXPOSE 22 3389 5901 5902
+
+# Last statement must be switching to root for supervisord
+USER root
 
 ENTRYPOINT ["/entrypoint.sh"]
