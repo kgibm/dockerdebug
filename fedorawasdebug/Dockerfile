@@ -438,6 +438,7 @@ RUN ( \
 
 # https://github.com/OpenLiberty/liberty-bikes
 # We want WebSphere Liberty features like adminCenter so we replace libertyRuntime
+# https://mvnrepository.com/artifact/com.ibm.websphere.appserver.runtime
 RUN ( \
       cd /home/was/ && \
       git clone https://github.com/OpenLiberty/liberty-bikes && \
