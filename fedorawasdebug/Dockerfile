@@ -452,6 +452,10 @@ RUN ( \
       printf '<server><featureManager><feature>ssl-1.0</feature></featureManager></server>' > build/wlp/usr/servers/frontendServer/configDropins/overrides/ssl.xml \
     )
 
+RUN ( \
+      cp /opt/problemdetermination/swat.ear /home/was/liberty-bikes/build/wlp/usr/servers/frontendServer/dropins/ \
+    )
+
 # This should be the last real command because it's the most likely file to get a minor update.
 COPY ["WebSphere Application Server Troubleshooting and Performance Lab on Docker.pdf", "/opt/docs/"]
 
