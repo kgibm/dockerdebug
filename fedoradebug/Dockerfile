@@ -132,7 +132,6 @@ RUN dnf install -y \
       sysstat \
       strace \
       sudo \
-      supervisor \
       systemtap \
       tc \
       tcpdump \
@@ -151,6 +150,9 @@ RUN dnf install -y \
     && dnf debuginfo-install -y \
       glibc \
       kernel
+
+# Explicitly install a newer version supervisor because of https://github.com/Supervisor/supervisor/issues/1224
+RUN sudo pip3 install supervisor==4.0.1
 
 ###############################################
 # Create the script that can update passwords #
@@ -176,6 +178,9 @@ sudo chown -R was:root /home/was/ || exit 1\n\
 # Configure VNC, XRDP, and the users #
 ######################################
 
+# For Remote Desktop issues with Java Swing rendering, use xserverbpp=24:
+# https://stackoverflow.com/a/37428300/1293660
+
 # Change the default of sudo to use -E and pass all environment variables
 RUN mkdir /root/.vnc && \
     mkdir /root/Desktop && \
@@ -191,7 +196,9 @@ RUN mkdir /root/.vnc && \
     chmod +x /home/was/.Xclients && \
     sed -i 's/^%wheel.*/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers && \
     sed -i 's/^\(Defaults.*env_reset\)/#\1/g' /etc/sudoers && \
-    mkdir /opt/programs/
+    mkdir /opt/programs/ && \
+    sed -i 's/#xserverbpp=24/xserverbpp=24/g' /etc/xrdp/xrdp.ini && \
+    sed -i 's/code=20/code=20\nxserverbpp=24/g' /etc/xrdp/xrdp.ini
 
 RUN printf '#!/bin/sh\n\
 unset SESSION_MANAGER\n\
@@ -319,6 +326,8 @@ environment=\n\
     USER="was",\n\
 \n' | sudo tee debugsupervisord.supervisord.conf
 
+RUN sudo mkdir -p /var/run/supervisor/
+
 # If a CMD is specified or a program through `docker run`,
 # then start supervisord in the background and run the CMD.
 # Otherwise (the default), run supervisord in the foreground.
@@ -335,17 +344,17 @@ if [ -e /extended_entrypoint.sh ]; then\n\
 fi\n\
 \n\
 if [ "$#" -gt 0 ]; then\n\
-  /usr/bin/supervisord -c supervisord.conf &> /supervisord.log || exit 1 &\n\
+  /usr/local/bin/supervisord -c supervisord.conf &> /supervisord.log || exit 1 &\n\
   exec "$@" || exit 1\n\
 else\n\
-  /usr/bin/supervisord -n -c supervisord.conf || exit 1\n\
+  /usr/local/bin/supervisord -n -c supervisord.conf || exit 1\n\
 fi\n\
 \n\
 #Old code when CMD was added as a supervised program\n\
 #if [ "$#" -gt 0 ]; then\n\
 #  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" | tee cmd.supervisord.conf > /dev/null\n\
 #fi\n\
-#/usr/bin/supervisord -n -c supervisord.conf || exit 1\n\
+#/usr/local/bin/supervisord -n -c supervisord.conf || exit 1\n\
 \n'\
 >> /entrypoint.sh && chmod a+rx /entrypoint.sh
 
