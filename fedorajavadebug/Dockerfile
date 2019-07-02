@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorajavadebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedorajavadebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedorajavadebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -36,17 +36,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 # Install IBM Java #
 ####################
 
-# 8.0.5.35 creates dumps that MAT DTFJ can't read, so use 8.0.5.31 until that's fixed (TS002204896).
-#COPY --from=ibmjava:8-sdk /opt/ibm/java /opt/ibm/java
-
-RUN printf 'INSTALLER_UI=silent\n\
-USER_INSTALL_DIR=/opt/ibm/java/\n\
-LICENSE_ACCEPTED=TRUE' > /tmp/ibm-java.properties
-
-RUN wget -q -O /tmp/ibm-java-sdk-archive.bin http://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/8.0.5.31/linux/x86_64/ibm-java-sdk-8.0-5.31-x86_64-archive.bin && \
-    chmod a+x /tmp/ibm-java-sdk-archive.bin && \
-    /tmp/ibm-java-sdk-archive.bin -f /tmp/ibm-java.properties && \
-    rm -f /tmp/ibm-java-sdk-archive.bin /tmp/ibm-java.properties
+COPY --from=ibmjava:8-sdk /opt/ibm/java /opt/ibm/java
 
 ########################
 # Put IBM Java on PATH #
@@ -96,13 +86,27 @@ RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.d
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group
 
+# IBM Java >= 8.0.5.35 creates dumps that the public MAT DTFJ can't read yet, so use the JDK's DTFJ until that's fixed (TS002204896).
+# For some reason, using 8.0.5.37 JARs doesn't work, so we use 8.0.5.35:
+RUN printf 'INSTALLER_UI=silent\n\
+USER_INSTALL_DIR=/opt/ibm/olderjava/8.0.5.35/\n\
+LICENSE_ACCEPTED=TRUE' > /tmp/ibm-java.properties
+
+RUN wget -q -O /tmp/ibm-java-sdk-archive.bin http://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/8.0.5.35/linux/x86_64/ibm-java-sdk-8.0-5.35-x86_64-archive.bin && \
+    chmod a+x /tmp/ibm-java-sdk-archive.bin && \
+    /tmp/ibm-java-sdk-archive.bin -f /tmp/ibm-java.properties && \
+    rm -f /tmp/ibm-java-sdk-archive.bin /tmp/ibm-java.properties && \
+    sudo cp -f /opt/ibm/olderjava/8.0.5.35/jre/lib/ddr/j9ddr.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/j9ddr.jar && \
+    sudo cp -f /opt/ibm/olderjava/8.0.5.35/jre/lib/ext/dtfj.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/dtfj.jar && \
+    sudo sed -i 's/-vmargs/-vm\n\/opt\/ibm\/olderjava\/8.0.5.35\/bin\/\n-vmargs\n-Dosgi.clean=true/g' /opt/mat/MemoryAnalyzer.ini
+
 # Disable MAT welcome screen
 RUN sudo mkdir -p /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
     sudo chown -R was /home/was/workspace/ && \
     sudo mkdir -p /root/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/
 
 # Increase the default max heap size
-RUN sudo sed -i 's/-Xmx1024m/-Xmx4g/g' /opt/mat/MemoryAnalyzer.ini
+RUN sudo sed -i 's/-Xmx1024m/-Xmx2g/g' /opt/mat/MemoryAnalyzer.ini
 
 RUN printf 'bytes_display=Smart\n\
 eclipse.preferences.version=1\n\
@@ -273,10 +277,14 @@ RUN sudo chmod -R a+w /opt/eclipse/configuration
 
 # https://adoptopenjdk.net/
 
+# There is no "latest" link for the following builds, so we have to check each page and update
+# with the latest links.
+# Last updated: 2019-07-01
+
 # https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=openj9#x64_linux
 RUN ( \
       sudo mkdir /opt/openjdk8_openj9/ && \
-      sudo wget -q -O /opt/openjdk8_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b03_openj9-0.14.0/OpenJDK8U-jdk_x64_linux_openj9_8u212b03_openj9-0.14.0.tar.gz && \
+      sudo wget -q -O /opt/openjdk8_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b04_openj9-0.14.2/OpenJDK8U-jdk_x64_linux_openj9_8u212b04_openj9-0.14.2.tar.gz && \
       cd /opt/openjdk8_openj9/ && \
       sudo tar xzf /opt/openjdk8_openj9/openj9.tar.gz && \
       sudo mv jdk* jdk \
@@ -285,7 +293,7 @@ RUN ( \
 # https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_linux
 RUN ( \
       sudo mkdir /opt/openjdk8_hotspot/ && \
-      sudo wget -q -O /opt/openjdk8_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b03/OpenJDK8U-jdk_x64_linux_hotspot_8u212b03.tar.gz && \
+      sudo wget -q -O /opt/openjdk8_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b04/OpenJDK8U-jdk_x64_linux_hotspot_8u212b04.tar.gz && \
       cd /opt/openjdk8_hotspot/ && \
       sudo tar xzf /opt/openjdk8_hotspot/hotspot.tar.gz && \
       sudo mv jdk* jdk \
@@ -294,7 +302,7 @@ RUN ( \
 # https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=openj9#x64_linux
 RUN ( \
       sudo mkdir /opt/openjdk11_openj9/ && \
-      sudo wget -q -O /opt/openjdk11_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7_openj9-0.14.0/OpenJDK11U-jdk_x64_linux_openj9_11.0.3_7_openj9-0.14.0.tar.gz && \
+      sudo wget -q -O /opt/openjdk11_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7_openj9-0.14.3/OpenJDK11U-jdk_x64_linux_openj9_11.0.3_7_openj9-0.14.3.tar.gz && \
       cd /opt/openjdk11_openj9/ && \
       sudo tar xzf /opt/openjdk11_openj9/openj9.tar.gz && \
       sudo mv jdk* jdk \
@@ -331,6 +339,12 @@ RUN ( \
 RUN ( \
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/java_miscellaneous \
+    )
+
+# https://github.com/kgibm/SimulateJavaOOM
+RUN ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/kgibm/SimulateJavaOOM \
     )
 
 ############
