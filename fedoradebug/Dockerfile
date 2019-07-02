@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedoradebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedoradebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedoradebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -150,6 +150,9 @@ RUN dnf install -y \
     && dnf debuginfo-install -y \
       glibc \
       kernel
+
+# Firefox crashes switching tabs with SIGBUS errors unless we use docker run --shm-size=...
+# https://bugzilla.mozilla.org/show_bug.cgi?id=1338771
 
 # Explicitly install a newer version supervisor because of https://github.com/Supervisor/supervisor/issues/1224
 RUN sudo pip3 install supervisor==4.0.1
