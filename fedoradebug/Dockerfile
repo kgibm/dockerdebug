@@ -81,6 +81,7 @@ RUN dnf install -y \
       kexec-tools \
       less \
       libreoffice \
+      libxcrypt-compat \
       llvm \
       lsof \
       lzo \
@@ -151,8 +152,11 @@ RUN dnf install -y \
       glibc \
       kernel
 
-# Firefox crashes switching tabs with SIGBUS errors unless we use docker run --shm-size=...
-# https://bugzilla.mozilla.org/show_bug.cgi?id=1338771
+# Notes on the packages above:
+# * Firefox crashes switching tabs with SIGBUS errors unless we use docker run --shm-size=...
+#    https://bugzilla.mozilla.org/show_bug.cgi?id=1338771
+# * libxcrypt-compat provides /lib64/libcrypt.so.1 needed for things like tWAS; otherwise: "java.lang.UnsatisfiedLinkError: Ws60ProcessManagement (Not found in java.library.path)"
+#    https://fedoraproject.org/wiki/Changes/FullyRemoveDeprecatedAndUnsafeFunctionsFromLibcrypt
 
 # Explicitly install a newer version supervisor because of https://github.com/Supervisor/supervisor/issues/1224
 RUN sudo pip3 install supervisor==4.0.1
