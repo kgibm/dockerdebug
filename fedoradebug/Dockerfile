@@ -487,6 +487,9 @@ RUN xdg-mime default xreader.desktop application/pdf
 USER root
 RUN xdg-mime default xreader.desktop application/pdf
 
+# Cannot set background before logging in
+#RUN xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image-style -s 0
+
 ################
 # Finalization #
 ################

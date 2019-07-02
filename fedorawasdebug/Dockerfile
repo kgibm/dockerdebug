@@ -53,11 +53,11 @@ ENV LOG_DIR=/logs \
 
 # https://hub.docker.com/_/websphere-liberty
 # https://hub.docker.com/_/open-liberty
-COPY --from=websphere-liberty:19.0.0.5-javaee8 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
-COPY --from=websphere-liberty:19.0.0.5-javaee8 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
-COPY --from=websphere-liberty:19.0.0.5-javaee8 --chown=was:root /logs /logs
-COPY --from=websphere-liberty:19.0.0.5-javaee8 --chown=was:root /licenses /licenses
-COPY --from=websphere-liberty:19.0.0.5-javaee8 --chown=was:root /etc/wlp /etc/wlp
+COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
+COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
+COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /logs /logs
+COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /licenses /licenses
+COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /etc/wlp /etc/wlp
 
 RUN ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     ln -s /opt/ibm/wlp/usr/servers/defaultServer /config && \
@@ -443,7 +443,7 @@ RUN ( \
       cd /home/was/ && \
       git clone https://github.com/OpenLiberty/liberty-bikes && \
       cd liberty-bikes && \
-      sed -i "s/libertyRuntime.*/libertyRuntime group: 'com.ibm.websphere.appserver.runtime', name: 'wlp-javaee8', version: '19.0.0.5'/g" build.gradle && \
+      sed -i "s/libertyRuntime.*/libertyRuntime group: 'com.ibm.websphere.appserver.runtime', name: 'wlp-javaee8', version: '19.0.0.6'/g" build.gradle && \
       sudo chmod -R 777 /tmp/wlp-cache/ && \
       ./gradlew libertyPackage game-service:compileTestJava && \
       sudo chmod -R 777 /tmp/wlp-cache/ && \
@@ -455,6 +455,23 @@ RUN ( \
 RUN ( \
       cp /opt/problemdetermination/swat.ear /home/was/liberty-bikes/build/wlp/usr/servers/frontendServer/dropins/ \
     )
+
+# Start Liberty which creates the DB, then build the DB tables, restart Liberty, and then populate the DB.
+# A benign FFDC is created initially which we can just destroy later.
+RUN sudo mkdir -p /opt/ibm/wlp/usr/shared/resources/data/ && \
+    sudo chown -R was:root /opt/ibm/wlp/usr/shared/resources/ && \
+    /opt/ibm/wlp/bin/server start defaultServer && \
+    sleep 30 && \
+    curl "http://localhost:9080/daytrader/config?action=buildDBTables" && \
+    /opt/ibm/wlp/bin/server stop defaultServer && \
+    /opt/ibm/wlp/bin/server start defaultServer && \
+    sleep 30 && \
+    curl "http://localhost:9080/daytrader/config?action=buildDB" && \
+    /opt/ibm/wlp/bin/server stop defaultServer && \
+    rm -rf /logs/ffdc/*
+
+RUN sudo rm /opt/daytrader7/jmeter_files/daytrader7_mojarra.jmx && \
+    sudo chmod a+rw /opt/daytrader7/jmeter_files/daytrader7.jmx
 
 # This should be the last real command because it's the most likely file to get a minor update.
 COPY ["WebSphere Application Server Troubleshooting and Performance Lab on Docker.pdf", "/opt/docs/"]
