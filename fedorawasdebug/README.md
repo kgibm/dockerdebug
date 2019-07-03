@@ -9,7 +9,26 @@
    * To share files with your host machine, add: Linux/macOS: `-v /:/host/`, Windows: `-v //c/:/host/`
 1. Remote into the docker image with password `websphere`. Linux: `vncviewer localhost:5902`. Mac: `open vnc://localhost:5902`. Windows: Remote desktop (see lab instructions), or use a free VNC client.
 
-## Highlights
+## Lab Highlights
+
+* Using Apache JMeter to run a stress test on WebSphere Liberty
+* Basic Linux CPU and memory analysis
+* IBM Java thread dump analysis
+* IBM Java garbage collection analysis
+* Java heap analysis
+* IBM Java CPU sampling profiler analysis
+* Native crash analysis
+* Native memory leak analysis
+* WebSphere Liberty Admin Center
+* WebSphere Liberty Request Timing
+* WebSphere Liberty HTTP access log
+* WebSphere Liberty MXBean monitoring
+* WebSphere Liberty Server dumps
+* WebSphere Liberty Event Logging
+* WebSphere Liberty Diagnostic Trace
+* WebSphere Liberty Binary Logging
+
+## Installation Highlights
 
 * Fedora 30 x64
 * WAS Liberty 19.0.0.6
