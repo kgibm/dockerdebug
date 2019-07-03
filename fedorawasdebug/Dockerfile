@@ -473,6 +473,19 @@ RUN sudo mkdir -p /opt/ibm/wlp/usr/shared/resources/data/ && \
 RUN sudo rm /opt/daytrader7/jmeter_files/daytrader7_mojarra.jmx && \
     sudo chmod a+rw /opt/daytrader7/jmeter_files/daytrader7.jmx
 
+RUN printf '#!/bin/sh\n\
+sleep 130\n\
+echo -e "\\n\\n=========\\n= READY =\\n=========\\n"\n\
+\n' | sudo tee /finished.sh && sudo chmod +x /finished.sh
+
+RUN printf '\n\
+[program:finished]\n\
+command=/finished.sh\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+\n' | sudo tee finished.supervisord.conf
+
 # This should be the last real command because it's the most likely file to get a minor update.
 COPY ["WebSphere Application Server Troubleshooting and Performance Lab on Docker.pdf", "/opt/docs/"]
 
