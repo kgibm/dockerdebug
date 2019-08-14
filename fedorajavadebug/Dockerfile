@@ -36,6 +36,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 # Install IBM Java #
 ####################
 
+# https://github.com/ibmruntimes/ci.docker/blob/master/ibmjava/8/sdk/ubuntu/Dockerfile
 COPY --from=ibmjava:8-sdk /opt/ibm/java /opt/ibm/java
 
 ########################
@@ -87,7 +88,8 @@ RUN sudo /opt/mat/MemoryAnalyzer -nosplash -application org.eclipse.equinox.p2.d
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group
 
 # IBM Java >= 8.0.5.35 creates dumps that the public MAT DTFJ can't read yet, so use the JDK's DTFJ until that's fixed (TS002204896).
-# For some reason, using 8.0.5.37 JARs doesn't work, so we use 8.0.5.35:
+# For some reason, using 8.0.5.37 JARs doesn't work, so we use 8.0.5.35.
+# This has been fixed with https://github.com/eclipse/openj9/pull/6317 but isn't in a public release of IBM Java yet.
 RUN printf 'INSTALLER_UI=silent\n\
 USER_INSTALL_DIR=/opt/ibm/olderjava/8.0.5.35/\n\
 LICENSE_ACCEPTED=TRUE' > /tmp/ibm-java.properties
@@ -174,7 +176,7 @@ RUN ( \
 RUN ( \
       sudo mkdir /opt/surgery/ && \
       cd /opt/surgery/ && \
-      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/surgery/surgery.jar \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/surgery/surgery.jar \
     )
 
 # IBM Trace and Request Analyzer for WebSphere Application Server
@@ -197,7 +199,7 @@ RUN ( \
 # for HC separately.
 # https://www.eclipse.org/downloads/packages/release/photon/r/eclipse-ide-java-ee-developers
 # https://www.eclipse.org/downloads/packages/release
-RUN sudo wget -q -O /opt/eclipse_old.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/SR2/eclipse-java-luna-SR2-linux-gtk-x86_64.tar.gz&r=1" && \
+RUN sudo wget -q -O /opt/eclipse_old.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/SR2/eclipse-jee-luna-SR2-linux-gtk-x86_64.tar.gz&r=1" && \
     ( \
       cd /opt/ && \
       sudo tar xzf eclipse_old.tar.gz && \
@@ -279,12 +281,12 @@ RUN sudo chmod -R a+w /opt/eclipse/configuration
 
 # There is no "latest" link for the following builds, so we have to check each page and update
 # with the latest links.
-# Last updated: 2019-07-01
+# Last updated: 2019-07-29
 
 # https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=openj9#x64_linux
 RUN ( \
       sudo mkdir /opt/openjdk8_openj9/ && \
-      sudo wget -q -O /opt/openjdk8_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b04_openj9-0.14.2/OpenJDK8U-jdk_x64_linux_openj9_8u212b04_openj9-0.14.2.tar.gz && \
+      sudo wget -q -O /opt/openjdk8_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u222-b10_openj9-0.15.1/OpenJDK8U-jdk_x64_linux_openj9_8u222b10_openj9-0.15.1.tar.gz && \
       cd /opt/openjdk8_openj9/ && \
       sudo tar xzf /opt/openjdk8_openj9/openj9.tar.gz && \
       sudo mv jdk* jdk \
@@ -293,7 +295,7 @@ RUN ( \
 # https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_linux
 RUN ( \
       sudo mkdir /opt/openjdk8_hotspot/ && \
-      sudo wget -q -O /opt/openjdk8_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b04/OpenJDK8U-jdk_x64_linux_hotspot_8u212b04.tar.gz && \
+      sudo wget -q -O /opt/openjdk8_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u222-b10/OpenJDK8U-jdk_x64_linux_hotspot_8u222b10.tar.gz && \
       cd /opt/openjdk8_hotspot/ && \
       sudo tar xzf /opt/openjdk8_hotspot/hotspot.tar.gz && \
       sudo mv jdk* jdk \
@@ -302,7 +304,7 @@ RUN ( \
 # https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=openj9#x64_linux
 RUN ( \
       sudo mkdir /opt/openjdk11_openj9/ && \
-      sudo wget -q -O /opt/openjdk11_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7_openj9-0.14.3/OpenJDK11U-jdk_x64_linux_openj9_11.0.3_7_openj9-0.14.3.tar.gz && \
+      sudo wget -q -O /opt/openjdk11_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.4%2B11_openj9-0.15.1/OpenJDK11U-jdk_x64_linux_openj9_11.0.4_11_openj9-0.15.1.tar.gz && \
       cd /opt/openjdk11_openj9/ && \
       sudo tar xzf /opt/openjdk11_openj9/openj9.tar.gz && \
       sudo mv jdk* jdk \
@@ -311,7 +313,7 @@ RUN ( \
 # https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=hotspot#x64_linux
 RUN ( \
       sudo mkdir /opt/openjdk11_hotspot/ && \
-      sudo wget -q -O /opt/openjdk11_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz && \
+      sudo wget -q -O /opt/openjdk11_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.4%2B11/OpenJDK11U-jdk_x64_linux_hotspot_11.0.4_11.tar.gz && \
       cd /opt/openjdk11_hotspot/ && \
       sudo tar xzf /opt/openjdk11_hotspot/hotspot.tar.gz && \
       sudo mv jdk* jdk \
@@ -320,7 +322,7 @@ RUN ( \
 # https://adoptopenjdk.net/releases.html?variant=openjdk12&jvmVariant=openj9#x64_linux
 RUN ( \
       sudo mkdir /opt/openjdk12_openj9/ && \
-      sudo wget -q -O /opt/openjdk12_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12.0.1%2B12_openj9-0.14.1/OpenJDK12U-jdk_x64_linux_openj9_12.0.1_12_openj9-0.14.1.tar.gz && \
+      sudo wget -q -O /opt/openjdk12_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12.0.2%2B10_openj9-0.15.1/OpenJDK12U-jdk_x64_linux_openj9_12.0.2_10_openj9-0.15.1.tar.gz && \
       cd /opt/openjdk12_openj9/ && \
       sudo tar xzf /opt/openjdk12_openj9/openj9.tar.gz && \
       sudo mv jdk* jdk \
@@ -329,7 +331,7 @@ RUN ( \
 # https://adoptopenjdk.net/releases.html?variant=openjdk12&jvmVariant=hotspot#x64_linux
 RUN ( \
       sudo mkdir /opt/openjdk12_hotspot/ && \
-      sudo wget -q -O /opt/openjdk12_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12.0.1%2B12/OpenJDK12U-jdk_x64_linux_hotspot_12.0.1_12.tar.gz && \
+      sudo wget -q -O /opt/openjdk12_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12.0.2%2B10/OpenJDK12U-jdk_x64_linux_hotspot_12.0.2_10.tar.gz && \
       cd /opt/openjdk12_hotspot/ && \
       sudo tar xzf /opt/openjdk12_hotspot/hotspot.tar.gz && \
       sudo mv jdk* jdk \
