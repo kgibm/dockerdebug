@@ -60,7 +60,8 @@
 * Apache JMeter
 * OpenJDK 8
 * AdoptOpenJDK OpenJ9 and HotSpot (V8, V11, V12)
-* DayTrader7
+* DayTrader7 on WAS Liberty
+* DayTrader7 on Traditional WAS
 * Liberty Bikes
 * TrapIt.ear
 * swat.ear
