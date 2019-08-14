@@ -250,6 +250,7 @@ environment=\n\
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
 # https://github.com/WASdev/sample.daytrader7
+# https://svn.apache.org/repos/infra/websites/staging/openjpa/trunk/content/artifacts/
 RUN ( \
       cd /opt/ && \
       sudo git clone https://github.com/WASdev/sample.daytrader7 daytrader7 && \
@@ -260,14 +261,14 @@ RUN ( \
 #      sudo sed -i 's/\(private void updateMarketSummary() {\)/\1 try {/g' daytrader-ee7-ejb/src/main/java/com/ibm/websphere/samples/daytrader/ejb3/MarketSummarySingleton.java && \
 #      sudo sed -i 's/\(setMarketSummaryDataBean(new MarketSummaryDataBean(TSIA, openTSIA, totalVolume, topGainers, topLosers));\)/\1 } catch (Throwable tt) { }/g' daytrader-ee7-ejb/src/main/java/com/ibm/websphere/samples/daytrader/ejb3/MarketSummarySingleton.java && \
 
+RUN mkdir -p /config/configDropins/overrides/
+
+RUN cp /opt/daytrader7/daytrader-ee7/build/libs/daytrader-ee7.ear /config/dropins/
+
 # https://publib.boulder.ibm.com/httpserv/cookbook/
 RUN sudo mkdir /opt/cookbook && \
     sudo wget -q -O /opt/cookbook/WAS_Performance_Cookbook.pdf https://publib.boulder.ibm.com/httpserv/cookbook/WAS_Performance_Cookbook.pdf && \
     sudo ln -s /opt/cookbook/WAS_Performance_Cookbook.pdf /home/was/Desktop/
-
-RUN mkdir -p /config/configDropins/overrides/
-
-RUN cp /opt/daytrader7/daytrader-ee7/build/libs/daytrader-ee7.ear /config/dropins/
 
 RUN sudo dnf install -y mariadb-server mariadb-java-client && \
     sudo mysql_install_db --skip-test-db --user=mysql
@@ -376,12 +377,6 @@ RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
 # https://mariadb.com/kb/en/library/identifier-case-sensitivity/
 RUN sudo sed -i 's/\[mysqld\]/[mysqld]\nlower_case_table_names=1/g' /etc/my.cnf.d/mariadb-server.cnf
 
-RUN sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
-    sudo sed -i 's/THREADS,50/THREADS,4/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
-    sudo chmod -R a+w /opt/daytrader7/jmeter_files && \
-    sudo sed -i 's/\(ResultCollector.*StatVisualizer.*enabled="\)false/\1true/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
-    sudo sed -i 's/ThreadGroup.scheduler">true/ThreadGroup.scheduler">false/g' /opt/daytrader7/jmeter_files/daytrader7.jmx
-
 # https://db.apache.org/derby/
 RUN ( \
       cd /opt/ && \
@@ -391,6 +386,7 @@ RUN ( \
       sudo mv *derby* derby \
     )
 
+# https://github.com/kgibm/jni_web_hello_world
 RUN ( \
       echo "Version 9" && \
       cd /opt/ && \
@@ -486,8 +482,93 @@ stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
 \n' | sudo tee finished.supervisord.conf
 
+# Configure DayTrader7 on tWAS
+RUN sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
+    sudo sed -i 's/THREADS,50/THREADS,4/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
+    sudo chmod -R a+w /opt/daytrader7/jmeter_files && \
+    sudo sed -i 's/\(ResultCollector.*StatVisualizer.*enabled="\)false/\1true/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
+    sudo sed -i 's/ThreadGroup.scheduler">true/ThreadGroup.scheduler">false/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
+    sudo sed -i 's/AdminUserID/wsadmin/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i "s/\"password\"/\"$(cat /tmp/PASSWORD)\"/g" /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/SecurityEnabled = ".*/SecurityEnabled = "true"/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/DefaultProviderType =   .*/DefaultProviderType = "Derby"/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/DefaultPathName =       .*/DefaultPathName = "\/opt\/derby\/lib\/derby.jar"/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/DefaultEJBDeployType = ".*/DefaultEJBDeployType = "DERBY_V10"/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/DefaultTradeAppName = ".*/DefaultTradeAppName = "DayTrader7"/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/DefaultEarFile =      ".*/DefaultEarFile = "\/opt\/daytrader7\/daytrader-ee7\/build\/libs\/daytrader-ee7.ear"/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/DerbyPath =             ".*/DerbyPath = "\/opt\/derby\/lib\/derby.jar"/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/#\(scope = .*Server.*\)/\1/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i '/.*scope = .*NodeName+"\/".*/d' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/DefaultUseMetadata =  "true"/DefaultUseMetadata =  "false"/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/DefaultRunWSDeploy =  "false"/DefaultRunWSDeploy =  "true"/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i 's/DefaultXA = "false"/DefaultXA = "true"/g' /opt/daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sudo sed -i '/import sre/d' /opt/daytrader7/scripts/resource_scripts.py && \
+    sudo sed -i 's/providerId = AdminConfig.createUsingTemplate.*/providerId = AdminTask.createJDBCProvider(["-scope", "Node=DefaultNode01,Server=server1", "-databaseType", "Derby", "-providerType", "Derby JDBC Provider", "-implementationType", "Connection pool data source", "-name", "Derby JDBC Provider", "-classpath", "\/opt\/derby\/lib\/derby.jar", "-nativePath", ""])/g' /opt/daytrader7/scripts/resource_scripts.py && \
+    sudo sed -i 's/\(Derby.*\) Only":/\1":/g' /opt/daytrader7/scripts/resource_scripts.py && \
+    sudo sed -i 's/\(Derby.*\) Only (XA)":/\1 (XA)":/g' /opt/daytrader7/scripts/resource_scripts.py && \
+    sudo sed -i 's/dsId = AdminConfig.createUsingTemplate.*/dsId = AdminTask.createDatasource(providerId, ["-name", datasourceName, "-jndiName", jndiName, "-dataStoreHelperClassName", "com.ibm.websphere.rsadapter.DerbyDataStoreHelper", "-containerManagedPersistence", "true", "-componentManagedAuthenticationAlias", "TradeDataSourceAuthData", "-configureResourceProperties", "[[databaseName java.lang.String TradeDB]]"])/g' /opt/daytrader7/scripts/resource_scripts.py && \
+    sudo sed -i 's/parms += " -usedefaultbindings"/parms += " -usedefaultbindings -defaultbinding.ee.defaults"/g' /opt/daytrader7/scripts/resource_scripts.py && \
+    sudo sed -i 's/, "-subscriptio.*/]/g' /opt/daytrader7/scripts/resource_scripts.py && \
+    sudo sed -i 's/parms += " -nodeployejb"/parms += ""/g' /opt/daytrader7/scripts/resource_scripts.py && \
+    sudo sed -i 's/parms += " -nodeployws"/parms += ""/g' /opt/daytrader7/scripts/resource_scripts.py
+
+# For some reason, Derby doesn't like the default locale so we override it.
+# Also increase System*.log and trace*log rotation: https://www.ibm.com/support/knowledgecenter/en/SSEQTP_9.0.5/com.ibm.websphere.base.doc/ae/txml_logrotation.html
+RUN printf '\n\
+server = AdminConfig.getid("/Cell:DefaultCell01/Node:DefaultNode01/Server:server1/")\n\
+jvm = AdminConfig.list("JavaVirtualMachine", server)\n\
+AdminConfig.modify(jvm, [["genericJvmArguments", "-Duser.country=US -Duser.language=en"]])\n\
+\n\
+log = AdminConfig.showAttribute(server, "outputStreamRedirect")\n\
+AdminConfig.modify(log, [["rolloverSize", 100]])\n\
+\n\
+log = AdminConfig.showAttribute(server, "errorStreamRedirect")\n\
+AdminConfig.modify(log, [["rolloverSize", 100]])\n\
+\n\
+trace = AdminConfig.list("TraceService", server)\n\
+log = AdminConfig.showAttribute(trace, "traceLog")\n\
+AdminConfig.modify(log, [["rolloverSize", 100]])\n\
+\n\
+AdminConfig.save()\n\
+\n' > /home/was/twas.jy
+
+# wsadmin script after the base DayTrader7 script is run:
+# * Set createDatabase=true custom property
+RUN printf '\n\
+for dsName in ["TradeDataSource", "NoTxTradeDataSource"]:\n\
+  ds = AdminConfig.getid("/Cell:DefaultCell01/Node:DefaultNode01/Server:server1/JDBCProvider:Derby JDBC Provider/DataSource:" + dsName + "/")\n\
+  ps = AdminConfig.showAttribute(ds, "propertySet")\n\
+  props = AdminConfig.list("J2EEResourceProperty", ps).splitlines()\n\
+  for prop in props:\n\
+    propName = AdminConfig.showAttribute(prop, "name")\n\
+    if propName == "createDatabase":\n\
+      AdminConfig.modify(prop, "[[value create]]")\n\
+\n\
+AdminConfig.save()\n\
+\n' > /home/was/twas_daytrader_finalize.jy
+
+# Initialize tWAS DayTrader
+RUN ( \
+      cd /opt/daytrader7/scripts/ && \
+      /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+      /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+      /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f daytrader_SILENT_singleServer.py -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+      /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_daytrader_finalize.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+      /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+      /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+      curl "http://localhost:9081/daytrader/config?action=buildDBTables" && \
+      /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+      /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+      curl "http://localhost:9081/daytrader/config?action=buildDB" && \
+      /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" \
+    ) && \
+    sudo mv /opt/daytrader7/jmeter_files/daytrader7.jmx /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx && \
+    sudo cp /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
+    sudo sed -i 's/9080/9081/g' /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
+    sudo chmod a+rw /opt/daytrader7/jmeter_files/daytrader7_twas.jmx
+
 # This should be the last real command because it's the most likely file to get a minor update.
-COPY ["WebSphere Application Server Troubleshooting and Performance Lab on Docker.pdf", "/opt/docs/"]
+COPY ["WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf", "/opt/docs/"]
 
 EXPOSE 8080 8081 8082 9080 9081 9082 9443 9444 9445 12000 12005
 
