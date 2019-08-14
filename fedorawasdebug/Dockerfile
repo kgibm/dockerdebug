@@ -27,6 +27,9 @@
 #   * To access the host filesystem from the container (and vice versa), add the following to docker run:
 #     Linux/macOS: -v /:/host/
 #     Windows: -v //c/:/host/
+# Notes:
+#   * Because of a maximum of 125 layers (https://github.com/docker/for-linux/issues/414), minimize the number of RUN
+#     commands when finalizing a new version.
 
 FROM kgibm/fedorajavadebug
 
@@ -47,12 +50,15 @@ ENV LOG_DIR=/logs \
     EXTRACT_PORT_FROM_HOST_HEADER=true \
     ENABLE_BASIC_LOGGING=true
 
+USER was
+
 #####################
 # "Install" Liberty #
 #####################
 
 # https://hub.docker.com/_/websphere-liberty
 # https://hub.docker.com/_/open-liberty
+
 COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
 COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
 COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /logs /logs
@@ -62,24 +68,22 @@ COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /etc/wlp /etc/wl
 RUN ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     ln -s /opt/ibm/wlp/usr/servers/defaultServer /config && \
     ln -s /opt/ibm /liberty && \
-    ln -s /opt/ibm/wlp/usr/shared/resources/lib.index.cache /lib.index.cache
-
-# In case the user restarts Liberty from the command line instead of supervisord, we need
-# to set the right envars
-RUN printf '\n\
+    ln -s /opt/ibm/wlp/usr/shared/resources/lib.index.cache /lib.index.cache && \
+    echo "# In case the user restarts Liberty from the command line instead of supervisord, we need" && \
+    echo "# to set the right envars" && \
+    printf '\n\
 LOG_DIR=/logs\n\
 WLP_OUTPUT_DIR=/opt/ibm/wlp/output\n\
 KEYSTORE_REQUIRED=true\n\
 RANDFILE=/tmp/.rnd\n\
 JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/"\n\
-\n' >> /config/server.env
-
-# Run Liberty initialization script at startup:
-RUN printf '#!/bin/sh\n\
+\n' >> /config/server.env && \
+    echo "# Run Liberty initialization script at startup:" && \
+    printf '#!/bin/sh\n\
 if [ -e /opt/ibm/helpers/runtime/docker-server.sh ]; then\n\
     /opt/ibm/helpers/runtime/docker-server.sh\n\
 fi\n\
-\n' > /extended_entrypoint.sh
+\n' | sudo tee /extended_entrypoint.sh
 
 #############################
 # "Install" Traditional WAS #
@@ -92,8 +96,6 @@ COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /li
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /opt/IBM /opt/IBM
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /etc/websphere /etc/websphere
 
-USER was
-
 RUN sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
     sed -i 's/"7276"/"7277"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
     sed -i 's/"7286"/"7287"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
@@ -102,35 +104,27 @@ RUN sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_N
     sed -i 's/"9402"/"9404"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
     sed -i 's/9080/9081/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
     sed -i 's/9443/9444/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
-    sed -i "s/ps -C .*/pgrep -f 'WsServer ')/g" /work/start_server.sh
-
-#################
-# Various tools #
-#################
-
-# https://www-01.ibm.com/support/docview.wss?uid=swg21644180
-RUN ( \
+    sed -i "s/ps -C .*/pgrep -f 'WsServer ')/g" /work/start_server.sh && \
+    echo "# https://www-01.ibm.com/support/docview.wss?uid=swg21644180" && \
+    ( \
       sudo mkdir /opt/trapit/ && \
       cd /opt/trapit/ && \
       sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/trapit/trapit.ear \
-    )
-
-# https://github.com/kgibm/java_web_hello_world
-RUN ( \
+    ) && \
+    echo "# https://github.com/kgibm/java_web_hello_world" && \
+    ( \
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/java_web_hello_world && \
       cd /opt/java_web_hello_world && \
       sudo mvn -q clean install \
-    )
-
-# https://github.com/kgibm/problemdetermination
-RUN ( \
+    ) && \
+    echo "# https://github.com/kgibm/problemdetermination" && \
+    ( \
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/problemdetermination \
-    )
-
-# https://github.com/skliche/request-metrics-analyzer-next
-RUN ( \
+    ) && \
+    echo "# https://github.com/skliche/request-metrics-analyzer-next" && \
+    ( \
       cd /opt/ && \
       sudo git clone https://github.com/skliche/request-metrics-analyzer-next && \
       cd /opt/request-metrics-analyzer-next && \
@@ -139,53 +133,45 @@ RUN ( \
       sudo chmod a+x rma.desktop && \
       sudo ln -s /opt/request-metrics-analyzer-next/rma.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/rma.desktop /home/was/Desktop/ \
-    )
-
-# https://www-01.ibm.com/support/docview.wss?uid=swg22010928
-RUN ( \
+    ) && \
+    echo "# https://www-01.ibm.com/support/docview.wss?uid=swg22010928" && \
+    ( \
       sudo mkdir /opt/wasconfigcomparison/ && \
       sudo wget -q -O /opt/wasconfigcomparison/cct-20190325.tar.gz "https://www-01.ibm.com/support/docview.wss?uid=swg22010928&aid=1" && \
       cd /opt/wasconfigcomparison/ && \
       sudo tar xzf cct-20190325.tar.gz \
-    )
-
-# https://www-01.ibm.com/support/docview.wss?uid=swg21442487
-RUN ( \
+    ) && \
+    echo "# https://www-01.ibm.com/support/docview.wss?uid=swg21442487" && \
+    ( \
       sudo mkdir /opt/manageprofilesinteractive/ && \
       sudo wget -q -O /opt/manageprofilesinteractive/manageprofilesInteractive.zip "https://www-01.ibm.com/support/docview.wss?uid=swg21442487&aid=3" && \
       cd /opt/manageprofilesinteractive/ && \
       sudo unzip -q manageprofilesInteractive.zip \
-    )
-
-# https://github.com/kgibm/was_data_mining/
-RUN ( \
+    ) && \
+    echo "# https://github.com/kgibm/was_data_mining/" && \
+    ( \
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/was_data_mining/ \
-    )
-
-###############
-# Install WDT #
-###############
-
-# https://marketplace.eclipse.org/content/ibm-liberty-developer-tools
-# https://marketplace.eclipse.org/node/1778478/api/p
-# http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/
-RUN sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
+    ) && \
+    echo "###############" && \
+    echo "# Install WDT #" && \
+    echo "###############" && \
+    echo "# https://marketplace.eclipse.org/content/ibm-liberty-developer-tools" && \
+    echo "# https://marketplace.eclipse.org/node/1778478/api/p" && \
+    echo "# http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/" && \
+    sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
                               -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/2019-03_comp/,http://download.eclipse.org/releases/2019-03,http://download.eclipse.org/eclipse/updates/4.11,http://download.eclipse.org/webtools/repository/latest \
                               -installIU com.ibm.wdt.ast.ws.tools.feature.feature.group \
                               -installIU com.ibm.osgi.wdt.feature.feature.group \
                               -installIU com.ibm.websphere.wdt.server.tools.main.feature.group \
                               -installIU com.ibm.wdt.migration.tools.feature.feature.group \
-                              -installIU com.ibm.wdt.webtools.top.feature.feature.group
-
-# Required after installing anything into Eclipse
-RUN sudo chmod -R a+w /opt/eclipse/configuration
-
-##################
-# Configure tWAS #
-##################
-
-RUN printf 'nodeName = AdminControl.getNode()\n\
+                              -installIU com.ibm.wdt.webtools.top.feature.feature.group && \
+    echo "# Required after installing anything into Eclipse" && \
+    sudo chmod -R a+w /opt/eclipse/configuration && \
+    echo "##################" && \
+    echo "# Configure tWAS #" && \
+    echo "##################" && \
+    printf 'nodeName = AdminControl.getNode()\n\
 serverName = AdminServerManagement.listServers()[0]\n\
 serverName = serverName[:serverName.find("(")]\n\
 #AdminApplication.uninstallApplication("DefaultApplication")\n\
@@ -201,14 +187,12 @@ RUN /work/configure.sh
 # Configure Liberty #
 #####################
 
-RUN cp /opt/problemdetermination/swat.ear /config/dropins/ && chown was:root /config/dropins/swat.ear
-
-############################
-# Add supervisord programs #
-############################
-
-# Deployed applications at http://localhost:9080/ and https://localhost:9443/
-RUN printf '\n\
+RUN cp /opt/problemdetermination/swat.ear /config/dropins/ && chown was:root /config/dropins/swat.ear && \
+    echo "############################" && \
+    echo "# Add supervisord programs #" && \
+    echo "############################" && \
+    echo "# Deployed applications at http://localhost:9080/ and https://localhost:9443/" && \
+    printf '\n\
 [program:liberty]\n\
 command=/opt/ibm/wlp/bin/server run defaultServer\n\
 stdout_logfile=/dev/stdout\n\
@@ -223,14 +207,12 @@ autostart=true\n\
 environment=\n\
     HOME="/home/was",\n\
     USER="was",\n\
-\n' | sudo tee liberty.supervisord.conf
-
-# https://localhost:9043/ibm/console
-# User = wsadmin
-# Password = /tmp/PASSWORD
-#
-# Deployed applications at http://localhost:9081/ and https://localhost:9444/
-RUN printf '\n\
+\n' | sudo tee liberty.supervisord.conf && \
+    echo "# https://localhost:9043/ibm/console" && \
+    echo "# User = wsadmin" && \
+    echo "# Password = /tmp/PASSWORD" && \
+    echo "# Deployed applications at http://localhost:9081/ and https://localhost:9444/" && \
+    printf '\n\
 [program:twas]\n\
 command=/work/start_server.sh\n\
 stdout_logfile=/dev/stdout\n\
@@ -249,38 +231,30 @@ environment=\n\
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
-# https://github.com/WASdev/sample.daytrader7
-# https://svn.apache.org/repos/infra/websites/staging/openjpa/trunk/content/artifacts/
-RUN ( \
+RUN echo "# https://github.com/WASdev/sample.daytrader7" && \
+    echo "# https://svn.apache.org/repos/infra/websites/staging/openjpa/trunk/content/artifacts/" && \
+    ( \
       cd /opt/ && \
       sudo git clone https://github.com/WASdev/sample.daytrader7 daytrader7 && \
       cd /opt/daytrader7 && \
       sudo gradle build \
-    )
-# Tried to fix the NoSuchEJBException but this didn't help. Instead, we just ignore the warnings in daytrader7logging.xml below.
-#      sudo sed -i 's/\(private void updateMarketSummary() {\)/\1 try {/g' daytrader-ee7-ejb/src/main/java/com/ibm/websphere/samples/daytrader/ejb3/MarketSummarySingleton.java && \
-#      sudo sed -i 's/\(setMarketSummaryDataBean(new MarketSummaryDataBean(TSIA, openTSIA, totalVolume, topGainers, topLosers));\)/\1 } catch (Throwable tt) { }/g' daytrader-ee7-ejb/src/main/java/com/ibm/websphere/samples/daytrader/ejb3/MarketSummarySingleton.java && \
-
-RUN mkdir -p /config/configDropins/overrides/
-
-RUN cp /opt/daytrader7/daytrader-ee7/build/libs/daytrader-ee7.ear /config/dropins/
-
-# https://publib.boulder.ibm.com/httpserv/cookbook/
-RUN sudo mkdir /opt/cookbook && \
+    ) && \
+    echo "# Tried to fix the NoSuchEJBException but this didn't help. Instead, we just ignore the warnings in daytrader7logging.xml below." && \
+    mkdir -p /config/configDropins/overrides/ && \
+    cp /opt/daytrader7/daytrader-ee7/build/libs/daytrader-ee7.ear /config/dropins/ && \
+    echo "# https://publib.boulder.ibm.com/httpserv/cookbook/" && \
+    sudo mkdir /opt/cookbook && \
     sudo wget -q -O /opt/cookbook/WAS_Performance_Cookbook.pdf https://publib.boulder.ibm.com/httpserv/cookbook/WAS_Performance_Cookbook.pdf && \
-    sudo ln -s /opt/cookbook/WAS_Performance_Cookbook.pdf /home/was/Desktop/
-
-RUN sudo dnf install -y mariadb-server mariadb-java-client && \
-    sudo mysql_install_db --skip-test-db --user=mysql
-
-RUN printf '\n\
+    sudo ln -s /opt/cookbook/WAS_Performance_Cookbook.pdf /home/was/Desktop/ && \
+    sudo dnf install -y mariadb-server mariadb-java-client && \
+    sudo mysql_install_db --skip-test-db --user=mysql && \
+    printf '\n\
 UPDATE mysql.user SET Password = PASSWORD("%s") WHERE User = "root";\n\
 FLUSH PRIVILEGES;\n\
 CREATE DATABASE TradeDB;\n\
-\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" | sudo tee /var/lib/mysql/init.sql
-
-# https://mariadb.com/kb/en/library/mysqld-options/
-RUN printf '\n\
+\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" | sudo tee /var/lib/mysql/init.sql && \
+    echo "# https://mariadb.com/kb/en/library/mysqld-options/" && \
+    printf '\n\
 [program:mysql]\n\
 command=/usr/bin/mysqld_safe --init-file=/var/lib/mysql/init.sql\n\
 stdout_logfile=/dev/stdout\n\
@@ -296,15 +270,13 @@ stopsignal=KILL\n\
 environment=\n\
     HOME="/var/lib/mysql",\n\
     USER="mysql",\n\
-\n' | sudo tee mysqld.supervisord.conf
-
-# The webProfile feature pulls in the appSecurity feature and we don't want to enable that for DayTrader7
-# (it does support it but requires a lot of extra configuration).
-RUN sed -i '/.*webProfile.*/d' /config/server.xml; \
-    sed -i '/.*javaee.*/d' /config/server.xml
-
-# https://github.com/WASdev/sample.daytrader7/blob/master/daytrader-ee7-wlpcfg/servers/daytrader7Sample/server.xml
-RUN printf '\n\
+\n' | sudo tee mysqld.supervisord.conf && \
+    echo "# The webProfile feature pulls in the appSecurity feature and we don't want to enable that for DayTrader7" && \
+    echo "# (it does support it but requires a lot of extra configuration)." && \
+    sed -i '/.*webProfile.*/d' /config/server.xml && \
+    sed -i '/.*javaee.*/d' /config/server.xml && \
+    echo "# https://github.com/WASdev/sample.daytrader7/blob/master/daytrader-ee7-wlpcfg/servers/daytrader7Sample/server.xml" && \
+    printf '\n\
 <server>\n\
     <featureManager>\n\
         <feature>ejb-3.2</feature>\n\
@@ -364,30 +336,25 @@ RUN printf '\n\
 	<jmsActivationSpec id="eis/TradeStreamerMDB">\n\
 		<properties.wasJms destinationRef="TradeStreamerTopic" destinationType="javax.jms.Topic"/>\n\
     </jmsActivationSpec>\n\
-</server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/daytrader.xml
-
-# https://openliberty.io/docs/ref/config/#logging.html
-RUN printf '\n\
+</server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/daytrader.xml && \
+    echo "# https://openliberty.io/docs/ref/config/#logging.html" && \
+    printf '\n\
 <server>\n\
     <logging traceSpecification="*=info" maxFileSize="250" maxFiles="4" hideMessage="CNTR0333W,CNTR0019E,CWWJP9991W" />\n\
-</server>\n' > /config/configDropins/overrides/daytrader7logging.xml
-
-RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
-
-# https://mariadb.com/kb/en/library/identifier-case-sensitivity/
-RUN sudo sed -i 's/\[mysqld\]/[mysqld]\nlower_case_table_names=1/g' /etc/my.cnf.d/mariadb-server.cnf
-
-# https://db.apache.org/derby/
-RUN ( \
+</server>\n' > /config/configDropins/overrides/daytrader7logging.xml && \
+    /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer && \
+    echo "# https://mariadb.com/kb/en/library/identifier-case-sensitivity/" && \
+    sudo sed -i 's/\[mysqld\]/[mysqld]\nlower_case_table_names=1/g' /etc/my.cnf.d/mariadb-server.cnf && \
+    echo "# https://db.apache.org/derby/" && \
+    ( \
       cd /opt/ && \
       sudo wget -q -O /opt/derby.zip https://www.apache.org/dist//db/derby/db-derby-10.14.2.0/db-derby-10.14.2.0-bin.zip && \
       sudo unzip derby.zip && \
       sudo rm derby.zip && \
       sudo mv *derby* derby \
-    )
-
-# https://github.com/kgibm/jni_web_hello_world
-RUN ( \
+    ) && \
+    echo "# https://github.com/kgibm/jni_web_hello_world" && \
+    ( \
       echo "Version 9" && \
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/jni_web_hello_world && \
@@ -400,9 +367,8 @@ RUN ( \
       cp /opt/problemdetermination/swat.ear /opt/ibm/wlp/usr/servers/test/dropins/ && \
       printf '--' '-Xmx2g\n-Djava.library.path=/opt/jni_web_hello_world/target/\n-DSUPPRESS_INVOKE_MESSAGES=true\n-DJAVA_SURGERY_JAR_FILE=/opt/surgery/surgery.jar\n-DLEAK_TO_LIST=true\n' > /opt/ibm/wlp/usr/servers/test/jvm.options && \
       printf '<?xml version="1.0"?><server><featureManager><feature>webProfile-8.0</feature></featureManager><httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9082" httpsPort="9445" /></server>' > /opt/ibm/wlp/usr/servers/test/server.xml \
-    )
-
-RUN printf '\n\
+    ) && \
+    printf '\n\
 [program:liberty2]\n\
 command=/opt/ibm/wlp/bin/server start test\n\
 stdout_logfile=/dev/stdout\n\
@@ -418,24 +384,20 @@ environment=\n\
     USER="was",\n\
     LOG_DIR="/opt/ibm/wlp/usr/servers/test/logs/",\n\
     WLP_OUTPUT_DIR="/opt/ibm/wlp/usr/servers/",\n\
-\n' | sudo tee liberty2.supervisord.conf
-
-RUN sudo mkdir /opt/docs/
-
-RUN mkdir -p /home/was/Desktop && \
+\n' | sudo tee liberty2.supervisord.conf && \
+    sudo mkdir /opt/docs/ && \
+    mkdir -p /home/was/Desktop && \
     chown was /home/was/Desktop && \
-    ln -s "/opt/docs/WebSphere Application Server Troubleshooting and Performance Lab on Docker.pdf" "/home/was/Desktop/"
-
-# https://github.com/OpenLiberty/open-liberty
-RUN ( \
+    ln -s "/opt/docs/WebSphere Application Server Troubleshooting and Performance Lab on Docker.pdf" "/home/was/Desktop/" && \
+    echo "# https://github.com/OpenLiberty/open-liberty" && \
+    ( \
       cd /home/was/ && \
       git clone https://github.com/OpenLiberty/open-liberty \
-    )
-
-# https://github.com/OpenLiberty/liberty-bikes
-# We want WebSphere Liberty features like adminCenter so we replace libertyRuntime
-# https://mvnrepository.com/artifact/com.ibm.websphere.appserver.runtime
-RUN ( \
+    ) && \
+    echo "# https://github.com/OpenLiberty/liberty-bikes" && \
+    echo "# We want WebSphere Liberty features like adminCenter so we replace libertyRuntime" && \
+    echo "# https://mvnrepository.com/artifact/com.ibm.websphere.appserver.runtime" && \
+    ( \
       cd /home/was/ && \
       git clone https://github.com/OpenLiberty/liberty-bikes && \
       cd liberty-bikes && \
@@ -446,15 +408,13 @@ RUN ( \
       ./build/wlp/bin/installUtility install --acceptLicense adminCenter-1.0 && \
       mkdir -p build/wlp/usr/servers/frontendServer/configDropins/overrides/ && \
       printf '<server><featureManager><feature>ssl-1.0</feature></featureManager></server>' > build/wlp/usr/servers/frontendServer/configDropins/overrides/ssl.xml \
-    )
-
-RUN ( \
+    ) && \
+    ( \
       cp /opt/problemdetermination/swat.ear /home/was/liberty-bikes/build/wlp/usr/servers/frontendServer/dropins/ \
-    )
-
-# Start Liberty which creates the DB, then build the DB tables, restart Liberty, and then populate the DB.
-# A benign FFDC is created initially which we can just destroy later.
-RUN sudo mkdir -p /opt/ibm/wlp/usr/shared/resources/data/ && \
+    ) && \
+    echo "# Start Liberty which creates the DB, then build the DB tables, restart Liberty, and then populate the DB." && \
+    echo "# A benign FFDC is created initially which we can just destroy later." && \
+    sudo mkdir -p /opt/ibm/wlp/usr/shared/resources/data/ && \
     sudo chown -R was:root /opt/ibm/wlp/usr/shared/resources/ && \
     /opt/ibm/wlp/bin/server start defaultServer && \
     sleep 30 && \
@@ -464,26 +424,22 @@ RUN sudo mkdir -p /opt/ibm/wlp/usr/shared/resources/data/ && \
     sleep 30 && \
     curl "http://localhost:9080/daytrader/config?action=buildDB" && \
     /opt/ibm/wlp/bin/server stop defaultServer && \
-    rm -rf /logs/ffdc/*
-
-RUN sudo rm /opt/daytrader7/jmeter_files/daytrader7_mojarra.jmx && \
-    sudo chmod a+rw /opt/daytrader7/jmeter_files/daytrader7.jmx
-
-RUN printf '#!/bin/sh\n\
+    rm -rf /logs/ffdc/* && \
+    sudo rm /opt/daytrader7/jmeter_files/daytrader7_mojarra.jmx && \
+    sudo chmod a+rw /opt/daytrader7/jmeter_files/daytrader7.jmx && \
+    printf '#!/bin/sh\n\
 sleep 130\n\
 echo -e "\\n\\n=========\\n= READY =\\n=========\\n"\n\
-\n' | sudo tee /finished.sh && sudo chmod +x /finished.sh
-
-RUN printf '\n\
+\n' | sudo tee /finished.sh && sudo chmod +x /finished.sh && \
+    printf '\n\
 [program:finished]\n\
 command=/finished.sh\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
-\n' | sudo tee finished.supervisord.conf
-
-# Configure DayTrader7 on tWAS
-RUN sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
+\n' | sudo tee finished.supervisord.conf && \
+    echo "# Configure DayTrader7 on tWAS" && \
+    sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
     sudo sed -i 's/THREADS,50/THREADS,4/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
     sudo chmod -R a+w /opt/daytrader7/jmeter_files && \
     sudo sed -i 's/\(ResultCollector.*StatVisualizer.*enabled="\)false/\1true/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
@@ -510,11 +466,10 @@ RUN sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
     sudo sed -i 's/parms += " -usedefaultbindings"/parms += " -usedefaultbindings -defaultbinding.ee.defaults"/g' /opt/daytrader7/scripts/resource_scripts.py && \
     sudo sed -i 's/, "-subscriptio.*/]/g' /opt/daytrader7/scripts/resource_scripts.py && \
     sudo sed -i 's/parms += " -nodeployejb"/parms += ""/g' /opt/daytrader7/scripts/resource_scripts.py && \
-    sudo sed -i 's/parms += " -nodeployws"/parms += ""/g' /opt/daytrader7/scripts/resource_scripts.py
-
-# For some reason, Derby doesn't like the default locale so we override it.
-# Also increase System*.log and trace*log rotation: https://www.ibm.com/support/knowledgecenter/en/SSEQTP_9.0.5/com.ibm.websphere.base.doc/ae/txml_logrotation.html
-RUN printf '\n\
+    sudo sed -i 's/parms += " -nodeployws"/parms += ""/g' /opt/daytrader7/scripts/resource_scripts.py && \
+    echo "# For some reason, Derby doesn't like the default locale so we override it." && \
+    echo "# Also increase System*.log and trace*log rotation: https://www.ibm.com/support/knowledgecenter/en/SSEQTP_9.0.5/com.ibm.websphere.base.doc/ae/txml_logrotation.html" && \
+    printf '\n\
 server = AdminConfig.getid("/Cell:DefaultCell01/Node:DefaultNode01/Server:server1/")\n\
 jvm = AdminConfig.list("JavaVirtualMachine", server)\n\
 AdminConfig.modify(jvm, [["genericJvmArguments", "-Duser.country=US -Duser.language=en"]])\n\
@@ -530,11 +485,10 @@ log = AdminConfig.showAttribute(trace, "traceLog")\n\
 AdminConfig.modify(log, [["rolloverSize", 100]])\n\
 \n\
 AdminConfig.save()\n\
-\n' > /home/was/twas.jy
-
-# wsadmin script after the base DayTrader7 script is run:
-# * Set createDatabase=true custom property
-RUN printf '\n\
+\n' > /home/was/twas.jy && \
+    echo "# wsadmin script after the base DayTrader7 script is run:" && \
+    echo "# * Set createDatabase=true custom property" && \
+    printf '\n\
 for dsName in ["TradeDataSource", "NoTxTradeDataSource"]:\n\
   ds = AdminConfig.getid("/Cell:DefaultCell01/Node:DefaultNode01/Server:server1/JDBCProvider:Derby JDBC Provider/DataSource:" + dsName + "/")\n\
   ps = AdminConfig.showAttribute(ds, "propertySet")\n\
@@ -545,10 +499,9 @@ for dsName in ["TradeDataSource", "NoTxTradeDataSource"]:\n\
       AdminConfig.modify(prop, "[[value create]]")\n\
 \n\
 AdminConfig.save()\n\
-\n' > /home/was/twas_daytrader_finalize.jy
-
-# Initialize tWAS DayTrader
-RUN ( \
+\n' > /home/was/twas_daytrader_finalize.jy && \
+    echo "# Initialize tWAS DayTrader" && \
+    ( \
       cd /opt/daytrader7/scripts/ && \
       /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
       /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
