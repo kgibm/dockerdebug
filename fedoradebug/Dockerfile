@@ -489,6 +489,16 @@ RUN xdg-mime default xreader.desktop application/pdf
 
 # Cannot set background before logging in
 #RUN xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image-style -s 0
+RUN printf '#!/bin/sh\n\
+xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image-style -s 0\n\
+\n' > /home/was/Desktop/reset_desktop_background.sh && chmod +x /home/was/Desktop/reset_desktop_background.sh
+
+# Set the default browser
+RUN sudo mkdir -p /root/.config/xfce4/ && \
+    printf 'WebBrowser=firefox' | sudo tee /root/.config/xfce4/helpers.rc && \
+    sudo mkdir -p /home/was/.config/xfce4/ && \
+    printf 'WebBrowser=firefox' | sudo tee /home/was/.config/xfce4/helpers.rc && \
+    sudo chown -R was:root /home/was/.config
 
 ################
 # Finalization #
