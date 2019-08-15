@@ -76,4 +76,5 @@ Note: You'll need more than 20GB of disk space and configure Docker with 4GB or 
 
 ## Notes
 
-This lab is based on a Java Dockerfile (https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile) which is based on a Fedora Dockerfile (https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile).
+* Docker Hub page: https://hub.docker.com/r/kgibm/fedorawasdebug
+* This lab is based on a Java Dockerfile (https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile) which is based on a Fedora Dockerfile (https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile).
