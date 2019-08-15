@@ -40,7 +40,7 @@ ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
     KEYSTORE_REQUIRED=true \
     RANDFILE=/tmp/.rnd \
-    JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/" \
+    JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX:+UseContainerSupport" \
     PATH=/opt/ibm/wlp/bin:/opt/ibm/helpers/build:/opt/IBM/WebSphere/AppServer/bin:$PATH \
     WAS_CELL=DefaultCell01 \
     NODE_NAME=DefaultNode01 \
