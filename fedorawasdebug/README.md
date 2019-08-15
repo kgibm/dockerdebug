@@ -17,7 +17,7 @@
 
 ## Lab Highlights
 
-* Using Apache JMeter to run a stress test on WebSphere Liberty
+* Using Apache JMeter to run a stress test on WebSphere Liberty or Traditional WAS
 * Basic Linux CPU and memory analysis
 * IBM Java thread dump analysis
 * IBM Java garbage collection analysis
@@ -71,3 +71,7 @@
 * MariaDB
 * Derby
 * Open Liberty Source
+
+## Notes
+
+This lab is based on a Java Dockerfile (https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile) which is based on a Fedora Dockerfile (https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile).

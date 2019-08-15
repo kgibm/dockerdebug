@@ -31,6 +31,7 @@
 #   * Because of a maximum of 125 layers (https://github.com/docker/for-linux/issues/414), minimize the number of RUN
 #     commands when finalizing a new version.
 
+# Based on https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile
 FROM kgibm/fedorajavadebug
 
 LABEL maintainer="kevin.grigorenko@us.ibm.com"
@@ -59,6 +60,8 @@ USER was
 # https://hub.docker.com/_/websphere-liberty
 # https://hub.docker.com/_/open-liberty
 
+# When updating the Liberty version, also update the version used in a build.gradle
+# line replacement below (search for the Liberty version number).
 COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
 COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
 COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /logs /logs
@@ -182,10 +185,6 @@ AdminConfig.save()\n' > /work/config/install_app.py
 RUN --mount=type=secret,id=remotepassword if [ "$(sudo head -n 1 /run/secrets/remotepassword)" != "" ]; then echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" > /tmp/PASSWORD; fi
 
 RUN /work/configure.sh
-
-#####################
-# Configure Liberty #
-#####################
 
 RUN cp /opt/problemdetermination/swat.ear /config/dropins/ && chown was:root /config/dropins/swat.ear && \
     echo "############################" && \
@@ -388,7 +387,7 @@ environment=\n\
     sudo mkdir /opt/docs/ && \
     mkdir -p /home/was/Desktop && \
     chown was /home/was/Desktop && \
-    ln -s "/opt/docs/WebSphere Application Server Troubleshooting and Performance Lab on Docker.pdf" "/home/was/Desktop/" && \
+    ln -s "/opt/docs/WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf" "/home/was/Desktop/" && \
     echo "# https://github.com/OpenLiberty/open-liberty" && \
     ( \
       cd /home/was/ && \

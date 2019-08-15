@@ -31,6 +31,7 @@
 #   * Because of a maximum of 125 layers (https://github.com/docker/for-linux/issues/414), minimize the number of RUN
 #     commands when finalizing a new version.
 
+# Based on https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile
 FROM kgibm/fedoradebug
 
 LABEL maintainer="kevin.grigorenko@us.ibm.com"
