@@ -86,9 +86,9 @@ RUN for i in java javac jar javah javap javadoc javaws jconsole jdmpview keytool
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.was.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group && \
-    echo "# IBM Java >= 8.0.5.35 creates dumps that the public MAT DTFJ can't read yet, so use the JDK's DTFJ until that's fixed (TS002204896)." && \
+    echo "# IBM Java >= 8.0.5.35 && < 8.0.5.40 creates dumps that the MAT DTFJ can't read yet, so override it with the JDK's DTFJ until that's fixed." && \
     echo "# For some reason, using 8.0.5.37 JARs doesn't work, so we use 8.0.5.35." && \
-    echo "# This has been fixed with https://github.com/eclipse/openj9/pull/6317 but isn't in a public release of IBM Java yet." && \
+    echo "# This has been fixed in 8.0.5.40 with https://github.com/eclipse/openj9/pull/6317 but still use this approach in case we need to load an external 8.0.5.35 or 8.0.5.37 dump." && \
     printf 'INSTALLER_UI=silent\n\
 USER_INSTALL_DIR=/opt/ibm/olderjava/8.0.5.35/\n\
 LICENSE_ACCEPTED=TRUE' > /tmp/ibm-java.properties && \
@@ -206,14 +206,14 @@ hide_welcome_screen=true\n\
     echo "#########################" && \
     echo "# Install GCMV and IDDE #" && \
     echo "#########################" && \
-    echo "# Eclipse 2019-03" && \
-    echo "# https://www.eclipse.org/downloads/packages/release/2019-03/r/eclipse-ide-enterprise-java-developers" && \
-    echo "# https://help.eclipse.org/2019-03/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fruntime-options.html" && \
-    sudo wget -q -O /opt/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2019-03/R/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz&r=1" && \
+    echo "# Eclipse 2019-06" && \
+    echo "# https://www.eclipse.org/downloads/packages/release/2019-06/r/eclipse-ide-enterprise-java-developers" && \
+    echo "# https://help.eclipse.org/2019-06/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fruntime-options.html" && \
+    sudo wget -q -O /opt/eclipse-jee-2019-06-R-linux-gtk-x86_64.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2019-06/R/eclipse-jee-2019-06-R-linux-gtk-x86_64.tar.gz&r=1" && \
     ( \
       cd /opt/ && \
-      sudo tar xzf eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz && \
-      sudo rm -f /opt/eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz && \
+      sudo tar xzf eclipse-jee-2019-06-R-linux-gtk-x86_64.tar.gz && \
+      sudo rm -f /opt/eclipse-jee-2019-06-R-linux-gtk-x86_64.tar.gz && \
       cd /opt/eclipse && \
       sudo printf '[Desktop Entry]\nType=Application\nName=Eclipse\nExec=/opt/eclipse/eclipse -data workspace\nPath=~/\nTerminal=false\n' >> eclipse.desktop && \
       sudo chmod a+x eclipse.desktop && \
@@ -309,7 +309,9 @@ hide_welcome_screen=true\n\
     ( \
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/SimulateJavaOOM \
-    )
+    ) && \
+    sudo git clone https://github.com/eclipse/openj9 /usr/local/src/openj9 && \
+    sudo git clone https://github.com/eclipse/openj9-omr /usr/local/src/openj9-omr
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
