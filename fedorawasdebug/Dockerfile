@@ -36,6 +36,10 @@ FROM kgibm/fedorajavadebug
 
 LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
+# Find the latest version here:
+# https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
+ARG MAVEN_LIBERTY_VERSION="19.0.0.8"
+
 ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
     KEYSTORE_REQUIRED=true \
@@ -57,21 +61,30 @@ USER was
 # "Install" Liberty #
 #####################
 
-# https://hub.docker.com/_/websphere-liberty
-# https://hub.docker.com/_/open-liberty
+# WebSphere Liberty:
+#   https://hub.docker.com/_/websphere-liberty
+#   https://github.com/WASdev/ci.docker/blob/master/ga/latest/kernel/Dockerfile.centos
+#   https://github.com/WASdev/ci.docker/blob/master/ga/latest/javaee8/Dockerfile
+# OpenLiberty:
+#   https://hub.docker.com/_/open-liberty
+#   https://github.com/OpenLiberty/ci.docker/blob/master/official/latest/javaee8/java8/ibmjava/Dockerfile
 
 # When updating the Liberty version, also update the version used in a build.gradle
 # line replacement below (search for the Liberty version number).
-COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
-COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
-COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /logs /logs
-COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /licenses /licenses
-COPY --from=websphere-liberty:19.0.0.6-javaee8 --chown=was:root /etc/wlp /etc/wlp
+COPY --from=websphere-liberty:javaee8 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
+COPY --from=websphere-liberty:javaee8 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
+COPY --from=websphere-liberty:javaee8 --chown=was:root /logs /logs
+COPY --from=websphere-liberty:javaee8 --chown=was:root /licenses /licenses
+COPY --from=websphere-liberty:javaee8 --chown=was:root /etc/wlp /etc/wlp
 
-RUN ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
-    ln -s /opt/ibm/wlp/usr/servers/defaultServer /config && \
-    ln -s /opt/ibm /liberty && \
-    ln -s /opt/ibm/wlp/usr/shared/resources/lib.index.cache /lib.index.cache && \
+RUN sudo ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
+    sudo chown was:root /output && \
+    sudo ln -s /opt/ibm/wlp/usr/servers/defaultServer /config && \
+    sudo chown was:root /config && \
+    sudo ln -s /opt/ibm /liberty && \
+    sudo chown was:root /liberty && \
+    sudo ln -s /opt/ibm/wlp/usr/shared/resources/lib.index.cache /lib.index.cache && \
+    sudo chown was:root /lib.index.cache && \
     echo "# In case the user restarts Liberty from the command line instead of supervisord, we need" && \
     echo "# to set the right envars" && \
     printf '\n\
@@ -140,14 +153,14 @@ RUN sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_N
     echo "# https://www-01.ibm.com/support/docview.wss?uid=swg22010928" && \
     ( \
       sudo mkdir /opt/wasconfigcomparison/ && \
-      sudo wget -q -O /opt/wasconfigcomparison/cct-20190325.tar.gz "https://www-01.ibm.com/support/docview.wss?uid=swg22010928&aid=1" && \
+      sudo wget -q -O /opt/wasconfigcomparison/cct.tar.gz "https://www.ibm.com/support/pages/sites/default/files/inline-files/%24FILE/cct-20190822.tar.gz" && \
       cd /opt/wasconfigcomparison/ && \
-      sudo tar xzf cct-20190325.tar.gz \
+      sudo tar xzf cct.tar.gz \
     ) && \
     echo "# https://www-01.ibm.com/support/docview.wss?uid=swg21442487" && \
     ( \
       sudo mkdir /opt/manageprofilesinteractive/ && \
-      sudo wget -q -O /opt/manageprofilesinteractive/manageprofilesInteractive.zip "https://www-01.ibm.com/support/docview.wss?uid=swg21442487&aid=3" && \
+      sudo wget -q -O /opt/manageprofilesinteractive/manageprofilesInteractive.zip "https://www.ibm.com/support/pages/sites/default/files/support/swg/swgtech.nsf/0/d6ca5180f6619c868525776f0069b7b7/%24FILE/ATTQDXZT.zip/manageprofilesInteractive.zip" && \
       cd /opt/manageprofilesinteractive/ && \
       sudo unzip -q manageprofilesInteractive.zip \
     ) && \
@@ -163,7 +176,7 @@ RUN sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_N
     echo "# https://marketplace.eclipse.org/node/1778478/api/p" && \
     echo "# http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/" && \
     sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
-                              -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/2019-03_comp/,http://download.eclipse.org/releases/2019-03,http://download.eclipse.org/eclipse/updates/4.11,http://download.eclipse.org/webtools/repository/latest \
+                              -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/2019-06_comp/,http://download.eclipse.org/releases/2019-06,http://download.eclipse.org/eclipse/updates/4.12,http://download.eclipse.org/webtools/repository/latest \
                               -installIU com.ibm.wdt.ast.ws.tools.feature.feature.group \
                               -installIU com.ibm.osgi.wdt.feature.feature.group \
                               -installIU com.ibm.websphere.wdt.server.tools.main.feature.group \
@@ -389,10 +402,7 @@ environment=\n\
     chown was /home/was/Desktop && \
     ln -s "/opt/docs/WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf" "/home/was/Desktop/" && \
     echo "# https://github.com/OpenLiberty/open-liberty" && \
-    ( \
-      cd /home/was/ && \
-      git clone https://github.com/OpenLiberty/open-liberty \
-    ) && \
+    sudo git clone https://github.com/OpenLiberty/open-liberty /usr/local/src/open-liberty && \
     echo "# https://github.com/OpenLiberty/liberty-bikes" && \
     echo "# We want WebSphere Liberty features like adminCenter so we replace libertyRuntime" && \
     echo "# https://mvnrepository.com/artifact/com.ibm.websphere.appserver.runtime" && \
@@ -400,7 +410,7 @@ environment=\n\
       cd /home/was/ && \
       git clone https://github.com/OpenLiberty/liberty-bikes && \
       cd liberty-bikes && \
-      sed -i "s/libertyRuntime.*/libertyRuntime group: 'com.ibm.websphere.appserver.runtime', name: 'wlp-javaee8', version: '19.0.0.6'/g" build.gradle && \
+      sed -i "s/libertyRuntime.*/libertyRuntime group: 'com.ibm.websphere.appserver.runtime', name: 'wlp-javaee8', version: '${MAVEN_LIBERTY_VERSION}'/g" build.gradle && \
       sudo chmod -R 777 /tmp/wlp-cache/ && \
       ./gradlew libertyPackage game-service:compileTestJava && \
       sudo chmod -R 777 /tmp/wlp-cache/ && \
