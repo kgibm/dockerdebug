@@ -84,6 +84,7 @@ RUN dnf install -y \
       kernel-headers \
       kexec-tools \
       less \
+      libnsl \
       libreoffice \
       libxcrypt-compat \
       llvm \
@@ -156,7 +157,8 @@ RUN dnf install -y \
       glibc \
       kernel
 
-RUN echo "# Explicitly install a newer version of supervisor because of https://github.com/Supervisor/supervisor/issues/1224" && \
+RUN dbus-uuidgen > /var/lib/dbus/machine-id && \
+    echo "# Explicitly install a newer version of supervisor because of https://github.com/Supervisor/supervisor/issues/1224" && \
     sudo pip3 install supervisor==4.0.1 && \
     echo "###############################################" && \
     echo "# Create the script that can update passwords #" && \
@@ -360,7 +362,7 @@ fi\n\
     echo "# https://ant.apache.org/" && \
     ( \
       cd /opt/ && \
-      sudo wget -q https://www.apache.org/dist/ant/binaries/apache-ant-1.10.5-bin.zip && \
+      sudo wget -q https://www.apache.org/dist/ant/binaries/apache-ant-1.10.7-bin.zip && \
       sudo unzip -q apache-ant*.zip && \
       sudo rm -f apache-ant*.zip && \
       sudo mv apache-ant* apache-ant \
@@ -419,6 +421,16 @@ fi\n\
     echo "# won't always work but it might for some cases (e.g. bcc)." && \
     echo "# Useless anyway without CONFIG_TRACING, so don't bother with the hack." && \
     echo "# See https://github.com/iovisor/bcc/issues/1000" && \
+    echo "# Install VS Code: https://code.visualstudio.com/docs/setup/linux" && \
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
+    printf '[code]\n\
+name=Visual Studio Code\n\
+baseurl=https://packages.microsoft.com/yumrepos/vscode\n\
+enabled=1\n\
+gpgcheck=1\n\
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc\n\
+\n' | sudo tee /etc/yum.repos.d/vscode.repo && \
+    sudo dnf install -y code
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 
@@ -438,6 +450,8 @@ RUN echo "############################" && \
     sudo ln -s /usr/share/applications/libreoffice-calc.desktop /home/was/Desktop/ && \
     sudo chmod a+x /usr/share/applications/libreoffice-writer.desktop && \
     sudo ln -s /usr/share/applications/libreoffice-writer.desktop /home/was/Desktop/ && \
+    sudo chmod a+x /usr/share/applications/code.desktop && \
+    sudo ln -s /usr/share/applications/code.desktop /home/was/Desktop/ && \
     echo "# Strange error trying to launch Wireshark:" && \
     echo "# error while loading shared libraries: libQt5Core.so.5: cannot open shared object file: No such file or directory" && \
     echo "# https://superuser.com/questions/1347723/" && \
@@ -469,5 +483,9 @@ EXPOSE 22 3389 5901 5902
 
 # Last statement must be switching to root for supervisord
 USER root
+
+# Randomt tips:
+# * List all available Gnome settings: gsettings list-recursively
+# * Available vncserver options: vncserver --help; Xvnc --help
 
 ENTRYPOINT ["/entrypoint.sh"]
