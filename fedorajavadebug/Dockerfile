@@ -86,19 +86,9 @@ RUN for i in java javac jar javah javap javadoc javaws jconsole jdmpview keytool
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.was.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group && \
-    echo "# IBM Java >= 8.0.5.35 && < 8.0.5.40 creates dumps that the MAT DTFJ can't read yet, so override it with the JDK's DTFJ until that's fixed." && \
-    echo "# For some reason, using 8.0.5.37 JARs doesn't work, so we use 8.0.5.35." && \
-    echo "# This has been fixed in 8.0.5.40 with https://github.com/eclipse/openj9/pull/6317 but still use this approach in case we need to load an external 8.0.5.35 or 8.0.5.37 dump." && \
-    printf 'INSTALLER_UI=silent\n\
-USER_INSTALL_DIR=/opt/ibm/olderjava/8.0.5.35/\n\
-LICENSE_ACCEPTED=TRUE' > /tmp/ibm-java.properties && \
-    wget -q -O /tmp/ibm-java-sdk-archive.bin http://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/8.0.5.35/linux/x86_64/ibm-java-sdk-8.0-5.35-x86_64-archive.bin && \
-    chmod a+x /tmp/ibm-java-sdk-archive.bin && \
-    /tmp/ibm-java-sdk-archive.bin -f /tmp/ibm-java.properties && \
-    rm -f /tmp/ibm-java-sdk-archive.bin /tmp/ibm-java.properties && \
-    sudo cp -f /opt/ibm/olderjava/8.0.5.35/jre/lib/ddr/j9ddr.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/j9ddr.jar && \
-    sudo cp -f /opt/ibm/olderjava/8.0.5.35/jre/lib/ext/dtfj.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/dtfj.jar && \
-    sudo sed -i 's/-vmargs/-vm\n\/opt\/ibm\/olderjava\/8.0.5.35\/bin\/\n-vmargs\n-Dosgi.clean=true/g' /opt/mat/MemoryAnalyzer.ini && \
+    echo "# IBM Java >= 8.0.5.35 creates dumps that the MAT DTFJ can't read yet, so override it with the JDK's DTFJ until that's fixed." && \
+    sudo cp -f /opt/ibm/java/jre/lib/ddr/j9ddr.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/j9ddr.jar && \
+    sudo cp -f /opt/ibm/java/jre/lib/ext/dtfj.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/dtfj.jar && \
     echo "# Disable MAT welcome screen" && \
     sudo mkdir -p /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
     sudo chown -R was /home/was/workspace/ && \
