@@ -108,8 +108,12 @@ RUN dnf install -y \
       nmap-ncat \
       nmon \
       npm \
+      nss-pam-ldapd \
       ntp \
+      openldap \
       openldap-clients \
+      openldap-devel \
+      openldap-servers \
       openssh-server \
       patch \
       perf \
@@ -302,6 +306,16 @@ redirect_stderr=true\n\
 priority=50\n\
 \n'\
 >> vncserver2.supervisord.conf && \
+    printf '\n\
+[program:slapd]\n\
+command=/usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://"\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+priority=60\n\
+startsecs=0\n\
+\n'\
+>> slapd.supervisord.conf && \
     echo "# Print environment variables inherited by supervisord-spawned programs" && \
     printf '\n\
 [program:debugsupervisord]\n\
@@ -475,6 +489,78 @@ xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image
     echo "# Set the default PDF reader to xreader; otherwise, the default" && \
     echo "# becomes LibreOffice Draw which isn't a great PDF viewer." && \
     xdg-mime default xreader.desktop application/pdf
+
+# cn=Manager,dc=example,dc=com
+RUN --mount=type=secret,id=remotepassword \
+    sed -i 's/my-domain/example/g' /usr/share/openldap-servers/slapd.ldif && \
+    mkdir -p /var/lib/ldap && \
+    rm -rf /etc/openldap/slapd.d/* && \
+    slapadd -n 0 -F /etc/openldap/slapd.d -l /usr/share/openldap-servers/slapd.ldif && \
+    chown -R ldap:ldap /var/lib/ldap && \
+    echo "olcAllows: bind_v2 update_anon" >> '/etc/openldap/slapd.d/cn=config.ldif' && \
+    echo "olcLogFile: /var/log/slapd.log" >> '/etc/openldap/slapd.d/cn=config.ldif' && \
+    printf 'dn: olcDatabase={2}mdb,cn=config\n\
+changetype: modify\n\
+replace: olcRootPW\n\
+olcRootPW: %s\n\
+\n' "$(slappasswd -s "$(echo -n "$(sudo head -n 1 /root/password.txt)")")" | sudo tee /root/openldapadminpwd.ldif && \
+    printf 'dn: dc=example,dc=com\n\
+objectclass: dcObject\n\
+objectclass: organization\n\
+o: Example Company\n\
+dc: example\n\
+\n\
+dn: cn=Manager,dc=example,dc=com\n\
+objectclass: organizationalRole\n\
+cn: Manager\n\
+\n' | sudo tee /root/openldapmanager.ldif && \
+    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+    sudo ldapmodify -H ldapi:// -Y EXTERNAL -f /root/openldapadminpwd.ldif && \
+    sudo ldapadd -x -D "cn=Manager,dc=example,dc=com" -w "$(echo -n "$(sudo head -n 1 /root/password.txt)")" -f /root/openldapmanager.ldif && \
+    sudo ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/cosine.ldif && \
+    sudo ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/nis.ldif && \
+    sudo ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/inetorgperson.ldif && \
+    printf 'dn: ou=Users,dc=example,dc=com\n\
+objectClass: organizationalUnit\n\
+ou: Users\n\
+\n\
+dn: cn=Admin1,ou=Users,dc=example,dc=com\n\
+cn: Admin1 LastName1\n\
+sn: LastName1\n\
+objectClass: inetOrgPerson\n\
+userPassword: %s\n\
+uid: 1\n\
+\n\
+dn: cn=User2,ou=Users,dc=example,dc=com\n\
+cn: User2 LastName2\n\
+sn: LastName2\n\
+objectClass: inetOrgPerson\n\
+userPassword: %s\n\
+uid: 2\n\
+\n\
+dn: cn=User3,ou=Users,dc=example,dc=com\n\
+cn: User3 LastName3\n\
+sn: LastName3\n\
+objectClass: inetOrgPerson\n\
+userPassword: %s\n\
+uid: 3\n\
+\n\
+dn: ou=Groups,dc=example,dc=com\n\
+objectClass: organizationalUnit\n\
+ou: Groups\n\
+\n\
+dn: cn=Administrators,ou=Users,dc=example,dc=com\n\
+cn: Administrators\n\
+objectClass: groupOfNames\n\
+member: cn=Admin1,ou=Users,dc=example,dc=com\n\
+\n\
+dn: cn=Group1,ou=Users,dc=example,dc=com\n\
+cn: Group1\n\
+objectClass: groupOfNames\n\
+member: cn=User2,ou=Users,dc=example,dc=com\n\
+member: cn=User3,ou=Users,dc=example,dc=com\n\
+\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" | sudo tee /root/basicorg.ldif && \
+    sudo ldapadd -x -D "cn=Manager,dc=example,dc=com" -w "$(echo -n "$(sudo head -n 1 /root/password.txt)")" -f /root/basicorg.ldif
 
 USER was
 RUN xdg-mime default xreader.desktop application/pdf
