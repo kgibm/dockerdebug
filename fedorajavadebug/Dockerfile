@@ -274,7 +274,7 @@ RUN echo "############################" && \
             sudo tar xzf /opt/openjdk${v}_${j}/adoptopenjdk.tar.gz && \
             sudo mv jdk* jdk && \
             sudo alternatives --install \
-                /usr/bin/java java /opt/openjdk${v}_${j}/jdk/bin/java 99999999 \
+                /usr/bin/java java /opt/openjdk${v}_${j}/jdk/bin/java 89999999 \
                 --slave /usr/bin/javac javac /opt/openjdk${v}_${j}/jdk/bin/javac \
                 --slave /usr/bin/jar jar /opt/openjdk${v}_${j}/jdk/bin/jar \
                 --slave /usr/bin/javah javah /opt/openjdk${v}_${j}/jdk/bin/javah \
