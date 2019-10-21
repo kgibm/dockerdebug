@@ -47,11 +47,22 @@ COPY --from=ibmjava:8-sdk /opt/ibm/java /opt/ibm/java
 # Put IBM Java on PATH #
 ########################
 
-# https://fedoraproject.org/wiki/Alternatives_system
-RUN for i in java javac jar javah javap javadoc javaws jconsole jdmpview keytool jdb ControlPanel; do \
-      alternatives --install /usr/bin/$i $i /opt/ibm/java/bin/$i 99999999 --family ibmjava && \
-      alternatives --auto $i; \
-    done && \
+RUN echo "# https://fedoraproject.org/wiki/Alternatives_system" && \
+    sudo alternatives --install \
+         /usr/bin/java java /opt/ibm/java/bin/java 99999999 \
+         --slave /usr/bin/javac javac /opt/ibm/java/bin/javac \
+         --slave /usr/bin/jar jar /opt/ibm/java/bin/jar \
+         --slave /usr/bin/javah javah /opt/ibm/java/bin/javah \
+         --slave /usr/bin/javap javap /opt/ibm/java/bin/javap \
+         --slave /usr/bin/javadoc javadoc /opt/ibm/java/bin/javadoc \
+         --slave /usr/bin/javaws javaws /opt/ibm/java/bin/javaws \
+         --slave /usr/bin/jconsole jconsole /opt/ibm/java/bin/jconsole \
+         --slave /usr/bin/jdmpview jdmpview /opt/ibm/java/bin/jdmpview \
+         --slave /usr/bin/keytool keytool /opt/ibm/java/bin/keytool \
+         --slave /usr/bin/jdb jdb /opt/ibm/java/bin/jdb \
+         --slave /usr/bin/ControlPanel ControlPanel /opt/ibm/java/bin/ControlPanel \
+         --family ibmjava && \
+    sudo alternatives --auto java && \
     echo "###############" && \
     echo "# Install MAT #" && \
     echo "###############" && \
@@ -235,61 +246,6 @@ hide_welcome_screen=true\n\
     sudo rm /opt/eclipse/plugins/org.eclipse.ui.intro* && \
     echo "# Required after installing anything into Eclipse" && \
     sudo chmod -R a+w /opt/eclipse/configuration && \
-    echo "############################" && \
-    echo "# OpenJDK + HotSpot/OpenJ9 #" && \
-    echo "############################" && \
-    echo "# https://adoptopenjdk.net/" && \
-    echo "# There is no "latest" link for the following builds, so we have to check each page and update" && \
-    echo "# with the latest links." && \
-    echo "# Last updated: 2019-07-29" && \
-    echo "# https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=openj9#x64_linux" && \
-    ( \
-      sudo mkdir /opt/openjdk8_openj9/ && \
-      sudo wget -q -O /opt/openjdk8_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u222-b10_openj9-0.15.1/OpenJDK8U-jdk_x64_linux_openj9_8u222b10_openj9-0.15.1.tar.gz && \
-      cd /opt/openjdk8_openj9/ && \
-      sudo tar xzf /opt/openjdk8_openj9/openj9.tar.gz && \
-      sudo mv jdk* jdk \
-    ) && \
-    echo "# https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot#x64_linux" && \
-    ( \
-      sudo mkdir /opt/openjdk8_hotspot/ && \
-      sudo wget -q -O /opt/openjdk8_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u222-b10/OpenJDK8U-jdk_x64_linux_hotspot_8u222b10.tar.gz && \
-      cd /opt/openjdk8_hotspot/ && \
-      sudo tar xzf /opt/openjdk8_hotspot/hotspot.tar.gz && \
-      sudo mv jdk* jdk \
-    ) && \
-    echo "# https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=openj9#x64_linux" && \
-    ( \
-      sudo mkdir /opt/openjdk11_openj9/ && \
-      sudo wget -q -O /opt/openjdk11_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.4%2B11_openj9-0.15.1/OpenJDK11U-jdk_x64_linux_openj9_11.0.4_11_openj9-0.15.1.tar.gz && \
-      cd /opt/openjdk11_openj9/ && \
-      sudo tar xzf /opt/openjdk11_openj9/openj9.tar.gz && \
-      sudo mv jdk* jdk \
-    ) && \
-    echo "# https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=hotspot#x64_linux" && \
-    ( \
-      sudo mkdir /opt/openjdk11_hotspot/ && \
-      sudo wget -q -O /opt/openjdk11_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.4%2B11/OpenJDK11U-jdk_x64_linux_hotspot_11.0.4_11.tar.gz && \
-      cd /opt/openjdk11_hotspot/ && \
-      sudo tar xzf /opt/openjdk11_hotspot/hotspot.tar.gz && \
-      sudo mv jdk* jdk \
-    ) && \
-    echo "# https://adoptopenjdk.net/releases.html?variant=openjdk12&jvmVariant=openj9#x64_linux" && \
-    ( \
-      sudo mkdir /opt/openjdk12_openj9/ && \
-      sudo wget -q -O /opt/openjdk12_openj9/openj9.tar.gz https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12.0.2%2B10_openj9-0.15.1/OpenJDK12U-jdk_x64_linux_openj9_12.0.2_10_openj9-0.15.1.tar.gz && \
-      cd /opt/openjdk12_openj9/ && \
-      sudo tar xzf /opt/openjdk12_openj9/openj9.tar.gz && \
-      sudo mv jdk* jdk \
-    ) && \
-    echo "# https://adoptopenjdk.net/releases.html?variant=openjdk12&jvmVariant=hotspot#x64_linux" && \
-    ( \
-      sudo mkdir /opt/openjdk12_hotspot/ && \
-      sudo wget -q -O /opt/openjdk12_hotspot/hotspot.tar.gz https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12.0.2%2B10/OpenJDK12U-jdk_x64_linux_hotspot_12.0.2_10.tar.gz && \
-      cd /opt/openjdk12_hotspot/ && \
-      sudo tar xzf /opt/openjdk12_hotspot/hotspot.tar.gz && \
-      sudo mv jdk* jdk \
-    ) && \
     echo "# https://github.com/kgibm/java_miscellaneous" && \
     ( \
       cd /opt/ && \
@@ -302,6 +258,39 @@ hide_welcome_screen=true\n\
     ) && \
     sudo git clone https://github.com/eclipse/openj9 /usr/local/src/openj9 && \
     sudo git clone https://github.com/eclipse/openj9-omr /usr/local/src/openj9-omr
+
+RUN echo "############################" && \
+    echo "# OpenJDK + HotSpot/OpenJ9 #" && \
+    echo "############################" && \
+    echo "# https://adoptopenjdk.net/" && \
+    for v in 8 11 12 13; do \
+        for j in openj9 hotspot; do \
+          ( \
+            sudo mkdir /opt/openjdk${v}_${j}/ && \
+            echo "# Downloading OpenJDK ${v}_${j}" && \
+            sudo wget -q -O /opt/openjdk${v}_${j}/adoptopenjdk.tar.gz \
+              $(curl --silent "https://api.adoptopenjdk.net/v2/latestAssets/releases/openjdk${v}?release=latest&openjdk_impl=${j}&os=linux&arch=x64&type=jdk&heap_size=normal" | grep binary_link | sed 's/.*https/https/g' | sed 's/".*//g') && \
+            cd /opt/openjdk${v}_${j}/ && \
+            sudo tar xzf /opt/openjdk${v}_${j}/adoptopenjdk.tar.gz && \
+            sudo mv jdk* jdk && \
+            sudo alternatives --install \
+                /usr/bin/java java /opt/openjdk${v}_${j}/jdk/bin/java 99999999 \
+                --slave /usr/bin/javac javac /opt/openjdk${v}_${j}/jdk/bin/javac \
+                --slave /usr/bin/jar jar /opt/openjdk${v}_${j}/jdk/bin/jar \
+                --slave /usr/bin/javah javah /opt/openjdk${v}_${j}/jdk/bin/javah \
+                --slave /usr/bin/javap javap /opt/openjdk${v}_${j}/jdk/javap \
+                --slave /usr/bin/javadoc javadoc /opt/openjdk${v}_${j}/jdk/bin/javadoc \
+                --slave /usr/bin/javaws javaws /opt/openjdk${v}_${j}/jdk/bin/javaws \
+                --slave /usr/bin/jconsole jconsole /opt/openjdk${v}_${j}/jdk/bin/jconsole \
+                --slave /usr/bin/jdmpview jdmpview /opt/openjdk${v}_${j}/jdk/bin/jdmpview \
+                --slave /usr/bin/keytool keytool /opt/openjdk${v}_${j}/jdk/bin/keytool \
+                --slave /usr/bin/jdb jdb /opt/openjdk${v}_${j}/jdk/bin/jdb \
+                --slave /usr/bin/ControlPanel ControlPanel /opt/openjdk${v}_${j}/jdk/bin/ControlPanel \
+                --family openjdk && \
+            sudo alternatives --auto java \
+          ) \
+        done \
+      done
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
 

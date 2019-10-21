@@ -529,21 +529,21 @@ cn: Admin1 LastName1\n\
 sn: LastName1\n\
 objectClass: inetOrgPerson\n\
 userPassword: %s\n\
-uid: 1\n\
+uid: Admin1\n\
 \n\
 dn: cn=User2,ou=Users,dc=example,dc=com\n\
 cn: User2 LastName2\n\
 sn: LastName2\n\
 objectClass: inetOrgPerson\n\
 userPassword: %s\n\
-uid: 2\n\
+uid: User2\n\
 \n\
 dn: cn=User3,ou=Users,dc=example,dc=com\n\
 cn: User3 LastName3\n\
 sn: LastName3\n\
 objectClass: inetOrgPerson\n\
 userPassword: %s\n\
-uid: 3\n\
+uid: User3\n\
 \n\
 dn: ou=Groups,dc=example,dc=com\n\
 objectClass: organizationalUnit\n\
