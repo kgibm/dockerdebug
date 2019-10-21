@@ -402,7 +402,7 @@ fi\n\
     ( \
       sudo mkdir /opt/linperf/ && \
       cd /opt/linperf/ && \
-      sudo wget -q -O linperf.sh "http://www-01.ibm.com/support/docview.wss?uid=swg21115785&aid=1" && \
+      sudo wget -q -O linperf.sh "https://www.ibm.com/support/pages/sites/default/files/inline-files/\$FILE/linperf.sh" && \
       sudo chmod a+x linperf.sh \
     ) && \
     echo "# https://jmeter.apache.org/" && \
