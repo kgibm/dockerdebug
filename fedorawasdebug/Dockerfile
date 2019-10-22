@@ -38,7 +38,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 # Find the latest version here:
 # https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
-ARG MAVEN_LIBERTY_VERSION="19.0.0.9"
+ARG MAVEN_LIBERTY_VERSION="19.0.0.10"
 
 ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
@@ -528,6 +528,32 @@ AdminConfig.save()\n\
     sudo cp /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
     sudo sed -i 's/9080/9081/g' /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
     sudo chmod a+rw /opt/daytrader7/jmeter_files/daytrader7_twas.jmx
+
+RUN --mount=type=secret,id=remotepassword \
+    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+    printf 'dn: cn=wsadminldap,ou=Users,dc=example,dc=com\n\
+cn: wsadminldap LastNameWsadminldap\n\
+sn: LastNameWsadminldap\n\
+objectClass: inetOrgPerson\n\
+userPassword: %s\n\
+uid: wsadminldap\n\
+\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" | sudo tee /root/wsadmin.ldif && \
+    sudo ldapadd -x -D "cn=Manager,dc=example,dc=com" -w "$(echo -n "$(sudo head -n 1 /root/password.txt)")" -f /root/wsadmin.ldif && \
+    printf '\n\
+AdminTask.createIdMgrLDAPRepository("[-default true -id LDAP1 -adapterClassName com.ibm.ws.wim.adapter.ldap.LdapAdapter -ldapServerType CUSTOM -sslConfiguration -certificateMapMode exactdn -supportChangeLog none -certificateFilter -loginProperties uid]")\n\
+AdminTask.addIdMgrLDAPServer("[-id LDAP1 -host localhost -bindDN cn=Manager,dc=example,dc=com -bindPassword %s -referal ignore -sslEnabled false -ldapServerType CUSTOM -sslConfiguration -certificateMapMode exactdn -certificateFilter -authentication simple -port 389]")\n\
+AdminTask.addIdMgrRepositoryBaseEntry("[-id LDAP1 -name dc=example,dc=com -nameInRepository dc=example,dc=com]")\n\
+AdminTask.addIdMgrRealmBaseEntry("[-name defaultWIMFileBasedRealm -baseEntry dc=example,dc=com]")\n\
+AdminTask.configureAdminWIMUserRegistry("[-realmName defaultWIMFileBasedRealm -verifyRegistry false ]")\n\
+AdminTask.configureAdminWIMUserRegistry("[-autoGenerateServerId true -primaryAdminId wsadmin -ignoreCase true -customProperties -verifyRegistry false ]")\n\
+AdminTask.mapUsersToAdminRole("[-accessids [user:defaultWIMFileBasedRealm/cn=Admin1,ou=Users,dc=example,dc=com] -userids [Admin1] -roleName administrator]")\n\
+AdminTask.mapUsersToAdminRole("[-accessids [user:defaultWIMFileBasedRealm/cn=wsadminldap,ou=Users,dc=example,dc=com] -userids [wsadminldap] -roleName administrator]")\n\
+\n\
+AdminConfig.save()\n\
+\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /home/was/twas_config_ldap.jy && \
+      /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+      /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_ldap.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+      /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)"
 
 # This should be the last real command because it's the most likely file to get a minor update.
 COPY ["WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf", "/opt/docs/"]
