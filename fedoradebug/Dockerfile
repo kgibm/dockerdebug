@@ -42,8 +42,6 @@ RUN sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf && dnf reinstall -y "*"
 # Notes on the packages:
 # * Firefox crashes switching tabs with SIGBUS errors unless we use docker run --shm-size=...
 #    https://bugzilla.mozilla.org/show_bug.cgi?id=1338771
-# * libxcrypt-compat provides /lib64/libcrypt.so.1 needed for things like tWAS; otherwise: "java.lang.UnsatisfiedLinkError: Ws60ProcessManagement (Not found in java.library.path)"
-#    https://fedoraproject.org/wiki/Changes/FullyRemoveDeprecatedAndUnsafeFunctionsFromLibcrypt
 RUN dnf install -y \
       at \
       atop \
@@ -86,7 +84,6 @@ RUN dnf install -y \
       less \
       libnsl \
       libreoffice \
-      libxcrypt-compat \
       llvm \
       lsof \
       lzo \
@@ -162,6 +159,7 @@ RUN dnf install -y \
       kernel
 
 RUN dbus-uuidgen > /var/lib/dbus/machine-id && \
+    groupadd nogroup && \
     echo "# Explicitly install a newer version of supervisor because of https://github.com/Supervisor/supervisor/issues/1224" && \
     sudo pip3 install supervisor==4.0.1 && \
     echo "###############################################" && \
@@ -570,7 +568,7 @@ EXPOSE 22 3389 5901 5902
 # Last statement must be switching to root for supervisord
 USER root
 
-# Randomt tips:
+# Random tips:
 # * List all available Gnome settings: gsettings list-recursively
 # * Available vncserver options: vncserver --help; Xvnc --help
 
