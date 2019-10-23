@@ -252,7 +252,7 @@ RUN echo "# https://github.com/WASdev/sample.daytrader7" && \
       cd /opt/ && \
       sudo git clone https://github.com/WASdev/sample.daytrader7 daytrader7 && \
       cd /opt/daytrader7 && \
-      sudo gradle build \
+      sudo gradle :daytrader-ee7:ear \
     ) && \
     echo "# Tried to fix the NoSuchEJBException but this didn't help. Instead, we just ignore the warnings in daytrader7logging.xml below." && \
     mkdir -p /config/configDropins/overrides/ && \
@@ -601,6 +601,7 @@ environment=\n\
     USER="root",\n\
 \n' | sudo tee /ihs.supervisord.conf
 
+# Backup and clear Liberty and tWAS logs
 RUN sudo mkdir /backup/ && \
     sudo mkdir /backup/liberty/ && \
     sudo mkdir /backup/twas/ && \
