@@ -1,0 +1,94 @@
+FROM websphere-liberty:javaee8
+
+USER root
+RUN apt-get update
+RUN apt-get install -y git
+RUN apt-get install -y wget
+RUN apt-get install -y unzip
+RUN apt-get install -y curl
+
+# Install a JDK for Gradle
+RUN wget -q -O /tmp/ibm-java-sdk-archive.bin https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/8.0.5.41/linux/x86_64/ibm-java-sdk-8.0-5.41-x86_64-archive.bin
+RUN chmod +x /tmp/ibm-java-sdk-archive.bin
+RUN printf 'USER_INSTALL_DIR=/opt/ibm/jdk/\nINSTALLER_UI=silent\nLICENSE_ACCEPTED=TRUE' > /tmp/ibm-java.properties
+RUN /tmp/ibm-java-sdk-archive.bin -f /tmp/ibm-java.properties
+
+# The Gradle in apt is so old it hits some TLS issues but we have to stay below V5 for deprecated/removed Gradle features used by DT7
+RUN cd /opt/ && wget -q -O gradle.zip https://services.gradle.org/distributions/gradle-4.10.2-bin.zip && unzip -q gradle.zip
+RUN ln -s /opt/gradle-4.10.2/bin/gradle /usr/local/bin/gradle
+
+RUN cd /opt/ && wget -q -O jmeter.zip https://www.apache.org/dist/jmeter/binaries/apache-jmeter-5.1.1.zip && unzip -q jmeter.zip
+RUN wget -q -O /opt/apache-jmeter-5.1.1/lib/ext/JMeterWebSocketSamplers-1.2.1.jar https://bitbucket.org/pjtr/jmeter-websocket-samplers/downloads/JMeterWebSocketSamplers-1.2.1.jar
+
+RUN mkdir /backup && chown default:root /backup
+
+USER default
+RUN git clone https://github.com/WASdev/sample.daytrader7 /home/default/sample.daytrader7/
+RUN cd /home/default/sample.daytrader7/ && JAVA_HOME="/opt/ibm/jdk/" gradle :daytrader-ee7:ear
+RUN cp /home/default/sample.daytrader7/daytrader-ee7/build/libs/daytrader-ee7.ear /config/dropins/
+RUN sed -i '/.*webProfile.*/d' /config/server.xml
+RUN sed -i '/.*javaee.*/d' /config/server.xml
+RUN printf '<server>\n\
+    <featureManager>\n\
+        <feature>ejb-3.2</feature>\n\
+        <feature>servlet-3.1</feature>\n\
+        <feature>jsf-2.2</feature>\n\
+        <feature>jpa-2.1</feature>\n\
+        <feature>mdb-3.2</feature>\n\
+        <feature>wasJmsServer-1.0</feature>\n\
+        <feature>wasJmsClient-2.0</feature>\n\
+        <feature>cdi-1.2</feature>\n\
+        <feature>websocket-1.1</feature>\n\
+        <feature>concurrent-1.0</feature>\n\
+        <feature>jsonp-1.0</feature>\n\
+        <feature>beanValidation-1.1</feature>\n\
+        <feature>localConnector-1.0</feature>\n\
+    </featureManager>\n\
+    <connectionManager agedTimeout="-1" connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100" minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1"/>\n\
+    <authData id="TradeDataSourceAuthData" user="default" password="test" />\n\
+    <authData id="TradeAdminAuthData" user="default" password="test" />\n\
+    <connectionManager agedTimeout="-1" connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100" minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1" />\n\
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />\n\
+    <library filesetRef="DerbyFileset" id="DerbyLib" />\n\
+    <fileset dir="${shared.resource.dir}/db-derby-10.14.2.0-bin/lib/" id="DerbyFileset" includes="derby.jar" />\n\
+    <dataSource connectionManagerRef="conMgr1" id="DefaultDataSource" isolationLevel="TRANSACTION_READ_COMMITTED" jdbcDriverRef="DerbyEmbedded" jndiName="jdbc/TradeDataSource" statementCacheSize="60">\n\
+        <properties.derby.embedded createDatabase="create" databaseName="${shared.resource.dir}/data/tradedb" user="default" password="test" />\n\
+    </dataSource>\n\
+    <messagingEngine id="defaultME">\n\
+      <queue id="TradeBrokerQueue"/>\n\
+      <topicSpace id="TradeTopicSpace"/>\n\
+    </messagingEngine>\n\
+    <jmsQueueConnectionFactory connectionManagerRef="ConMgr3" jndiName="jms/TradeBrokerQCF">\n\
+      <properties.wasJms/>\n\
+    </jmsQueueConnectionFactory>\n\
+    <connectionManager id="ConMgr3" maxPoolSize="20"/>\n\
+    <jmsTopicConnectionFactory connectionManagerRef="ConMgr4" jndiName="jms/TradeStreamerTCF">\n\
+      <properties.wasJms/>\n\
+    </jmsTopicConnectionFactory>\n\
+    <connectionManager id="ConMgr4" maxPoolSize="20"/>\n\
+    <jmsQueue id="jms/TradeBrokerQueue" jndiName="jms/TradeBrokerQueue">\n\
+      <properties.wasJms deliveryMode="NonPersistent" queueName="TradeBrokerQueue"/>\n\
+    </jmsQueue>\n\
+    <jmsTopic id="TradeStreamerTopic" jndiName="jms/TradeStreamerTopic">\n\
+      <properties.wasJms deliveryMode="NonPersistent" topicSpace="TradeTopicSpace"/>\n\
+    </jmsTopic>\n\
+    <jmsActivationSpec id="eis/TradeBrokerMDB">\n\
+      <properties.wasJms destinationRef="jms/TradeBrokerQueue"/>\n\
+    </jmsActivationSpec>\n\
+    <jmsActivationSpec id="eis/TradeStreamerMDB">\n\
+      <properties.wasJms destinationRef="TradeStreamerTopic" destinationType="javax.jms.Topic"/>\n\
+      </jmsActivationSpec>\n\
+  </server>\n' > /config/configDropins/overrides/daytrader.xml
+RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
+RUN wget -q -O /opt/ibm/wlp/usr/shared/resources/derby.zip https://www.apache.org/dist/db/derby/db-derby-10.14.2.0/db-derby-10.14.2.0-bin.zip
+RUN cd /opt/ibm/wlp/usr/shared/resources/ && unzip -q derby.zip
+RUN mkdir /opt/ibm/wlp/usr/shared/resources/data/
+RUN /opt/ibm/wlp/bin/server start defaultServer && \
+    sleep 30 && \
+    curl -s "http://localhost:9080/daytrader/config?action=buildDBTables" && \
+    /opt/ibm/wlp/bin/server stop defaultServer && \
+    /opt/ibm/wlp/bin/server start defaultServer && \
+    sleep 30 && \
+    curl -s "http://localhost:9080/daytrader/config?action=buildDB" && \
+    /opt/ibm/wlp/bin/server stop defaultServer
+RUN mv /logs/* /backup/
