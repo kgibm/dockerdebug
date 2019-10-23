@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorawasdebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug
+#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -38,7 +38,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 # Find the latest version here:
 # https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
-ARG MAVEN_LIBERTY_VERSION="19.0.0.10"
+ARG MAVEN_LIBERTY_VERSION="19.0.0.9"
 
 ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
@@ -71,11 +71,11 @@ USER was
 
 # When updating the Liberty version, also update the version used in a build.gradle
 # line replacement below (search for the Liberty version number).
-COPY --from=websphere-liberty:javaee8 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
-COPY --from=websphere-liberty:javaee8 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
-COPY --from=websphere-liberty:javaee8 --chown=was:root /logs /logs
-COPY --from=websphere-liberty:javaee8 --chown=was:root /licenses /licenses
-COPY --from=websphere-liberty:javaee8 --chown=was:root /etc/wlp /etc/wlp
+COPY --from=websphere-liberty:19.0.0.9-javaee8 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
+COPY --from=websphere-liberty:19.0.0.9-javaee8 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
+COPY --from=websphere-liberty:19.0.0.9-javaee8 --chown=was:root /logs /logs
+COPY --from=websphere-liberty:19.0.0.9-javaee8 --chown=was:root /licenses /licenses
+COPY --from=websphere-liberty:19.0.0.9-javaee8 --chown=was:root /etc/wlp /etc/wlp
 
 RUN sudo ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     sudo chown was:root /output && \
@@ -112,7 +112,10 @@ COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /li
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /opt/IBM /opt/IBM
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /etc/websphere /etc/websphere
 
-RUN sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+# * libxcrypt-compat provides /lib64/libcrypt.so.1 needed for things like tWAS; otherwise: "java.lang.UnsatisfiedLinkError: Ws60ProcessManagement (Not found in java.library.path)"
+#    https://fedoraproject.org/wiki/Changes/FullyRemoveDeprecatedAndUnsafeFunctionsFromLibcrypt
+RUN sudo dnf install -y libxcrypt-compat && \
+    sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
     sed -i 's/"7276"/"7277"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
     sed -i 's/"7286"/"7287"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
     sed -i 's/"9080"/"9081"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
@@ -554,6 +557,58 @@ AdminConfig.save()\n\
       /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
       /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_ldap.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
       /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)"
+
+#################
+# "Install" IHS #
+#################
+
+# https://hub.docker.com/r/ibmcom/ibm-http-server/tags
+# https://github.com/WASdev/ci.docker.ibm-http-server/blob/master/production/Dockerfile.install
+COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/HTTPServer /opt/IBM/HTTPServer
+COPY --from=ibmcom/ibm-http-server --chown=was:root /work/ihsstart.sh /work/ihsstart.sh
+COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Plugins /opt/IBM/WebSphere/Plugins
+COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Toolbox /opt/IBM/WebSphere/Toolbox
+
+RUN --mount=type=secret,id=remotepassword \
+    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+    printf "\n\
+AdminConfig.create('HostAlias', AdminConfig.getid('/Cell:DefaultCell01/VirtualHost:default_host/'), '[[hostname \"*\"] [port \"9083\"]]')\n\
+\n\
+AdminConfig.save()\n\
+\n" > /home/was/twas_config_virtualhost.jy && \
+    /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+    /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_virtualhost.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+    /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+    sed -i 's/Listen 80/Listen 9083/g' /opt/IBM/HTTPServer/conf/httpd.conf && \
+    /opt/IBM/WebSphere/AppServer/bin/GenPluginCfg.sh && \
+    printf '\n\
+LoadModule was_ap24_module /opt/IBM/WebSphere/Plugins/bin/64bits/mod_was_ap24_http.so\n\
+WebSpherePluginConfig /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/plugin-cfg.xml\n\
+\n' | sudo tee -a /opt/IBM/HTTPServer/conf/httpd.conf && \
+    printf '\n\
+[program:ihs]\n\
+command=/opt/IBM/HTTPServer/bin/apachectl start\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+redirect_stderr=true\n\
+startretries=0\n\
+autorestart=false\n\
+priority=70\n\
+user=root\n\
+autostart=true\n\
+environment=\n\
+    HOME="/root",\n\
+    USER="root",\n\
+\n' | sudo tee /ihs.supervisord.conf
+
+RUN sudo mkdir /backup/ && \
+    sudo mkdir /backup/liberty/ && \
+    sudo mkdir /backup/twas/ && \
+    sudo mkdir /backup/twas/ffdc/ && \
+    sudo mv /logs/* /backup/liberty/ && \
+    sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/* /backup/twas/ && \
+    sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
+    sudo sudo chown -R was:root /backup/
 
 # This should be the last real command because it's the most likely file to get a minor update.
 COPY ["WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf", "/opt/docs/"]

@@ -1,13 +1,13 @@
 # WebSphere Application Server Troubleshooting and Performance Lab on Docker
 
 * Full lab instructions: https://raw.githubusercontent.com/kgibm/dockerdebug/master/fedorawasdebug/WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf
-* Preparation instructions only: https://raw.githubusercontent.com/kgibm/dockerdebug/master/fedorawasdebug/WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker-Prep.pdf
+* Preparation instructions only: https://raw.githubusercontent.com/kgibm/dockerdebug/master/fedorawasdebug/Supplemental/WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker-Prep.pdf
 
 ## Quick Start
 
 Note: You'll need more than 20GB of disk space and configure Docker with 4GB or more of RAM. For detailed instructions, see the Lab PDF above.
 
-1. `docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
+1. `docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
    * To share files with your host machine, add: Linux/macOS: `-v /:/host/`, Windows: `-v //c/:/host/`
 1. The container is fully started after about 2 minutes when the output shows:
    ```
@@ -41,7 +41,8 @@ Note: You'll need more than 20GB of disk space and configure Docker with 4GB or 
 * Fedora 30 x64
 * WAS Liberty 19.0.0.6
 * Traditional WAS Base 9.0.5.0
-* IBM Java 8.0.5.37
+* IBM Java 8
+* IBM HTTP Server V9
 * IBM Garbage Collection Memory Visualizer (GCMV)
 * Memory Analyzer Tool (MAT) with the IBM Extensions for Memory Analyzer (IEMA)
 * IBM Java Health Center (HC)
@@ -73,6 +74,7 @@ Note: You'll need more than 20GB of disk space and configure Docker with 4GB or 
 * MariaDB
 * Derby
 * Open Liberty Source
+* OpenLDAP
 
 ## Notes
 
