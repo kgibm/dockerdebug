@@ -38,7 +38,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 # Find the latest version here:
 # https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
-ARG MAVEN_LIBERTY_VERSION="19.0.0.9"
+ARG MAVEN_LIBERTY_VERSION="19.0.0.10"
 
 ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
@@ -71,11 +71,11 @@ USER was
 
 # When updating the Liberty version, also update the version used in a build.gradle
 # line replacement below (search for the Liberty version number).
-COPY --from=websphere-liberty:19.0.0.9-javaee8 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
-COPY --from=websphere-liberty:19.0.0.9-javaee8 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
-COPY --from=websphere-liberty:19.0.0.9-javaee8 --chown=was:root /logs /logs
-COPY --from=websphere-liberty:19.0.0.9-javaee8 --chown=was:root /licenses /licenses
-COPY --from=websphere-liberty:19.0.0.9-javaee8 --chown=was:root /etc/wlp /etc/wlp
+COPY --from=websphere-liberty:javaee7 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
+COPY --from=websphere-liberty:javaee7 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
+COPY --from=websphere-liberty:javaee7 --chown=was:root /logs /logs
+COPY --from=websphere-liberty:javaee7 --chown=was:root /licenses /licenses
+COPY --from=websphere-liberty:javaee7 --chown=was:root /etc/wlp /etc/wlp
 
 RUN sudo ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     sudo chown was:root /output && \

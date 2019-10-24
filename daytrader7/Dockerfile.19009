@@ -1,4 +1,4 @@
-FROM websphere-liberty:19.0.0.9-javaee8
+FROM websphere-liberty:19.0.0.9-javaee7
 
 USER root
 RUN apt-get update
