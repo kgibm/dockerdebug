@@ -1,0 +1,108 @@
+FROM ibmcom/websphere-traditional
+
+USER root
+RUN apt-get update
+RUN apt-get install -y curl git wget unzip
+
+# The Gradle in apt is so old it hits some TLS issues but we have to stay below V5 for deprecated/removed Gradle features used by DT7
+RUN cd /opt/ && wget -q -O gradle.zip https://services.gradle.org/distributions/gradle-4.10.2-bin.zip && unzip -q gradle.zip
+RUN ln -s /opt/gradle-4.10.2/bin/gradle /usr/local/bin/gradle
+
+RUN cd /opt/ && wget -q -O jmeter.zip https://www.apache.org/dist/jmeter/binaries/apache-jmeter-5.1.1.zip && unzip -q jmeter.zip
+RUN wget -q -O /opt/apache-jmeter-5.1.1/lib/ext/JMeterWebSocketSamplers-1.2.1.jar https://bitbucket.org/pjtr/jmeter-websocket-samplers/downloads/JMeterWebSocketSamplers-1.2.1.jar
+
+RUN cd /opt/ && wget -q -O /opt/derby.zip https://www.apache.org/dist/db/derby/db-derby-10.14.2.0/db-derby-10.14.2.0-bin.zip && unzip -q derby.zip
+
+USER was
+RUN git clone https://github.com/WASdev/sample.daytrader7 /home/was/sample.daytrader7/
+RUN cd /home/was/sample.daytrader7/ && JAVA_HOME="/opt/IBM/WebSphere/AppServer/java/8.0/" gradle :daytrader-ee7:ear
+RUN ls -al /opt/
+
+RUN echo "websphere" > /tmp/PASSWORD && \
+    /work/set_password.sh && \
+    sed -i 's/9082/9080/g' /home/was/sample.daytrader7/jmeter_files/daytrader7.jmx && \
+    sed -i 's/THREADS,50/THREADS,4/g' /home/was/sample.daytrader7/jmeter_files/daytrader7.jmx && \
+    sed -i 's/\(ResultCollector.*StatVisualizer.*enabled="\)false/\1true/g' /home/was/sample.daytrader7/jmeter_files/daytrader7.jmx && \
+    sed -i 's/ThreadGroup.scheduler">true/ThreadGroup.scheduler">false/g' /home/was/sample.daytrader7/jmeter_files/daytrader7.jmx && \
+    sed -i 's/AdminUserID/wsadmin/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i "s/\"password\"/\"$(cat /tmp/PASSWORD)\"/g" /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/SecurityEnabled = ".*/SecurityEnabled = "true"/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/DefaultProviderType =   .*/DefaultProviderType = "Derby"/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/DefaultPathName =       .*/DefaultPathName = "\/opt\/db-derby-10.14.2.0-bin\/lib\/derby.jar"/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/DefaultEJBDeployType = ".*/DefaultEJBDeployType = "DERBY_V10"/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/DefaultTradeAppName = ".*/DefaultTradeAppName = "DayTrader7"/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/DefaultEarFile =      ".*/DefaultEarFile = "\/home\/was\/sample.daytrader7\/daytrader-ee7\/build\/libs\/daytrader-ee7.ear"/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/DerbyPath =             ".*/DerbyPath = "\/opt\/db-derby-10.14.2.0-bin\/lib\/derby.jar"/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/#\(scope = .*Server.*\)/\1/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i '/.*scope = .*NodeName+"\/".*/d' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/DefaultUseMetadata =  "true"/DefaultUseMetadata =  "false"/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/DefaultRunWSDeploy =  "false"/DefaultRunWSDeploy =  "true"/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i 's/DefaultXA = "false"/DefaultXA = "true"/g' /home/was/sample.daytrader7/scripts/daytrader_SILENT_singleServer.py && \
+    sed -i '/import sre/d' /home/was/sample.daytrader7/scripts/resource_scripts.py && \
+    sed -i 's/providerId = AdminConfig.createUsingTemplate.*/providerId = AdminTask.createJDBCProvider(["-scope", "Node=DefaultNode01,Server=server1", "-databaseType", "Derby", "-providerType", "Derby JDBC Provider", "-implementationType", "Connection pool data source", "-name", "Derby JDBC Provider", "-classpath", "\/opt\/db-derby-10.14.2.0-bin\/lib\/derby.jar", "-nativePath", ""])/g' /home/was/sample.daytrader7/scripts/resource_scripts.py && \
+    sed -i 's/\(Derby.*\) Only":/\1":/g' /home/was/sample.daytrader7/scripts/resource_scripts.py && \
+    sed -i 's/\(Derby.*\) Only (XA)":/\1 (XA)":/g' /home/was/sample.daytrader7/scripts/resource_scripts.py && \
+    sed -i 's/dsId = AdminConfig.createUsingTemplate.*/dsId = AdminTask.createDatasource(providerId, ["-name", datasourceName, "-jndiName", jndiName, "-dataStoreHelperClassName", "com.ibm.websphere.rsadapter.DerbyDataStoreHelper", "-containerManagedPersistence", "true", "-componentManagedAuthenticationAlias", "TradeDataSourceAuthData", "-configureResourceProperties", "[[databaseName java.lang.String TradeDB]]"])/g' /home/was/sample.daytrader7/scripts/resource_scripts.py && \
+    sed -i 's/parms += " -usedefaultbindings"/parms += " -usedefaultbindings -defaultbinding.ee.defaults"/g' /home/was/sample.daytrader7/scripts/resource_scripts.py && \
+    sed -i 's/, "-subscriptio.*/]/g' /home/was/sample.daytrader7/scripts/resource_scripts.py && \
+    sed -i 's/parms += " -nodeployejb"/parms += ""/g' /home/was/sample.daytrader7/scripts/resource_scripts.py && \
+    sed -i 's/parms += " -nodeployws"/parms += ""/g' /home/was/sample.daytrader7/scripts/resource_scripts.py && \
+    echo "# For some reason, Derby doesn't like the default locale so we override it." && \
+    printf '\n\
+server = AdminConfig.getid("/Cell:DefaultCell01/Node:DefaultNode01/Server:server1/")\n\
+jvm = AdminConfig.list("JavaVirtualMachine", server)\n\
+AdminConfig.modify(jvm, [["genericJvmArguments", "-Duser.country=US -Duser.language=en"]])\n\
+\n\
+log = AdminConfig.showAttribute(server, "outputStreamRedirect")\n\
+AdminConfig.modify(log, [["rolloverSize", 100]])\n\
+\n\
+log = AdminConfig.showAttribute(server, "errorStreamRedirect")\n\
+AdminConfig.modify(log, [["rolloverSize", 100]])\n\
+\n\
+trace = AdminConfig.list("TraceService", server)\n\
+log = AdminConfig.showAttribute(trace, "traceLog")\n\
+AdminConfig.modify(log, [["rolloverSize", 100]])\n\
+\n\
+AdminConfig.save()\n\
+\n' > /home/was/twas.jy && \
+    echo "# * Set createDatabase=true custom property" && \
+    printf '\n\
+for dsName in ["TradeDataSource", "NoTxTradeDataSource"]:\n\
+  ds = AdminConfig.getid("/Cell:DefaultCell01/Node:DefaultNode01/Server:server1/JDBCProvider:Derby JDBC Provider/DataSource:" + dsName + "/")\n\
+  ps = AdminConfig.showAttribute(ds, "propertySet")\n\
+  props = AdminConfig.list("J2EEResourceProperty", ps).splitlines()\n\
+  for prop in props:\n\
+    propName = AdminConfig.showAttribute(prop, "name")\n\
+    if propName == "createDatabase":\n\
+      AdminConfig.modify(prop, "[[value create]]")\n\
+\n\
+AdminConfig.save()\n\
+\n' > /home/was/twas_daytrader_finalize.jy
+
+RUN cd /home/was/sample.daytrader7/scripts/ && \
+    /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+    /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+    /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f daytrader_SILENT_singleServer.py -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+    /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_daytrader_finalize.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+    /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+    /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+    curl "http://localhost:9080/daytrader/config?action=buildDBTables" && \
+    /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+    /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+    curl "http://localhost:9080/daytrader/config?action=buildDB" && \
+    /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)"
+
+RUN printf "\n\
+AdminTask.setAdminActiveSecuritySettings('[-appSecurityEnabled true]')\n\
+AdminApp.edit('DayTrader7', '[ -MapRolesToUsers [[ AllAuthenticated AppDeploymentOption.No AppDeploymentOption.Yes \"\" \"\" AppDeploymentOption.No \"\" \"\" ]]]')\n\
+AdminApp.edit('DayTrader7', '[ -MapRolesToUsers [[ webSecOnly AppDeploymentOption.No AppDeploymentOption.No wsadmin \"\" AppDeploymentOption.No user:defaultWIMFileBasedRealm/uid=wsadmin,o=defaultWIMFileBasedRealm \"\" ]]]' )\n\
+AdminApp.edit('DayTrader7', '[ -MapRolesToUsers [[ grp1 AppDeploymentOption.No AppDeploymentOption.No wsadmin \"\" AppDeploymentOption.No user:defaultWIMFileBasedRealm/uid=wsadmin,o=defaultWIMFileBasedRealm \"\" ]]]' )\n\
+\n\
+AdminConfig.save()\n\
+\n" > /home/was/twas_config_security.jy && \
+    /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+    /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_security.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+    /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)"
+
+RUN sed -i 's/Accept-Language/Authorization/g' /home/was/sample.daytrader7/jmeter_files/daytrader7.jmx && \
+    sed -i "s/en-us/Basic $(echo -n "wsadmin:$(echo -n "$(head -n 1 /tmp/PASSWORD)")" | base64)/g" /home/was/sample.daytrader7/jmeter_files/daytrader7.jmx
