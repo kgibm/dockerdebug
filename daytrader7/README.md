@@ -18,4 +18,5 @@ DayTrader7 on tWAS:
 * Terminal 1: `docker run --rm -e ENABLE_BASIC_LOGGING=true -p 9080:9080 -p 9043:9043 -it dt7twas`
   * Wait for tWAS to start
 * Terminal 2: `docker exec -e JAVA_HOME=/opt/IBM/WebSphere/AppServer/java/8.0/ -it $(docker ps -f "ancestor=dt7twas" --format "{{.ID}}") /opt/apache-jmeter-5.1.1/bin/jmeter -n -t /home/was/sample.daytrader7/jmeter_files/daytrader7.jmx -JHOST=localhost -JPORT=9080 -JPROTOCOL=http -JMAXTHINKTIME=100 -JDURATION=300 -JTOPUID=9 -JSTOCKS=9`
-  * Or to investigate WebSockets, go to: http://localhost:9080/daytrader/app?action=mksummary
+  * Or to investigate WebSockets, login with pre-filled credentials at http://localhost:9080/daytrader/app
+  * Then access http://localhost:9080/daytrader/app?action=mksummary
