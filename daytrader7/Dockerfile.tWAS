@@ -15,10 +15,7 @@ RUN cd /opt/ && wget -q -O /opt/derby.zip https://www.apache.org/dist/db/derby/d
 
 USER was
 RUN git clone https://github.com/WASdev/sample.daytrader7 /home/was/sample.daytrader7/
-RUN sed -i '/.*private Session currentSession.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
-    sed -i '/.*currentSession = session;.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
-    sed -i '/.*Log.trace.*currentSession.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
-    sed -i 's/maxUsers=.*/maxUsers=10/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
+RUN sed -i 's/maxUsers=.*/maxUsers=10/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
     sed -i 's/maxQuotes=.*/maxQuotes=10/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
     sed -i 's/runtimeMode=.*/runtimeMode=1/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties
 
