@@ -17,7 +17,9 @@ USER was
 RUN git clone https://github.com/WASdev/sample.daytrader7 /home/was/sample.daytrader7/
 RUN sed -i 's/maxUsers=.*/maxUsers=10/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
     sed -i 's/maxQuotes=.*/maxQuotes=10/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
-    sed -i 's/runtimeMode=.*/runtimeMode=1/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties
+    sed -i 's/runtimeMode=.*/runtimeMode=0/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
+    sed -i 's/void sendMarketSummary.*/void sendMarketSummary(ActionMessage message, Session currentSession) { System.out.println("WebSocket Session getUserPrincipal: " + currentSession.getUserPrincipal()); callSecurity(); /g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
+    sed -i 's/CountDownLatch(1);/CountDownLatch(1); public static void callSecurity() { try { Class<?> c = Class.forName("com.ibm.wsspi.security.token.WSSecurityPropagationHelper"); Object instance = c.getMethod("getInstance").invoke(null); instance.getClass().getMethod("setWebSocketSubject").invoke(instance);	} catch (Throwable t) {	t.printStackTrace(); } }/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java
 
 RUN cd /home/was/sample.daytrader7/ && JAVA_HOME="/opt/IBM/WebSphere/AppServer/java/8.0/" gradle :daytrader-ee7:ear
 RUN ls -al /opt/
@@ -113,3 +115,7 @@ AdminConfig.save()\n\
 
 RUN sed -i 's/Accept-Language/Authorization/g' /home/was/sample.daytrader7/jmeter_files/daytrader7.jmx && \
     sed -i "s/en-us/Basic $(echo -n "wsadmin:$(echo -n "$(head -n 1 /tmp/PASSWORD)")" | base64)/g" /home/was/sample.daytrader7/jmeter_files/daytrader7.jmx
+
+COPY websocket.jar /opt/IBM/WebSphere/AppServer/plugins/
+RUN cd /opt/IBM/WebSphere/AppServer/plugins/ && /opt/IBM/WebSphere/AppServer/java/8.0/bin/jar xvf websocket.jar && /opt/IBM/WebSphere/AppServer/java/8.0/bin/jar uvf com.ibm.ws.runtime.jar com
+
