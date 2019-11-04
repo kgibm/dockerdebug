@@ -15,8 +15,7 @@ RUN cd /opt/ && wget -q -O /opt/derby.zip https://www.apache.org/dist/db/derby/d
 
 USER was
 RUN git clone https://github.com/WASdev/sample.daytrader7 /home/was/sample.daytrader7/
-RUN sed -i 's/void sendMarketSummary.*/void sendMarketSummary(ActionMessage message, Session currentSession) { System.out.println("WebSocket Session principal: " + currentSession.getUserPrincipal());/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
-    sed -i '/.*private Session currentSession.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
+RUN sed -i '/.*private Session currentSession.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
     sed -i '/.*currentSession = session;.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
     sed -i '/.*Log.trace.*currentSession.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
     sed -i 's/maxUsers=.*/maxUsers=10/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
@@ -87,8 +86,7 @@ for dsName in ["TradeDataSource", "NoTxTradeDataSource"]:\n\
 AdminConfig.save()\n\
 \n' > /home/was/twas_daytrader_finalize.jy
 
-RUN echo "V1" && \
-    cd /home/was/sample.daytrader7/scripts/ && \
+RUN cd /home/was/sample.daytrader7/scripts/ && \
     /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
     /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
     /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f daytrader_SILENT_singleServer.py -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
