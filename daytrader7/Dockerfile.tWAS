@@ -18,7 +18,11 @@ RUN git clone https://github.com/WASdev/sample.daytrader7 /home/was/sample.daytr
 RUN sed -i 's/void sendMarketSummary.*/void sendMarketSummary(ActionMessage message, Session currentSession) { System.out.println("WebSocket Session principal: " + currentSession.getUserPrincipal());/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
     sed -i '/.*private Session currentSession.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
     sed -i '/.*currentSession = session;.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
-    sed -i '/.*Log.trace.*currentSession.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java
+    sed -i '/.*Log.trace.*currentSession.*/d' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/java/com/ibm/websphere/samples/daytrader/web/websocket/MarketSummaryWebSocket.java && \
+    sed -i 's/maxUsers=.*/maxUsers=10/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
+    sed -i 's/maxQuotes=.*/maxQuotes=10/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
+    sed -i 's/runtimeMode=.*/runtimeMode=1/g' /home/was/sample.daytrader7/daytrader-ee7-web/src/main/webapp/properties/daytrader.properties
+
 RUN cd /home/was/sample.daytrader7/ && JAVA_HOME="/opt/IBM/WebSphere/AppServer/java/8.0/" gradle :daytrader-ee7:ear
 RUN ls -al /opt/
 
@@ -83,7 +87,8 @@ for dsName in ["TradeDataSource", "NoTxTradeDataSource"]:\n\
 AdminConfig.save()\n\
 \n' > /home/was/twas_daytrader_finalize.jy
 
-RUN cd /home/was/sample.daytrader7/scripts/ && \
+RUN echo "V1" && \
+    cd /home/was/sample.daytrader7/scripts/ && \
     /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
     /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
     /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f daytrader_SILENT_singleServer.py -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
@@ -93,9 +98,11 @@ RUN cd /home/was/sample.daytrader7/scripts/ && \
     curl "http://localhost:9080/daytrader/config?action=buildDBTables" && \
     /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
     /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
-    curl -d action=updateConfig -d RunTimeMode=1 -d OrderProcessingMode=0 -d WebInterface=0 -d MaxUsers=10 -d MaxQuotes=10 -d marketSummaryInterval=20 -d primIterations=1 -d EnablePublishQuotePriceChange=on -d percentSentToWebsocket=10 -d DisplayOrderAlerts=on -d EnableLongRun=on -X POST http://localhost:9080/daytrader/config && \
     curl "http://localhost:9080/daytrader/config?action=buildDB" && \
     /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)"
+
+# Updating runtime config does not persist restarts so update daytrader.properties when compilng
+#    curl -d action=updateConfig -d RunTimeMode=1 -d OrderProcessingMode=0 -d WebInterface=0 -d MaxUsers=10 -d MaxQuotes=10 -d marketSummaryInterval=20 -d primIterations=1 -d EnablePublishQuotePriceChange=on -d percentSentToWebsocket=10 -d DisplayOrderAlerts=on -d EnableLongRun=on -X POST http://localhost:9080/daytrader/config && \
 
 RUN printf "\n\
 AdminTask.setAdminActiveSecuritySettings('[-appSecurityEnabled true]')\n\
