@@ -94,6 +94,7 @@ RUN dnf install -y \
       man \
       man-pages \
       maven \
+      meld \
       mousepad \
       mtr \
       multitail \
@@ -523,22 +524,22 @@ objectClass: organizationalUnit\n\
 ou: Users\n\
 \n\
 dn: cn=Admin1,ou=Users,dc=example,dc=com\n\
-cn: Admin1 LastName1\n\
-sn: LastName1\n\
+cn: Admin1\n\
+sn: Admin1\n\
 objectClass: inetOrgPerson\n\
 userPassword: %s\n\
 uid: Admin1\n\
 \n\
 dn: cn=User2,ou=Users,dc=example,dc=com\n\
-cn: User2 LastName2\n\
-sn: LastName2\n\
+cn: User2\n\
+sn: User2\n\
 objectClass: inetOrgPerson\n\
 userPassword: %s\n\
 uid: User2\n\
 \n\
 dn: cn=User3,ou=Users,dc=example,dc=com\n\
-cn: User3 LastName3\n\
-sn: LastName3\n\
+cn: User3\n\
+sn: User3\n\
 objectClass: inetOrgPerson\n\
 userPassword: %s\n\
 uid: User3\n\
@@ -558,7 +559,20 @@ objectClass: groupOfNames\n\
 member: cn=User2,ou=Users,dc=example,dc=com\n\
 member: cn=User3,ou=Users,dc=example,dc=com\n\
 \n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" | sudo tee /root/basicorg.ldif && \
-    sudo ldapadd -x -D "cn=Manager,dc=example,dc=com" -w "$(echo -n "$(sudo head -n 1 /root/password.txt)")" -f /root/basicorg.ldif
+    sudo ldapadd -x -D "cn=Manager,dc=example,dc=com" -w "$(echo -n "$(sudo head -n 1 /root/password.txt)")" -f /root/basicorg.ldif && \
+    echo "# Configure logging: https://www.openldap.org/doc/admin24/slapdconfig.html#loglevel%20%3Clevel%3E" && \
+    printf 'dn: cn=config\n\
+changetype: modify\n\
+replace: olcLogLevel\n\
+olcLogLevel: stats stats2\n\
+\n\
+dn: olcDatabase={2}mdb,cn=config\n\
+changetype: modify\n\
+add: olcDbMaxSize\n\
+olcDbMaxSize: 1073741824\n\
+\n' | sudo tee /root/openldaploggingdb.ldif && \
+    sudo ldapmodify -H ldapi:// -Y EXTERNAL -f /root/openldaploggingdb.ldif && \
+    echo "local4.* /var/log/slapd.log" | sudo tee -a /etc/rsyslog.conf
 
 USER was
 RUN xdg-mime default xreader.desktop application/pdf
