@@ -8,9 +8,9 @@
 #         file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
 #   Without remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build -t kgibm/fedorawasdebug .
+#     DOCKER_BUILDKIT=1 docker build --progress=plain -t kgibm/fedorawasdebug .
 #   With remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorawasdebug .
+#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedorawasdebug .
 # Step 3: Run the Docker image:
 #   docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug
 # Step 4: Remote into the docker image
@@ -36,7 +36,7 @@ FROM kgibm/fedorajavadebug
 
 LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
-# Find the latest version here:
+# The following Liberty version is used in the liberty-bikes builds. Find the latest version here:
 # https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
 ARG MAVEN_LIBERTY_VERSION="19.0.0.10"
 
@@ -53,7 +53,8 @@ ENV LOG_DIR=/logs \
     PROFILE_NAME=AppSrv01 \
     ADMIN_USER_NAME=wsadmin \
     EXTRACT_PORT_FROM_HOST_HEADER=true \
-    ENABLE_BASIC_LOGGING=true
+    ENABLE_BASIC_LOGGING=true \
+    TLS=true
 
 USER was
 
@@ -84,21 +85,16 @@ RUN sudo ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     sudo chown was:root /liberty && \
     sudo ln -s /opt/ibm/wlp/usr/shared/resources/lib.index.cache /lib.index.cache && \
     sudo chown was:root /lib.index.cache && \
-    echo "# In case the user restarts Liberty from the command line instead of supervisord, we need" && \
-    echo "# to set the right envars" && \
+    echo "# In case the user restarts Liberty from the command line instead of supervisord, we need to set the right envars" && \
     printf '\n\
 LOG_DIR=/logs\n\
 WLP_OUTPUT_DIR=/opt/ibm/wlp/output\n\
 KEYSTORE_REQUIRED=true\n\
+TLS=true\n\
 RANDFILE=/tmp/.rnd\n\
-JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/"\n\
+JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX:+UseContainerSupport"\n\
 \n' >> /config/server.env && \
-    echo "# Run Liberty initialization script at startup:" && \
-    printf '#!/bin/sh\n\
-if [ -e /opt/ibm/helpers/runtime/docker-server.sh ]; then\n\
-    /opt/ibm/helpers/runtime/docker-server.sh\n\
-fi\n\
-\n' | sudo tee /usr/local/bin/extended_entrypoint.sh
+    /opt/ibm/helpers/runtime/docker-server.sh
 
 #############################
 # "Install" Traditional WAS #
@@ -245,7 +241,8 @@ environment=\n\
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh
 
-RUN sudo mkdir /tmp/wlp-cache/ && \
+RUN sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+    sudo mkdir /tmp/wlp-cache/ && \
     sudo chmod 777 /tmp/wlp-cache/ && \
     echo "# https://github.com/WASdev/sample.daytrader7" && \
     ( \
@@ -258,7 +255,7 @@ RUN sudo mkdir /tmp/wlp-cache/ && \
     ) && \
     echo "# Tried to fix the NoSuchEJBException but this didn't help. Instead, we just ignore the warnings in daytrader7logging.xml below." && \
     mkdir -p /config/configDropins/overrides/ && \
-    cp /opt/daytrader7/daytrader-ee7/build/libs/daytrader-ee7.ear /config/dropins/ && \
+    cp /opt/daytrader7/daytrader-ee7/build/libs/daytrader-ee7.ear /config/apps/ && \
     echo "# https://publib.boulder.ibm.com/httpserv/cookbook/" && \
     sudo mkdir /opt/cookbook && \
     sudo wget -q -O /opt/cookbook/WAS_Performance_Cookbook.pdf https://publib.boulder.ibm.com/httpserv/cookbook/WAS_Performance_Cookbook.pdf && \
@@ -288,47 +285,47 @@ environment=\n\
     HOME="/var/lib/mysql",\n\
     USER="mysql",\n\
 \n' | sudo tee /etc/supervisord.d/mysqld.supervisord.conf && \
-    echo "# The webProfile feature pulls in the appSecurity feature and we don't want to enable that for DayTrader7" && \
-    echo "# (it does support it but requires a lot of extra configuration)." && \
-    sed -i '/.*webProfile.*/d' /config/server.xml && \
-    sed -i '/.*javaee.*/d' /config/server.xml && \
     echo "# https://github.com/WASdev/sample.daytrader7/blob/master/daytrader-ee7-wlpcfg/servers/daytrader7Sample/server.xml" && \
     printf '\n\
 <server>\n\
-    <featureManager>\n\
-        <feature>ejb-3.2</feature>\n\
-        <feature>servlet-3.1</feature>\n\
-        <feature>jsf-2.2</feature>\n\
-        <feature>jpa-2.1</feature>\n\
-        <feature>mdb-3.2</feature>\n\
-        <feature>wasJmsServer-1.0</feature>\n\
-        <feature>wasJmsClient-2.0</feature>\n\
-        <feature>cdi-1.2</feature>\n\
-        <feature>websocket-1.1</feature>\n\
-        <feature>concurrent-1.0</feature>\n\
-        <feature>jsonp-1.0</feature>\n\
-        <feature>beanValidation-1.1</feature>\n\
-        <feature>localConnector-1.0</feature>\n\
-    </featureManager>\n\
-    <connectionManager agedTimeout="-1" connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100" minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1"/>\n\
-    <authData id="TradeDataSourceAuthData" user="root" password="%s" />\n\
-    <authData id="TradeAdminAuthData" user="root" password="%s" />\n\
-    <connectionManager agedTimeout="-1" connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100" minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1" />\n\
-    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />\n\
-    <library filesetRef="DerbyFileset" id="DerbyLib" />\n\
-    <fileset dir="/opt/derby/lib/" id="DerbyFileset" includes="derby.jar" />\n\
-    <dataSource connectionManagerRef="conMgr1" id="DefaultDataSource" isolationLevel="TRANSACTION_READ_COMMITTED" jdbcDriverRef="DerbyEmbedded" jndiName="jdbc/TradeDataSource" statementCacheSize="60">\n\
-        <properties.derby.embedded createDatabase="create" databaseName="${shared.resource.dir}/data/tradedb" user="root" password="%s" />\n\
-    </dataSource>\n\
-    \n\
-    <!--<library id="MariaDBLib">\n\
-        <file name="/usr/lib/java/mariadb-java-client.jar" />\n\
-    </library>\n\
-    <dataSource id="DefaultDataSource" jndiName="jdbc/TradeDataSource">\n\
-        <jdbcDriver libraryRef="MariaDBLib" />\n\
-        <properties databaseName="TradeDB" serverName="localhost" user="root" password="%s" portNumber="3306" />\n\
-    </dataSource>-->\n\
-    \n\
+  <featureManager>\n\
+    <feature>transportSecurity-1.0</feature>\n\
+    <feature>ejb-3.2</feature>\n\
+    <feature>servlet-3.1</feature>\n\
+    <feature>jsf-2.2</feature>\n\
+    <feature>jpa-2.1</feature>\n\
+    <feature>mdb-3.2</feature>\n\
+    <feature>wasJmsServer-1.0</feature>\n\
+    <feature>wasJmsClient-2.0</feature>\n\
+    <feature>cdi-1.2</feature>\n\
+    <feature>websocket-1.1</feature>\n\
+    <feature>concurrent-1.0</feature>\n\
+    <feature>jsonp-1.0</feature>\n\
+    <feature>beanValidation-1.1</feature>\n\
+    <feature>localConnector-1.0</feature>\n\
+    <feature>appSecurity-2.0</feature>\n\
+    <feature>ldapRegistry-3.0</feature>\n\
+    <feature>federatedRegistry-1.0</feature>\n\
+  </featureManager>\n\
+  <connectionManager agedTimeout="-1" connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100" minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1"/>\n\
+  <authData id="TradeDataSourceAuthData" user="root" password="%s" />\n\
+  <authData id="TradeAdminAuthData" user="root" password="%s" />\n\
+  <connectionManager agedTimeout="-1" connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100" minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1" />\n\
+  <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />\n\
+  <library filesetRef="DerbyFileset" id="DerbyLib" />\n\
+  <fileset dir="/opt/derby/lib/" id="DerbyFileset" includes="derby.jar" />\n\
+  <dataSource connectionManagerRef="conMgr1" id="DefaultDataSource" isolationLevel="TRANSACTION_READ_COMMITTED" jdbcDriverRef="DerbyEmbedded" jndiName="jdbc/TradeDataSource" statementCacheSize="60">\n\
+    <properties.derby.embedded createDatabase="create" databaseName="${shared.resource.dir}/data/tradedb" user="root" password="%s" />\n\
+  </dataSource>\n\
+  <!--\n\
+  <library id="MariaDBLib">\n\
+    <file name="/usr/lib/java/mariadb-java-client.jar" />\n\
+  </library>\n\
+  <dataSource id="DefaultDataSource" jndiName="jdbc/TradeDataSource">\n\
+    <jdbcDriver libraryRef="MariaDBLib" />\n\
+    <properties databaseName="TradeDB" serverName="localhost" user="root" password="%s" portNumber="3306" />\n\
+  </dataSource>\n\
+  -->\n\
 	<messagingEngine id="defaultME">\n\
 		<queue id="TradeBrokerQueue"/>\n\
 		<topicSpace id="TradeTopicSpace"/>\n\
@@ -352,8 +349,35 @@ environment=\n\
 	</jmsActivationSpec>\n\
 	<jmsActivationSpec id="eis/TradeStreamerMDB">\n\
 		<properties.wasJms destinationRef="TradeStreamerTopic" destinationType="javax.jms.Topic"/>\n\
-    </jmsActivationSpec>\n\
-</server>\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/daytrader.xml && \
+  </jmsActivationSpec>\n\
+  <basicRegistry id="basic" realm="BasicRealm">\n\
+    <user name="wsadmin" password="%s" />\n\
+  </basicRegistry>\n\
+  <ldapRegistry id="LDAP1" realm="SampleLdapIDSRealm" host="localhost" port="389" ignoreCase="true" \n\
+                baseDN="dc=example,dc=com" ldapType="Custom" searchTimeout="60s" recursiveSearch="true"\n\
+                bindDN="cn=Manager,dc=example,dc=com" bindPassword="%s">\n\
+  </ldapRegistry>\n\
+  <federatedRepository>\n\
+    <primaryRealm name="PrimaryRealm" allowOpIfRepoDown="true">\n\
+      <participatingBaseEntry name="o=BasicRealm"/>\n\
+      <participatingBaseEntry name="dc=example,dc=com"/>\n\
+    </primaryRealm>\n\
+  </federatedRepository>\n\
+  <application type="ear" id="daytrader" name="daytrader" location="${server.config.dir}/apps/daytrader-ee7.ear">\n\
+    <application-bnd>\n\
+      <security-role name="webSecOnly">\n\
+        <group name="cn=webSecOnly,ou=Users,dc=example,dc=com" />\n\
+      </security-role>\n\
+      <security-role name="grp1">\n\
+        <group name="cn=grp1,ou=Users,dc=example,dc=com" />\n\
+      </security-role>\n\
+      <security-role name="AllAuthenticated">\n\
+        <special-subject type="ALL_AUTHENTICATED_USERS" />\n\
+      </security-role>\n\
+    </application-bnd>\n\
+  </application>\n\
+</server>\n\
+' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /config/configDropins/overrides/daytrader.xml && \
     echo "# https://openliberty.io/docs/ref/config/#logging.html" && \
     printf '\n\
 <server>\n\
@@ -432,11 +456,11 @@ environment=\n\
     sudo chown -R was:root /opt/ibm/wlp/usr/shared/resources/ && \
     /opt/ibm/wlp/bin/server start defaultServer && \
     sleep 30 && \
-    curl "http://localhost:9080/daytrader/config?action=buildDBTables" && \
+    curl -u "wsadmin:$(cat /tmp/PASSWORD)" "http://localhost:9080/daytrader/config?action=buildDBTables" && \
     /opt/ibm/wlp/bin/server stop defaultServer && \
     /opt/ibm/wlp/bin/server start defaultServer && \
     sleep 30 && \
-    curl "http://localhost:9080/daytrader/config?action=buildDB" && \
+    curl -u "wsadmin:$(cat /tmp/PASSWORD)" "http://localhost:9080/daytrader/config?action=buildDB" && \
     /opt/ibm/wlp/bin/server stop defaultServer && \
     rm -rf /logs/ffdc/* && \
     sudo rm /opt/daytrader7/jmeter_files/daytrader7_mojarra.jmx && \
@@ -531,7 +555,7 @@ AdminConfig.save()\n\
     ) && \
     sudo mv /opt/daytrader7/jmeter_files/daytrader7.jmx /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx && \
     sudo cp /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
-    sudo sed -i 's/9080/9081/g' /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
+    sudo sed -i 's/9080/9083/g' /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
     sudo chmod a+rw /opt/daytrader7/jmeter_files/daytrader7_twas.jmx
 
 #################
@@ -554,6 +578,7 @@ AdminConfig.save()\n\
     /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_virtualhost.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
     /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
     sed -i 's/Listen 80/Listen 9083/g' /opt/IBM/HTTPServer/conf/httpd.conf && \
+    sed -i 's/ReportInterval 300/ReportInterval 10/g' /opt/IBM/HTTPServer/conf/httpd.conf && \
     /opt/IBM/WebSphere/AppServer/bin/GenPluginCfg.sh && \
     printf '\n\
 LoadModule was_ap24_module /opt/IBM/WebSphere/Plugins/bin/64bits/mod_was_ap24_http.so\n\
@@ -566,6 +591,7 @@ stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
 startretries=0\n\
+startsecs=0\n\
 autorestart=false\n\
 priority=70\n\
 user=root\n\
@@ -616,8 +642,12 @@ AdminConfig.save()\n\
       /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_ldap.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
       /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)"
 
-RUN sudo sed -i 's/Accept-Language/Authorization/g' /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
-    sudo sed -i "s/en-us/Basic $(echo -n "Admin1:$(echo -n "$(sudo head -n 1 /root/password.txt)")" | base64)/g" /opt/daytrader7/jmeter_files/daytrader7_twas.jmx
+RUN sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+    sudo sed -i 's/Accept-Language/Authorization/g' /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
+    sudo sed -i "s/en-us/Basic $(echo -n "Admin1:$(echo -n "$(sudo head -n 1 /root/password.txt)")" | base64)/g" /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
+    sudo sed -i 's/Accept-Language/Authorization/g' /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx && \
+    sudo sed -i "s/en-us/Basic $(echo -n "Admin1:$(echo -n "$(sudo head -n 1 /root/password.txt)")" | base64)/g" /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx && \
+    /opt/ibm/wlp/bin/installUtility install --acceptLicense webProfile-8.0
 
 # Backup and clear Liberty and tWAS logs
 RUN sudo mkdir /backup/ && \
@@ -632,7 +662,7 @@ RUN sudo mkdir /backup/ && \
 # This should be the last real command because it's the most likely file to get a minor update.
 COPY ["WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf", "/opt/docs/"]
 
-EXPOSE 8080 8081 8082 9080 9081 9082 9443 9444 9445 12000 12005
+EXPOSE 8080 8081 8082 9080 9081 9082 9083 9443 9444 9445 12000 12005
 
 # Last statement must be switching to root for supervisord
 USER root
