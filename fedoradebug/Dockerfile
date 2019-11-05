@@ -37,7 +37,12 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 # By default, the Fedora cloud image doesn't install man pages so we disable that and reinstall
 # http://docs.projectatomic.io/container-best-practices/#_removing_documentation
-RUN sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf && dnf reinstall -y "*"
+RUN sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf && \
+    dnf reinstall -y "*" && \
+    dnf install -y dnf-plugins-core && \
+    dnf debuginfo-install -y \
+      glibc \
+      kernel
 
 # Notes on the packages:
 # * Firefox crashes switching tabs with SIGBUS errors unless we use docker run --shm-size=...
@@ -54,7 +59,6 @@ RUN dnf install -y \
       bison-devel \
       cmake \
       collectl \
-      dnf-plugins-core \
       e2fsprogs \
       emacs \
       file-devel \
@@ -85,6 +89,7 @@ RUN dnf install -y \
       libreoffice \
       llvm \
       lsof \
+      ltrace \
       lzo \
       lzo-devel \
       lzo-minilzo \
@@ -107,6 +112,7 @@ RUN dnf install -y \
       npm \
       nss-pam-ldapd \
       ntp \
+      numactl \
       openldap \
       openldap-clients \
       openldap-devel \
@@ -160,14 +166,20 @@ RUN dnf install -y \
       xfce4-netload-plugin \
       xfce4-notes-plugin \
       xfce4-sensors-plugin \
+      xfce4-screensaver \
       xfce4-systemload-plugin \
       xrdp \
       xreader \
-    && dnf debuginfo-install -y \
-      glibc \
-      kernel
+      xscreensaver \
+      xscreensaver-base \
+      xscreensaver-extras \
+      xscreensaver-extras-base \
+      xscreensaver-extras-gss \
+      xscreensaver-gl-base \
+      xscreensaver-gl-extras
 
 RUN dbus-uuidgen > /var/lib/dbus/machine-id && \
+    echo "enforcing=0" | sudo tee -a /etc/security/pwquality.conf && \
     groupadd nogroup && \
     echo "###############################################" && \
     echo "# Create the script that can update passwords #" && \
@@ -180,8 +192,8 @@ if [ "${password}" = "" ]; then\n\
 fi\n\
 echo -n "${password}" | sudo sh -c "vncpasswd -f > /root/.vnc/passwd" || exit 1\n\
 echo "root:$(echo -n "${password}")" | sudo sh -c "chpasswd" || exit 1\n\
-echo -n "${password}" | sudo sh -c "vncpasswd -f > /home/was/.vnc/passwd"\n\
-echo -n "${password}" | sudo sh -c "passwd --stdin was"\n\
+echo -n "${password}" | sudo sh -c "vncpasswd -f > /home/was/.vnc/passwd" || exit 1\n\
+echo -n "${password}" | sudo sh -c "passwd --stdin was" || exit 1\n\
 sudo sed -i "s/password={SHA}.*/password={SHA}$(echo -n "${password}" | sha1sum | awk "{print \\$1}")/g" /etc/supervisord.conf || exit 1\n\
 sudo chmod 600 /root/.vnc/passwd || exit 1\n\
 sudo chmod -R go-rwx /home/was/.vnc || exit 1\n\
@@ -571,7 +583,22 @@ olcDbMaxSize: 1073741824\n\
     echo "local4.* /var/log/slapd.log" | sudo tee -a /etc/rsyslog.conf
 
 USER was
-RUN xdg-mime default xreader.desktop application/pdf
+RUN xdg-mime default xreader.desktop application/pdf && \
+    mkdir -p /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/ && \
+    printf '<?xml version="1.0" encoding="UTF-8"?>\n\
+<channel name="xfce4-screensaver" version="1.0">\n\
+  <property name="saver" type="empty">\n\
+    <property name="mode" type="int" value="2"/>\n\
+    <property name="idle-activation" type="empty">\n\
+      <property name="delay" type="int" value="1"/>\n\
+    </property>\n\
+    <property name="themes" type="empty">\n\
+      <property name="list" type="array">\n\
+        <value type="string" value="screensavers-xfce-popsquares"/>\n\
+      </property>\n\
+    </property>\n\
+  </property>\n\
+</channel>\n' > /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-screensaver.xml
 
 EXPOSE 22 3389 5901 5902
 
@@ -580,6 +607,7 @@ USER root
 
 # Random tips:
 # * List all available Gnome settings: gsettings list-recursively
+# * List all available Xfce settings: for i in $(xfconf-query -l | grep -v Channels); do xfconf-query -c $i -l -v; done
 # * Available vncserver options: vncserver --help; Xvnc --help
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
