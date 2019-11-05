@@ -38,11 +38,14 @@ Note: You'll need more than 20GB of disk space and configure Docker with 4GB or 
 
 ## Installation Highlights
 
-* Fedora 30 x64
-* WAS Liberty 19.0.0.6
-* Traditional WAS Base 9.0.5.0
+* Fedora 31 x64
+* WAS Liberty 19.0.0.10
+* Traditional WAS Base 9.0.5.1
 * IBM Java 8
-* IBM HTTP Server V9
+* IBM HTTP Server 9.0.5.0
+* OpenLDAP
+* DayTrader7 on WAS Liberty connected to OpenLDAP
+* DayTrader7 on Traditional WAS connected to OpenLDAP
 * IBM Garbage Collection Memory Visualizer (GCMV)
 * Memory Analyzer Tool (MAT) with the IBM Extensions for Memory Analyzer (IEMA)
 * IBM Java Health Center (HC)
@@ -55,16 +58,14 @@ Note: You'll need more than 20GB of disk space and configure Docker with 4GB or 
 * IBM Pattern Modeling and Analysis Tool for Java Garbage Collector (PMAT)
 * IBM Trace and Request Analyzer for WAS (TRA)
 * IBM ClassLoader Analyzer
-* Eclipse 2019-03
+* Eclipse 2019-06
   * IBM Liberty Developer Tools
 * Firefox
 * LibreOffice
 * Wireshark
 * Apache JMeter
 * OpenJDK 8
-* AdoptOpenJDK OpenJ9 and HotSpot (V8, V11, V12)
-* DayTrader7 on WAS Liberty
-* DayTrader7 on Traditional WAS
+* AdoptOpenJDK OpenJ9 and HotSpot (V8, V11, V13)
 * Liberty Bikes
 * TrapIt.ear
 * swat.ear
@@ -74,7 +75,7 @@ Note: You'll need more than 20GB of disk space and configure Docker with 4GB or 
 * MariaDB
 * Derby
 * Open Liberty Source
-* OpenLDAP
+* OpenJ9 Source
 
 ## Notes
 
