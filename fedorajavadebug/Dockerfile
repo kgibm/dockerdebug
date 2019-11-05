@@ -118,8 +118,8 @@ hide_welcome_screen=true\n\
     ( \
       sudo mkdir /opt/heapanalyzer/ && \
       cd /opt/heapanalyzer/ && \
-      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha456.jar && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=Heap Analyzer\nExec=java -jar /opt/heapanalyzer/ha456.jar\nPath=~/\nTerminal=false\n' >> ha.desktop && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha457.jar && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=Heap Analyzer\nExec=java -jar /opt/heapanalyzer/ha457.jar\nPath=~/\nTerminal=false\n' >> ha.desktop && \
       sudo chmod a+x ha.desktop && \
       sudo ln -s /opt/heapanalyzer/ha.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/ha.desktop /home/was/Desktop/ \
@@ -129,7 +129,7 @@ hide_welcome_screen=true\n\
     ( \
       sudo mkdir /opt/tmda/ && \
       cd /opt/tmda/ && \
-      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca463.jar && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca463.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca463.jar\nPath=~/\nTerminal=false\n' >> tmda.desktop && \
       sudo chmod a+x tmda.desktop && \
       sudo ln -s /opt/tmda/tmda.desktop /opt/programs/ && \
@@ -140,7 +140,7 @@ hide_welcome_screen=true\n\
     ( \
       sudo mkdir /opt/classloaderanalyzer/ && \
       cd /opt/classloaderanalyzer/ && \
-      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/ica/ica107.jar && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ica/ica107.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=Classloader Analyzer\nExec=java -jar /opt/classloaderanalyzer/ica107.jar\nPath=~/\nTerminal=false\n' >> cla.desktop && \
       sudo chmod a+x cla.desktop && \
       sudo ln -s /opt/classloaderanalyzer/cla.desktop /opt/programs/ && \
@@ -151,7 +151,7 @@ hide_welcome_screen=true\n\
     ( \
       sudo mkdir /opt/pmat/ && \
       cd /opt/pmat/ && \
-      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/pmat/ga458.jar && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/pmat/ga458.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=PMAT\nExec=java -jar /opt/pmat/ga458.jar\nPath=~/\nTerminal=false\n' >> pmat.desktop && \
       sudo chmod a+x pmat.desktop && \
       sudo ln -s /opt/pmat/pmat.desktop /opt/programs/ && \
@@ -169,7 +169,7 @@ hide_welcome_screen=true\n\
     ( \
       sudo mkdir /opt/tracerequestanalyzer/ && \
       cd /opt/tracerequestanalyzer/ && \
-      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/tra/tra303.jar && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/tra/tra303.jar && \
       sudo printf '[Desktop Entry]\nType=Application\nName=Trace and Request Analyzer\nExec=java -jar /opt/tracerequestanalyzer/tra303.jar\nPath=~/\nTerminal=false\n' >> tra.desktop && \
       sudo chmod a+x tra.desktop && \
       sudo ln -s /opt/tracerequestanalyzer/tra.desktop /opt/programs/ && \
@@ -263,7 +263,7 @@ RUN echo "############################" && \
     echo "# OpenJDK + HotSpot/OpenJ9 #" && \
     echo "############################" && \
     echo "# https://adoptopenjdk.net/" && \
-    for v in 8 11 12 13; do \
+    for v in 8 11 13; do \
         for j in openj9 hotspot; do \
           ( \
             sudo mkdir /opt/openjdk${v}_${j}/ && \
@@ -292,7 +292,7 @@ RUN echo "############################" && \
         done \
       done
 
-RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
+RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh
 
 # Last statement must be switching to root for supervisord
 USER root

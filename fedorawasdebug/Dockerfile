@@ -69,8 +69,7 @@ USER was
 #   https://hub.docker.com/_/open-liberty
 #   https://github.com/OpenLiberty/ci.docker/blob/master/official/latest/javaee8/java8/ibmjava/Dockerfile
 
-# When updating the Liberty version, also update the version used in a build.gradle
-# line replacement below (search for the Liberty version number).
+# We use JEE7 while we wait for a fix to https://github.com/OpenLiberty/open-liberty/issues/9505
 COPY --from=websphere-liberty:javaee7 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
 COPY --from=websphere-liberty:javaee7 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
 COPY --from=websphere-liberty:javaee7 --chown=was:root /logs /logs
@@ -99,7 +98,7 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/"\n\
 if [ -e /opt/ibm/helpers/runtime/docker-server.sh ]; then\n\
     /opt/ibm/helpers/runtime/docker-server.sh\n\
 fi\n\
-\n' | sudo tee /extended_entrypoint.sh
+\n' | sudo tee /usr/local/bin/extended_entrypoint.sh
 
 #############################
 # "Install" Traditional WAS #
@@ -222,7 +221,7 @@ autostart=true\n\
 environment=\n\
     HOME="/home/was",\n\
     USER="was",\n\
-\n' | sudo tee liberty.supervisord.conf && \
+\n' | sudo tee /etc/supervisord.d/liberty.supervisord.conf && \
     echo "# https://localhost:9043/ibm/console" && \
     echo "# User = wsadmin" && \
     echo "# Password = /tmp/PASSWORD" && \
@@ -242,16 +241,19 @@ autostart=true\n\
 environment=\n\
     HOME="/home/was",\n\
     USER="was",\n\
-\n' | sudo tee twas.supervisord.conf
+\n' | sudo tee /etc/supervisord.d/twas.supervisord.conf
 
-RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /setpassword.sh
+RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh
 
-RUN echo "# https://github.com/WASdev/sample.daytrader7" && \
-    echo "# https://svn.apache.org/repos/infra/websites/staging/openjpa/trunk/content/artifacts/" && \
+RUN sudo mkdir /tmp/wlp-cache/ && \
+    sudo chmod 777 /tmp/wlp-cache/ && \
+    echo "# https://github.com/WASdev/sample.daytrader7" && \
     ( \
-      cd /opt/ && \
-      sudo git clone https://github.com/WASdev/sample.daytrader7 daytrader7 && \
+      sudo git clone https://github.com/WASdev/sample.daytrader7 /opt/daytrader7 && \
       cd /opt/daytrader7 && \
+      sudo sed -i 's/maxUsers=.*/maxUsers=15000/g' daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
+      sudo sed -i 's/maxQuotes=.*/maxQuotes=10000/g' daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
+      sudo sed -i 's/runtimeMode=.*/runtimeMode=1/g' daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
       sudo gradle :daytrader-ee7:ear \
     ) && \
     echo "# Tried to fix the NoSuchEJBException but this didn't help. Instead, we just ignore the warnings in daytrader7logging.xml below." && \
@@ -285,7 +287,7 @@ stopsignal=KILL\n\
 environment=\n\
     HOME="/var/lib/mysql",\n\
     USER="mysql",\n\
-\n' | sudo tee mysqld.supervisord.conf && \
+\n' | sudo tee /etc/supervisord.d/mysqld.supervisord.conf && \
     echo "# The webProfile feature pulls in the appSecurity feature and we don't want to enable that for DayTrader7" && \
     echo "# (it does support it but requires a lot of extra configuration)." && \
     sed -i '/.*webProfile.*/d' /config/server.xml && \
@@ -399,7 +401,7 @@ environment=\n\
     USER="was",\n\
     LOG_DIR="/opt/ibm/wlp/usr/servers/test/logs/",\n\
     WLP_OUTPUT_DIR="/opt/ibm/wlp/usr/servers/",\n\
-\n' | sudo tee liberty2.supervisord.conf && \
+\n' | sudo tee /etc/supervisord.d/liberty2.supervisord.conf && \
     sudo mkdir /opt/docs/ && \
     mkdir -p /home/was/Desktop && \
     chown was /home/was/Desktop && \
@@ -442,14 +444,14 @@ environment=\n\
     printf '#!/bin/sh\n\
 sleep 130\n\
 echo -e "\\n\\n=========\\n= READY =\\n=========\\n"\n\
-\n' | sudo tee /finished.sh && sudo chmod +x /finished.sh && \
+\n' | sudo tee /usr/local/bin/finished.sh && sudo chmod +x /usr/local/bin/finished.sh && \
     printf '\n\
 [program:finished]\n\
-command=/finished.sh\n\
+command=/usr/local/bin/finished.sh\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
-\n' | sudo tee finished.supervisord.conf && \
+\n' | sudo tee /etc/supervisord.d/finished.supervisord.conf && \
     echo "# Configure DayTrader7 on tWAS" && \
     sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
     sudo sed -i 's/THREADS,50/THREADS,4/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
@@ -532,32 +534,6 @@ AdminConfig.save()\n\
     sudo sed -i 's/9080/9081/g' /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
     sudo chmod a+rw /opt/daytrader7/jmeter_files/daytrader7_twas.jmx
 
-RUN --mount=type=secret,id=remotepassword \
-    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
-    printf 'dn: cn=wsadminldap,ou=Users,dc=example,dc=com\n\
-cn: wsadminldap LastNameWsadminldap\n\
-sn: LastNameWsadminldap\n\
-objectClass: inetOrgPerson\n\
-userPassword: %s\n\
-uid: wsadminldap\n\
-\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" | sudo tee /root/wsadmin.ldif && \
-    sudo ldapadd -x -D "cn=Manager,dc=example,dc=com" -w "$(echo -n "$(sudo head -n 1 /root/password.txt)")" -f /root/wsadmin.ldif && \
-    printf '\n\
-AdminTask.createIdMgrLDAPRepository("[-default true -id LDAP1 -adapterClassName com.ibm.ws.wim.adapter.ldap.LdapAdapter -ldapServerType CUSTOM -sslConfiguration -certificateMapMode exactdn -supportChangeLog none -certificateFilter -loginProperties uid]")\n\
-AdminTask.addIdMgrLDAPServer("[-id LDAP1 -host localhost -bindDN cn=Manager,dc=example,dc=com -bindPassword %s -referal ignore -sslEnabled false -ldapServerType CUSTOM -sslConfiguration -certificateMapMode exactdn -certificateFilter -authentication simple -port 389]")\n\
-AdminTask.addIdMgrRepositoryBaseEntry("[-id LDAP1 -name dc=example,dc=com -nameInRepository dc=example,dc=com]")\n\
-AdminTask.addIdMgrRealmBaseEntry("[-name defaultWIMFileBasedRealm -baseEntry dc=example,dc=com]")\n\
-AdminTask.configureAdminWIMUserRegistry("[-realmName defaultWIMFileBasedRealm -verifyRegistry false ]")\n\
-AdminTask.configureAdminWIMUserRegistry("[-autoGenerateServerId true -primaryAdminId wsadmin -ignoreCase true -customProperties -verifyRegistry false ]")\n\
-AdminTask.mapUsersToAdminRole("[-accessids [user:defaultWIMFileBasedRealm/cn=Admin1,ou=Users,dc=example,dc=com] -userids [Admin1] -roleName administrator]")\n\
-AdminTask.mapUsersToAdminRole("[-accessids [user:defaultWIMFileBasedRealm/cn=wsadminldap,ou=Users,dc=example,dc=com] -userids [wsadminldap] -roleName administrator]")\n\
-\n\
-AdminConfig.save()\n\
-\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /home/was/twas_config_ldap.jy && \
-      /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
-      /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_ldap.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
-      /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)"
-
 #################
 # "Install" IHS #
 #################
@@ -570,10 +546,8 @@ COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Plugins /
 COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Toolbox /opt/IBM/WebSphere/Toolbox
 
 RUN --mount=type=secret,id=remotepassword \
-    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     printf "\n\
 AdminConfig.create('HostAlias', AdminConfig.getid('/Cell:DefaultCell01/VirtualHost:default_host/'), '[[hostname \"*\"] [port \"9083\"]]')\n\
-\n\
 AdminConfig.save()\n\
 \n" > /home/was/twas_config_virtualhost.jy && \
     /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
@@ -599,7 +573,51 @@ autostart=true\n\
 environment=\n\
     HOME="/root",\n\
     USER="root",\n\
-\n' | sudo tee /ihs.supervisord.conf
+\n' | sudo tee /etc/supervisord.d/ihs.supervisord.conf
+
+RUN --mount=type=secret,id=remotepassword \
+    echo "Configure global security" && \
+    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+    printf 'dn: cn=wsadminldap,ou=Users,dc=example,dc=com\n\
+cn: wsadminldap\n\
+sn: wsadminldap\n\
+objectClass: inetOrgPerson\n\
+userPassword: %s\n\
+uid: wsadminldap\n\
+\n\
+dn: cn=webSecOnly,ou=Users,dc=example,dc=com\n\
+cn: webSecOnly\n\
+objectClass: groupOfNames\n\
+member: cn=Admin1,ou=Users,dc=example,dc=com\n\
+\n\
+dn: cn=grp1,ou=Users,dc=example,dc=com\n\
+cn: grp1\n\
+objectClass: groupOfNames\n\
+member: cn=Admin1,ou=Users,dc=example,dc=com\n\
+\n' "$(echo -n "$(sudo head -n 1 /root/password.txt)")" | sudo tee /root/wsadmin.ldif && \
+    sudo ldapadd -x -D "cn=Manager,dc=example,dc=com" -w "$(echo -n "$(sudo head -n 1 /root/password.txt)")" -f /root/wsadmin.ldif && \
+    printf "\n\
+AdminTask.createIdMgrLDAPRepository('[-default true -id LDAP1 -adapterClassName com.ibm.ws.wim.adapter.ldap.LdapAdapter -ldapServerType CUSTOM -sslConfiguration -certificateMapMode exactdn -supportChangeLog none -certificateFilter -loginProperties uid]')\n\
+AdminTask.addIdMgrLDAPServer('[-id LDAP1 -host localhost -bindDN cn=Manager,dc=example,dc=com -bindPassword %s -referal ignore -sslEnabled false -ldapServerType CUSTOM -sslConfiguration -certificateMapMode exactdn -certificateFilter -authentication simple -port 389]')\n\
+AdminTask.addIdMgrRepositoryBaseEntry('[-id LDAP1 -name dc=example,dc=com -nameInRepository dc=example,dc=com]')\n\
+AdminTask.addIdMgrRealmBaseEntry('[-name defaultWIMFileBasedRealm -baseEntry dc=example,dc=com]')\n\
+AdminTask.configureAdminWIMUserRegistry('[-realmName defaultWIMFileBasedRealm -verifyRegistry true ]')\n\
+AdminTask.configureAdminWIMUserRegistry('[-autoGenerateServerId true -primaryAdminId wsadmin -ignoreCase true -customProperties -verifyRegistry true ]')\n\
+AdminTask.mapUsersToAdminRole('[-accessids [user:defaultWIMFileBasedRealm/cn=Admin1,ou=Users,dc=example,dc=com] -userids [Admin1] -roleName administrator]')\n\
+AdminTask.mapUsersToAdminRole('[-accessids [user:defaultWIMFileBasedRealm/cn=wsadminldap,ou=Users,dc=example,dc=com] -userids [wsadminldap] -roleName administrator]')\n\
+AdminTask.setAdminActiveSecuritySettings('[-appSecurityEnabled true]')\n\
+AdminApp.edit('DayTrader7', '[ -MapRolesToUsers [[ AllAuthenticated AppDeploymentOption.No AppDeploymentOption.Yes \"\" \"\" AppDeploymentOption.No \"\" \"\" ]]]')\n\
+AdminApp.edit('DayTrader7', '[ -MapRolesToUsers [[ webSecOnly AppDeploymentOption.No AppDeploymentOption.No \"\" webSecOnly AppDeploymentOption.No \"\" group:defaultWIMFileBasedRealm/cn=webSecOnly,ou=Users,dc=example,dc=com ]]]' )\n\
+AdminApp.edit('DayTrader7', '[ -MapRolesToUsers [[ grp1 AppDeploymentOption.No AppDeploymentOption.No \"\" grp1 AppDeploymentOption.No \"\" group:defaultWIMFileBasedRealm/cn=grp1,ou=Users,dc=example,dc=com ]]]' )\n\
+\n\
+AdminConfig.save()\n\
+\n" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /home/was/twas_config_ldap.jy && \
+      /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+      /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_ldap.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+      /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)"
+
+RUN sudo sed -i 's/Accept-Language/Authorization/g' /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
+    sudo sed -i "s/en-us/Basic $(echo -n "Admin1:$(echo -n "$(sudo head -n 1 /root/password.txt)")" | base64)/g" /opt/daytrader7/jmeter_files/daytrader7_twas.jmx
 
 # Backup and clear Liberty and tWAS logs
 RUN sudo mkdir /backup/ && \
