@@ -118,6 +118,7 @@ RUN dnf install -y \
       openldap-devel \
       openldap-servers \
       openssh-server \
+      p7zip \
       patch \
       perf \
       perl \

@@ -1,0 +1,51 @@
+Launching defaultServer (WebSphere Application Server 19.0.0.10/wlp-1.0.33.cl191020191002-0300) on IBM J9 VM, version 8.0.5.41 - pxa6480sr5fp41-20190919_01(SR5 FP41) (c.u_US)
+[AUDIT   ] CWWKE0001I: The server defaultServer has been launched.
+[AUDIT   ] CWWKE0100I: This product is licensed for development, and limited production use. The full license terms can be viewed here: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/license/base_ilan/ilan/19.0.0.10/lafiles/en.html
+[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/defaults/keystore.xml
+[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/daytrader.xml
+[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/daytrader7logging.xml
+[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/tls.xml
+[AUDIT   ] CWWKZ0058I: Monitoring dropins for applications.
+[AUDIT   ] CWWKI0001I: The CORBA name server is now available at corbaloc:iiop:localhost:2809/NameService.
+[AUDIT   ] CWWKT0016I: Web application available (default_host): http://634d203d4fff:9080/swat/
+[AUDIT   ] CWWKZ0001I: Application swat started in 1.251 seconds.
+[AUDIT   ] CWWKT0016I: Web application available (default_host): http://634d203d4fff:9080/daytrader/
+[AUDIT   ] CWWKZ0001I: Application daytrader started in 4.121 seconds.
+[AUDIT   ] CWWKF0012I: The server installed the following features: [appClientSupport-1.0, appSecurity-2.0, batch-1.0, beanValidation-1.1, cdi-1.2, concurrent-1.0, distributedMap-1.0, ejb-3.2, ejbHome-3.2, ejbLite-3.2, ejbPersistentTimer-3.2, ejbRemote-3.2, el-3.0, federatedRegistry-1.0, j2eeManagement-1.1, jacc-1.5, jaspic-1.1, javaMail-1.5, javaee-7.0, jaxb-2.2, jaxrs-2.0, jaxrsClient-2.0, jaxws-2.2, jca-1.7, jcaInboundSecurity-1.0, jdbc-4.1, jms-2.0, jndi-1.0, jpa-2.1, jpaContainer-2.1, jsf-2.2, json-1.0, jsonp-1.0, jsp-2.3, ldapRegistry-3.0, localConnector-1.0, managedBeans-1.0, mdb-3.2, servlet-3.1, ssl-1.0, transportSecurity-1.0, wasJmsClient-2.0, wasJmsSecurity-1.0, wasJmsServer-1.0, webProfile-7.0, websocket-1.1].
+[AUDIT   ] CWWKF0011I: The defaultServer server is ready to run a smarter planet. The defaultServer server started in 20.897 seconds.
+JVMDUMP039I Processing dump event "user", detail "" at 2019/11/05 22:40:43 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20191105.224043.17.0001.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20191105.224043.17.0001.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2019/11/05 22:41:13 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20191105.224113.17.0002.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20191105.224113.17.0002.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2019/11/05 22:41:43 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20191105.224143.17.0003.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20191105.224143.17.0003.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2019/11/05 22:42:14 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20191105.224214.17.0004.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20191105.224214.17.0004.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2019/11/05 22:42:44 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20191105.224244.17.0005.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20191105.224244.17.0005.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2019/11/05 22:43:14 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20191105.224314.17.0006.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20191105.224314.17.0006.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2019/11/05 22:43:44 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20191105.224344.17.0007.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20191105.224344.17.0007.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2019/11/05 22:44:15 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20191105.224415.17.0008.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20191105.224415.17.0008.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2019/11/05 22:44:45 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20191105.224445.17.0009.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20191105.224445.17.0009.txt
+JVMDUMP013I Processed dump event "user", detail "".

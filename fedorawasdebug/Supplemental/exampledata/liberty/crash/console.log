@@ -1,0 +1,64 @@
+Launching test (WebSphere Application Server 19.0.0.10/wlp-1.0.33.cl191020191002-0300) on IBM J9 VM, version 8.0.5.41 - pxa6480sr5fp41-20190919_01(SR5 FP41) (c.u_US)
+[AUDIT   ] CWWKE0001I: The server test has been launched.
+[AUDIT   ] CWWKE0100I: This product is licensed for development, and limited production use. The full license terms can be viewed here: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/license/base_ilan/ilan/19.0.0.10/lafiles/en.html
+[AUDIT   ] CWWKZ0058I: Monitoring dropins for applications.
+[AUDIT   ] CWPKI0820A: The default keystore has been created using the 'keystore_password' environment variable.
+[AUDIT   ] CWWKS4104A: LTPA keys created in 0.881 seconds. LTPA key file: /opt/ibm/wlp/usr/servers/test/resources/security/ltpa.keys
+[AUDIT   ] CWWKT0016I: Web application available (default_host): http://634d203d4fff:9082/jni_web_hello_world/
+[AUDIT   ] CWWKZ0001I: Application jni_web_hello_world started in 0.780 seconds.
+[AUDIT   ] CWWKT0016I: Web application available (default_host): http://634d203d4fff:9082/swat/
+[AUDIT   ] CWWKZ0001I: Application swat started in 0.855 seconds.
+[AUDIT   ] CWWKF0012I: The server installed the following features: [appSecurity-2.0, appSecurity-3.0, beanValidation-2.0, cdi-2.0, distributedMap-1.0, ejbLite-3.2, el-3.0, jaspic-1.1, jaxrs-2.1, jaxrsClient-2.1, jdbc-4.2, jndi-1.0, jpa-2.2, jpaContainer-2.2, jsf-2.3, jsonb-1.0, jsonp-1.1, jsp-2.3, managedBeans-1.0, servlet-4.0, ssl-1.0, webProfile-8.0, websocket-1.1].
+[AUDIT   ] CWWKF0011I: The test server is ready to run a smarter planet. The test server started in 19.732 seconds.
+[AUDIT   ] CWPKI0803A: SSL certificate created in 9.649 seconds. SSL key file: /opt/ibm/wlp/usr/servers/test/resources/security/key.p12
+Hello World from C: "test", len: 4
+Unhandled exception
+Type=Segmentation error vmState=0x00040000
+J9Generic_Signal_Number=00000018 Signal_Number=0000000b Error_Value=00000000 Signal_Code=00000001
+Handler1=00002B499F3CC610 Handler2=00002B499FB10670 InaccessibleAddress=0000000000000000
+RDI=00002B4A141DF468 RSI=00002B499FFE1023 RAX=0000000000000000 RBX=0000000000000018
+RCX=00000000FFD9FFF0 RDX=0000000000000000 R8=0000000000000000 R9=0000000000000023
+R10=FFFFFFFFFFFFF2B4 R11=00002B499E7001A0 R12=0000000000000000 R13=00002B499F49C92C
+R14=00002B49BBFD7810 R15=0000000000000000
+RIP=00002B499FFE01F1 GS=0000 FS=0000 RSP=00002B49BBFD74F0
+EFlags=0000000000010246 CS=0033 RBP=00002B49BBFD7530 ERR=0000000000000004
+TRAPNO=000000000000000E OLDMASK=0000000000000000 CR2=0000000000000000
+xmm0 ffffffff00000000 (f: 0.000000, d: -nan)
+xmm1 7257650074736574 (f: 1953719680.000000, d: 6.239805e+242)
+xmm2 ff00000000ff0000 (f: 16711680.000000, d: -5.486124e+303)
+xmm3 0000000000000000 (f: 0.000000, d: 0.000000e+00)
+xmm4 00000000000000ff (f: 255.000000, d: 1.259867e-321)
+xmm5 000000003db2b8ce (f: 1035122880.000000, d: 5.114187e-315)
+xmm6 0000000049fc9850 (f: 1241290880.000000, d: 6.132792e-315)
+xmm7 0000000000000000 (f: 0.000000, d: 0.000000e+00)
+xmm8 0074736574000a64 (f: 1946159744.000000, d: 1.820179e-306)
+xmm9 0000000000000000 (f: 0.000000, d: 0.000000e+00)
+xmm10 5c5c5c5c5c5c5c5c (f: 1549556864.000000, d: 8.245487e+136)
+xmm11 4127800000000000 (f: 0.000000, d: 7.700480e+05)
+xmm12 43e0000000000000 (f: 0.000000, d: 9.223372e+18)
+xmm13 3f847ae147ae147b (f: 1202590848.000000, d: 1.000000e-02)
+xmm14 0000000048664dc0 (f: 1214664192.000000, d: 6.001238e-315)
+xmm15 0000000046b83e38 (f: 1186479616.000000, d: 5.861988e-315)
+Module=/opt/jni_web_hello_world/target/libNativeWrapper.so
+Module_base_address=00002B499FFDF000 Symbol=Java_com_example_NativeWrapper_testNativeMethod
+Symbol_address=00002B499FFE0159
+Target=2_90_20190911_427071 (Linux 4.9.184-linuxkit)
+CPU=amd64 (4 logical CPUs) (0x2ed975000 RAM)
+----------- Stack Backtrace -----------
+Java_com_example_NativeWrapper_testNativeMethod+0x98 (0x00002B499FFE01F1 [libNativeWrapper.so+0x11f1])
+(0x00002B499F46E0E4 [libj9vm29.so+0x1410e4])
+(0x00002B499F46B807 [libj9vm29.so+0x13e807])
+(0x00002B499F359324 [libj9vm29.so+0x2c324])
+(0x00002B499F3460A0 [libj9vm29.so+0x190a0])
+(0x00002B499F4077E2 [libj9vm29.so+0xda7e2])
+---------------------------------------
+JVMDUMP039I Processing dump event "gpf", detail "" at 2019/11/05 23:34:38 - please wait.
+JVMDUMP032I JVM requested System dump using '/opt/ibm/wlp/usr/servers/test/core.20191105.233438.149.0001.dmp' in response to an event
+JVMDUMP010I System dump written to /opt/ibm/wlp/usr/servers/test/core.20191105.233438.149.0001.dmp
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/usr/servers/test/javacore.20191105.233438.149.0002.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/usr/servers/test/javacore.20191105.233438.149.0002.txt
+JVMDUMP032I JVM requested Snap dump using '/opt/ibm/wlp/usr/servers/test/Snap.20191105.233438.149.0003.trc' in response to an event
+JVMDUMP010I Snap dump written to /opt/ibm/wlp/usr/servers/test/Snap.20191105.233438.149.0003.trc
+JVMDUMP007I JVM Requesting JIT dump using '/opt/ibm/wlp/usr/servers/test/jitdump.20191105.233438.149.0004.dmp'
+JVMDUMP010I JIT dump written to /opt/ibm/wlp/usr/servers/test/jitdump.20191105.233438.149.0004.dmp
+JVMDUMP013I Processed dump event "gpf", detail "".

@@ -1,0 +1,32 @@
+[Tue Nov  5 23:24:12 2019] com.ibm.diagnostics.healthcenter.headless INFO: 4.0.1
+[Tue Nov  5 23:24:12 2019] com.ibm.diagnostics.healthcenter.headless INFO: Headless data collection has started
+[Tue Nov  5 23:24:12 2019] com.ibm.diagnostics.healthcenter.headless INFO: Agent will keep last 5 hcd files
+[Tue Nov  5 23:24:12 2019] com.ibm.diagnostics.healthcenter.headless INFO: Headless collection output directory is /opt/ibm/wlp/output/defaultServer
+Launching defaultServer (WebSphere Application Server 19.0.0.10/wlp-1.0.33.cl191020191002-0300) on IBM J9 VM, version 8.0.5.41 - pxa6480sr5fp41-20190919_01(SR5 FP41) (c.u_US)
+[AUDIT   ] CWWKE0001I: The server defaultServer has been launched.
+[AUDIT   ] CWWKE0100I: This product is licensed for development, and limited production use. The full license terms can be viewed here: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/license/base_ilan/ilan/19.0.0.10/lafiles/en.html
+[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/defaults/keystore.xml
+[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/daytrader.xml
+[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/daytrader7logging.xml
+[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/tls.xml
+[AUDIT   ] CWWKZ0058I: Monitoring dropins for applications.
+[AUDIT   ] CWWKI0001I: The CORBA name server is now available at corbaloc:iiop:localhost:2809/NameService.
+[AUDIT   ] CWWKT0016I: Web application available (default_host): http://634d203d4fff:9080/swat/
+[AUDIT   ] CWWKZ0001I: Application swat started in 4.821 seconds.
+[EL Info]: server: 2019-11-05 23:24:23.793--Detected server platform: org.eclipse.persistence.platform.server.was.WebSphere_Liberty_Platform.
+[AUDIT   ] CWWKT0016I: Web application available (default_host): http://634d203d4fff:9080/daytrader/
+[AUDIT   ] CWWKZ0001I: Application daytrader started in 9.397 seconds.
+[AUDIT   ] CWWKF0012I: The server installed the following features: [appClientSupport-1.0, appSecurity-2.0, batch-1.0, beanValidation-1.1, cdi-1.2, concurrent-1.0, distributedMap-1.0, ejb-3.2, ejbHome-3.2, ejbLite-3.2, ejbPersistentTimer-3.2, ejbRemote-3.2, el-3.0, federatedRegistry-1.0, j2eeManagement-1.1, jacc-1.5, jaspic-1.1, javaMail-1.5, javaee-7.0, jaxb-2.2, jaxrs-2.0, jaxrsClient-2.0, jaxws-2.2, jca-1.7, jcaInboundSecurity-1.0, jdbc-4.1, jms-2.0, jndi-1.0, jpa-2.1, jpaContainer-2.1, jsf-2.2, json-1.0, jsonp-1.0, jsp-2.3, ldapRegistry-3.0, localConnector-1.0, managedBeans-1.0, mdb-3.2, servlet-3.1, ssl-1.0, transportSecurity-1.0, wasJmsClient-2.0, wasJmsSecurity-1.0, wasJmsServer-1.0, webProfile-7.0, websocket-1.1].
+[AUDIT   ] CWWKF0011I: The defaultServer server is ready to run a smarter planet. The defaultServer server started in 15.098 seconds.
+Settings from daytrader.properties: {marketSummaryInterval=20, orderProcessingMode=0, trace=false, cacheSize=100000, percentSentToWebsocket=10, runtimeMode=1, webInterface=0, maxQuotes=10000, longRun=true, useRemoteEJBInterface=false, actionTrace=false, primIterations=1, maxUsers=15000, displayOrderAlerts=true, publishQuotePriceChange=true, cachingType=1}
+[AUDIT   ] CWWKE0055I: Server shutdown requested on Tuesday, November 5, 2019 at 11:31 PM. The server defaultServer is shutting down.
+[AUDIT   ] CWWKE1100I: Waiting for up to 30 seconds for the server to quiesce.
+[AUDIT   ] CWWKT0017I: Web application removed (default_host): http://634d203d4fff:9080/daytrader/
+[AUDIT   ] CWWKT0017I: Web application removed (default_host): http://634d203d4fff:9080/swat/
+[AUDIT   ] CWWKZ0009I: The application swat has stopped successfully.
+[AUDIT   ] CWWKZ0009I: The application daytrader has stopped successfully.
+[AUDIT   ] CWWKI0002I: The CORBA name server is no longer available at corbaloc:iiop:localhost:2809/NameService.
+[AUDIT   ] WTRN0105I: The transaction service has shutdown successfully with no transactions requiring recovery.
+[AUDIT   ] CWWKE0036I: The server defaultServer stopped after 7 minutes, 41.232 seconds.
+[Tue Nov  5 23:31:53 2019] com.ibm.diagnostics.healthcenter.headless INFO: Creating hcd import file /opt/ibm/wlp/output/defaultServer/healthcenter051119_232412_9361_1.hcd
+[Tue Nov  5 23:31:58 2019] com.ibm.diagnostics.healthcenter.headless INFO: hcd import file /opt/ibm/wlp/output/defaultServer/healthcenter051119_232412_9361_1.hcd created
