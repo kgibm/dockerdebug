@@ -1,0 +1,59 @@
+********************************************************************************
+product = WebSphere Application Server 19.0.0.10 (wlp-1.0.33.cl191020191002-0300)
+wlp.install.dir = /opt/ibm/wlp/
+java.home = /opt/ibm/java/jre
+java.version = 1.8.0_221
+java.runtime = Java(TM) SE Runtime Environment (8.0.5.41 - pxa6480sr5fp41-20190919_01(SR5 FP41))
+os = Linux (4.9.184-linuxkit; amd64) (c.u_US)
+process = 228@172.17.0.2
+********************************************************************************
+[11/6/19 19:42:46:230 UTC] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0001I: The server test has been launched.
+[11/6/19 19:42:46:251 UTC] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0100I: This product is licensed for development, and limited production use. The full license terms can be viewed here: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/license/base_ilan/ilan/19.0.0.10/lafiles/en.html
+[11/6/19 19:42:47:678 UTC] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager           I CWWKE0002I: The kernel started after 1.711 seconds
+[11/6/19 19:42:47:748 UTC] 0000002d com.ibm.ws.kernel.feature.internal.FeatureManager            I CWWKF0007I: Feature update started.
+[11/6/19 19:42:51:555 UTC] 00000020 com.ibm.ws.security.ready.internal.SecurityReadyServiceImpl  I CWWKS0007I: The security service is starting...
+[11/6/19 19:42:52:605 UTC] 00000021 com.ibm.ws.app.manager.internal.monitor.DropinMonitor        A CWWKZ0058I: Monitoring dropins for applications.
+[11/6/19 19:42:52:895 UTC] 00000033 com.ibm.ws.tcpchannel.internal.TCPChannel                    I CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv4) port 9082.
+[11/6/19 19:42:52:934 UTC] 00000029 com.ibm.ws.ssl.config.WSKeyStore                             A CWPKI0820A: The default keystore has been created using the 'keystore_password' environment variable.
+[11/6/19 19:42:52:938 UTC] 00000029 com.ibm.ws.ssl.config.WSKeyStore                             I CWPKI0802I: Creating the SSL certificate. This may take a few seconds.
+[11/6/19 19:42:53:194 UTC] 00000022 .apache.cxf.cxf.core.3.2:1.0.33.cl191020191002-0300(id=188)] I Aries Blueprint packages not available. So namespaces will not be registered
+[11/6/19 19:42:53:408 UTC] 00000030 com.ibm.ws.security.token.ltpa.internal.LTPAKeyInfoManager   I CWWKS4103I: Creating the LTPA keys. This may take a few seconds.
+[11/6/19 19:42:53:455 UTC] 00000020 ibm.ws.security.authentication.internal.jaas.JAASServiceImpl I CWWKS1123I: The collective authentication plugin with class name NullCollectiveAuthenticationPlugin has been activated. 
+[11/6/19 19:42:53:588 UTC] 00000020 com.ibm.ws.security.jaspi.AuthConfigFactoryWrapper           I CWWKS1655I: The default Java Authentication SPI for Containers (JASPIC) AuthConfigFactory class com.ibm.ws.security.jaspi.ProviderRegistry is being used because the Java security property authconfigprovider.factory is not set. 
+[11/6/19 19:42:54:553 UTC] 00000030 com.ibm.ws.security.token.ltpa.internal.LTPAKeyInfoManager   A CWWKS4104A: LTPA keys created in 1.143 seconds. LTPA key file: /opt/ibm/wlp/usr/servers/test/resources/security/ltpa.keys
+[11/6/19 19:42:54:580 UTC] 00000030 com.ibm.ws.security.token.ltpa.internal.LTPAKeyCreateTask    I CWWKS4105I: LTPA configuration is ready after 1.154 seconds.
+[11/6/19 19:42:54:692 UTC] 00000020 com.ibm.ws.cache.ServerCache                                 I DYNA1001I: WebSphere Dynamic Cache instance named baseCache initialized successfully.
+[11/6/19 19:42:54:699 UTC] 00000020 com.ibm.ws.cache.ServerCache                                 I DYNA1071I: The cache provider default is being used.
+[11/6/19 19:42:54:700 UTC] 00000020 com.ibm.ws.cache.CacheServiceImpl                            I DYNA1056I: Dynamic Cache (object cache) initialized successfully.
+[11/6/19 19:42:55:461 UTC] 00000034 com.ibm.ws.app.manager.AppMessageHelper                      I CWWKZ0018I: Starting application swat.
+[11/6/19 19:42:55:462 UTC] 00000034 bm.ws.app.manager.ear.internal.EARDeployedAppInfoFactoryImpl I CWWKZ0136I: The swat application is using the archive file at the /opt/ibm/wlp/usr/servers/test/dropins/swat.ear location.
+[11/6/19 19:42:55:466 UTC] 00000033 com.ibm.ws.app.manager.AppMessageHelper                      I CWWKZ0018I: Starting application jni_web_hello_world.
+[11/6/19 19:42:55:467 UTC] 00000033 bm.ws.app.manager.war.internal.WARDeployedAppInfoFactoryImpl I CWWKZ0136I: The jni_web_hello_world application is using the archive file at the /opt/ibm/wlp/usr/servers/test/dropins/jni_web_hello_world.war location.
+[11/6/19 19:42:55:955 UTC] 00000034 com.ibm.ws.session.WASSessionCore                            I SESN8501I: The session manager did not find a persistent storage location; HttpSession objects will be stored in the local application server's memory.
+[11/6/19 19:42:55:955 UTC] 00000033 com.ibm.ws.session.WASSessionCore                            I SESN8501I: The session manager did not find a persistent storage location; HttpSession objects will be stored in the local application server's memory.
+[11/6/19 19:42:56:024 UTC] 00000034 org.jboss.weld.Version                                       I WELD-000900: 3.1.1 (Final)
+[11/6/19 19:42:56:563 UTC] 00000033 com.ibm.ws.webcontainer.osgi.webapp.WebGroup                 I SRVE0169I: Loading Web Module: jni_web_hello_world.
+[11/6/19 19:42:56:572 UTC] 00000033 com.ibm.ws.webcontainer                                      I SRVE0250I: Web Module jni_web_hello_world has been bound to default_host.
+[11/6/19 19:42:56:576 UTC] 00000033 com.ibm.ws.http.internal.VirtualHostImpl                     A CWWKT0016I: Web application available (default_host): http://6f64358ffbcd:9082/jni_web_hello_world/
+[11/6/19 19:42:56:579 UTC] 00000033 com.ibm.ws.app.manager.AppMessageHelper                      A CWWKZ0001I: Application jni_web_hello_world started in 1.113 seconds.
+[11/6/19 19:42:56:628 UTC] 00000034 com.ibm.ws.webcontainer.osgi.webapp.WebGroup                 I SRVE0169I: Loading Web Module: swat.
+[11/6/19 19:42:56:628 UTC] 00000034 com.ibm.ws.webcontainer                                      I SRVE0250I: Web Module swat has been bound to default_host.
+[11/6/19 19:42:56:628 UTC] 00000034 com.ibm.ws.http.internal.VirtualHostImpl                     A CWWKT0016I: Web application available (default_host): http://6f64358ffbcd:9082/swat/
+[11/6/19 19:42:56:630 UTC] 00000034 com.ibm.ws.app.manager.AppMessageHelper                      A CWWKZ0001I: Application swat started in 1.169 seconds.
+[11/6/19 19:42:56:688 UTC] 00000030 com.ibm.ws.session.WASSessionCore                            I SESN0176I: A new session context will be created for application key default_host/jni_web_hello_world
+[11/6/19 19:42:56:705 UTC] 00000030 com.ibm.ws.util                                              I SESN0172I: The session manager is using the Java default SecureRandom implementation for session ID generation.
+[11/6/19 19:42:56:718 UTC] 0000002d com.ibm.ws.kernel.feature.internal.FeatureManager            A CWWKF0012I: The server installed the following features: [appSecurity-2.0, appSecurity-3.0, beanValidation-2.0, cdi-2.0, distributedMap-1.0, ejbLite-3.2, el-3.0, jaspic-1.1, jaxrs-2.1, jaxrsClient-2.1, jdbc-4.2, jndi-1.0, jpa-2.2, jpaContainer-2.2, jsf-2.3, jsonb-1.0, jsonp-1.1, jsp-2.3, managedBeans-1.0, servlet-4.0, ssl-1.0, webProfile-8.0, websocket-1.1].
+[11/6/19 19:42:56:718 UTC] 0000002d com.ibm.ws.kernel.feature.internal.FeatureManager            I CWWKF0008I: Feature update completed in 9.039 seconds.
+[11/6/19 19:42:56:737 UTC] 0000002d com.ibm.ws.kernel.feature.internal.FeatureManager            A CWWKF0011I: The test server is ready to run a smarter planet. The test server started in 10.752 seconds.
+[11/6/19 19:42:56:857 UTC] 00000030 org.hibernate.validator.internal.util.Version                I HV000001: Hibernate Validator 6.0.13.Final
+[11/6/19 19:42:56:899 UTC] 00000040 com.ibm.ws.session.WASSessionCore                            I SESN0176I: A new session context will be created for application key default_host/swat
+[11/6/19 19:42:56:899 UTC] 00000040 com.ibm.ws.util                                              I SESN0172I: The session manager is using the Java default SecureRandom implementation for session ID generation.
+[11/6/19 19:42:57:012 UTC] 00000041 com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator          I SRVE9103I: A configuration file for a web server plugin was automatically generated for this server at /opt/ibm/wlp/usr/servers/test/logs/state/plugin-cfg.xml.
+[11/6/19 19:42:57:211 UTC] 00000030 com.ibm.ws.cache.CacheServiceImpl                            I DYNA1056I: Dynamic Cache (object cache) initialized successfully.
+[11/6/19 19:42:57:222 UTC] 00000040 org.apache.myfaces.ee.MyFacesContainerInitializer            I Using org.apache.myfaces.ee.MyFacesContainerInitializer
+[11/6/19 19:42:57:227 UTC] 00000030 org.apache.myfaces.ee.MyFacesContainerInitializer            I Using org.apache.myfaces.ee.MyFacesContainerInitializer
+[11/6/19 19:43:01:804 UTC] 00000029 com.ibm.ws.ssl.config.WSKeyStore                             A CWPKI0803A: SSL certificate created in 8.865 seconds. SSL key file: /opt/ibm/wlp/usr/servers/test/resources/security/key.p12
+[11/6/19 19:43:01:804 UTC] 00000029 com.ibm.ws.ssl.config.WSKeyStore                             I Successfully loaded default keystore: /opt/ibm/wlp/usr/servers/test/resources/security/key.p12 of type: PKCS12
+[11/6/19 19:43:01:948 UTC] 00000045 com.ibm.ws.tcpchannel.internal.TCPChannel                    I CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv4) port 9445.
+[11/6/19 19:55:30:451 UTC] 0000022b com.ibm.ws.webcontainer.servlet                              I SRVE0242I: [jni_web_hello_world] [/jni_web_hello_world] [com.example.JNIWrapper]: Initialization successful.
+[11/6/19 19:55:55:378 UTC] 0000022e com.ibm.ws.webcontainer.servlet                              I SRVE0242I: [swat] [/swat] [ClassloaderLeak]: Initialization successful.
