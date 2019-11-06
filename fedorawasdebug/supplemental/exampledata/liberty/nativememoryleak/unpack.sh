@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+7za x core.20191106.200057.228.0001.dmp.7z.001
+rm -f core.20191106.200057.228.0001.dmp.7z*
+7za x heapdump.20191106.200057.228.0002.phd.7z
+rm -f heapdump.20191106.200057.228.0002.phd.7z
+unzip javacore.20191106.200057.228.0003.txt.zip
+rm javacore.20191106.200057.228.0003.txt.zip
