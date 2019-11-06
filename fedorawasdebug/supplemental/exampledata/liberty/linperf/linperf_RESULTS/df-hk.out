@@ -1,0 +1,18 @@
+Filesystem     1K-blocks      Used Available Use% Mounted on
+overlay         92013256  74591472  12717992  86% /
+tmpfs              65536         0     65536   0% /dev
+tmpfs            6140648         0   6140648   0% /sys/fs/cgroup
+shm               262144         0    262144   0% /dev/shm
+overlay          6140648       272   6140376   1% /host
+dev                10240         0     10240   0% /host/dev
+shm              6140648         0   6140648   0% /host/dev/shm
+/dev/sda1       92013256  74591472  12717992  86% /host/var/lib
+/dev/root         464318    464318         0 100% /host/sendtohost
+tmpfs            1228132       596   1227536   1% /host/run/config
+cgroup_root        10240         0     10240   0% /host/sys/fs/cgroup
+osxfs          488245284 407182848  66462680  86% /host/tmp
+osxfs          488245284 407182848  66462680  86% /host/private
+osxfs          488245284 407182848  66462680  86% /host/Volumes
+osxfs          488245284 407182848  66462680  86% /host/Users
+tmpfs            6140648         0   6140648   0% /proc/acpi
+tmpfs            6140648         0   6140648   0% /sys/firmware
