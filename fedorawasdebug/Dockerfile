@@ -659,6 +659,11 @@ RUN sudo mkdir /backup/ && \
     sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
     sudo sudo chown -R was:root /backup/
 
+RUN printf '\n\
+LOG_DIR=/opt/ibm/wlp/usr/servers/test/logs/\n\
+WLP_OUTPUT_DIR=/opt/ibm/wlp/usr/servers/\n\
+' >> /opt/ibm/wlp/usr/servers/test/server.env
+
 # This should be the last real command because it's the most likely file to get a minor update.
 COPY ["WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf", "/opt/docs/"]
 
