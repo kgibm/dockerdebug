@@ -100,7 +100,6 @@ RUN echo "# https://fedoraproject.org/wiki/Alternatives_system" && \
     echo "# IBM Java >= 8.0.5.35 creates dumps that the MAT DTFJ can't read yet, so override it with the JDK's DTFJ until that's fixed." && \
     sudo cp -f /opt/ibm/java/jre/lib/ddr/j9ddr.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/j9ddr.jar && \
     sudo cp -f /opt/ibm/java/jre/lib/ext/dtfj.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/dtfj.jar && \
-    echo "# Disable MAT welcome screen" && \
     sudo mkdir -p /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
     sudo chown -R was /home/was/workspace/ && \
     sudo mkdir -p /root/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
@@ -200,8 +199,6 @@ hide_welcome_screen=true\n\
     sudo chmod a+x /opt/eclipse_old/hc.desktop && \
     sudo ln -s /opt/eclipse_old/hc.desktop /opt/programs/ && \
     sudo ln -s /opt/programs/hc.desktop /home/was/Desktop/ && \
-    echo "# Remove the welcome screen. No obvious way to do this less dramatically." && \
-    sudo rm -rf /opt/eclipse_old/plugins/org.eclipse.ui.intro* && \
     echo "# Required after installing anything into Eclipse" && \
     sudo chmod -R a+w /opt/eclipse_old/configuration && \
     echo "#########################" && \
@@ -242,8 +239,6 @@ hide_welcome_screen=true\n\
     sudo chmod a+x /opt/eclipse/idde.desktop && \
     sudo ln -s /opt/eclipse/idde.desktop /opt/programs/ && \
     sudo ln -s /opt/programs/idde.desktop /home/was/Desktop/ && \
-    echo "# Remove the welcome screen. No obvious way to do this less dramatically." && \
-    sudo rm /opt/eclipse/plugins/org.eclipse.ui.intro* && \
     echo "# Required after installing anything into Eclipse" && \
     sudo chmod -R a+w /opt/eclipse/configuration && \
     echo "# https://github.com/kgibm/java_miscellaneous" && \

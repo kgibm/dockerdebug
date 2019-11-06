@@ -161,7 +161,6 @@ RUN dnf install -y \
       wireshark \
       @xfce \
       xfce4-calculator-plugin \
-      xfce4-cpufreq-plugin \
       xfce4-cpugraph-plugin \
       xfce4-diskperf-plugin \
       xfce4-netload-plugin \
