@@ -17,6 +17,12 @@ Note: You'll need more than 20GB of disk space and configure Docker with 4GB or 
    ```
 1. Remote into the docker image with password `websphere`. Linux: `vncviewer localhost:5902`. Mac: `open vnc://localhost:5902`. Windows: Remote desktop (see lab instructions), or use a free VNC client.
 
+## Screenshots
+
+![Fedora Desktop Screenshot](https://raw.githubusercontent.com/kgibm/dockerdebug/master/fedorawasdebug/supplemental/screenshots/screenshot1.png)
+
+![Screenshot showing browsers to the major apps installed](https://raw.githubusercontent.com/kgibm/dockerdebug/master/fedorawasdebug/supplemental/screenshots/screenshot2.png)
+
 ## Lab Highlights
 
 * Using Apache JMeter to run a stress test on WebSphere Liberty or Traditional WAS
