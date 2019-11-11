@@ -5,7 +5,7 @@
 
 ## Quick Start
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/X57kGMsM8RA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+Watch a Quick Start video: https://www.youtube.com/watch?v=X57kGMsM8RA
 
 Note: You'll need more than 20GB of disk space and configure Docker with 4GB or more of RAM. For detailed instructions, see the Lab PDF above.
 
