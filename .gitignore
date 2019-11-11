@@ -1,3 +1,5 @@
 remotepassword.txt
 ~*
 .DS_Store
+*.index
+*.threads
