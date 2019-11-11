@@ -590,7 +590,7 @@ RUN xdg-mime default xreader.desktop application/pdf && \
   <property name="saver" type="empty">\n\
     <property name="mode" type="int" value="2"/>\n\
     <property name="idle-activation" type="empty">\n\
-      <property name="delay" type="int" value="10"/>\n\
+      <property name="delay" type="int" value="1"/>\n\
     </property>\n\
     <property name="themes" type="empty">\n\
       <property name="list" type="array">\n\
