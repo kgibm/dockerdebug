@@ -663,11 +663,11 @@ RUN printf '\n\
 LOG_DIR=/opt/ibm/wlp/usr/servers/test/logs/\n\
 WLP_OUTPUT_DIR=/opt/ibm/wlp/usr/servers/\n\
 ' >> /opt/ibm/wlp/usr/servers/test/server.env && \
-    sudo chown -R was:root /opt/dockerdebug/ && \
     sudo sed -i 's/-Xmx2g/-Xmx3g/g' /opt/mat/MemoryAnalyzer.ini
 
 RUN echo "https://github.com/kgibm/dockerdebug/ 20191112" && \
     sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
+    sudo chown -R was:root /opt/dockerdebug/ && \
     ln -s /opt/dockerdebug/fedorawasdebug/supplemental/videos/demo1.webm /home/was/Desktop/demo1.webm
 
 # This should be the last real command because it's the most likely file to get a minor update.
