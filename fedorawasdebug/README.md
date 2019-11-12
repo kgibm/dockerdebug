@@ -10,14 +10,18 @@ Watch a Quick Start video: https://www.youtube.com/watch?v=X57kGMsM8RA
 Note: You'll need more than 20GB of disk space and configure Docker with 4GB or more of RAM. For detailed instructions, see the Lab PDF above.
 
 1. `docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
-   * To share files with your host machine, add: Linux/macOS: `-v /:/host/`, Windows: `-v //c/:/host/`
 1. The container is fully started after about 2 minutes when the output shows:
    ```
    =========
    = READY =
    =========
    ```
-1. Remote into the docker image with password `websphere`. Linux: `vncviewer localhost:5902`. Mac: `open vnc://localhost:5902`. Windows: Remote desktop (see lab instructions), or use a free VNC client.
+1. Remote into the docker image with password `websphere`:
+    1. Linux: `vncviewer localhost:5902`
+    1. Mac: `open vnc://localhost:5902`
+    1. Windows: Remote desktop (see lab instructions), or use a free VNC client.
+
+Tip: To share files with your host machine, add the following to the `docker run` command above (before `-it kgibm/fedorawasdebug`): Linux/macOS: `-v /:/host/` or Windows: `-v //c/:/host/`
 
 ## Screenshots
 

@@ -72,6 +72,7 @@ RUN dnf install -y \
       gnupg \
       gnuplot \
       golang \
+      gstreamer1-vaapi \
       hostname \
       htop \
       httpd \
@@ -153,6 +154,7 @@ RUN dnf install -y \
       telnet \
       tigervnc \
       tigervnc-server \
+      totem \
       traceroute \
       tuned \
       util-linux \
@@ -169,16 +171,10 @@ RUN dnf install -y \
       xfce4-screensaver \
       xfce4-systemload-plugin \
       xrdp \
-      xreader \
-      xscreensaver \
-      xscreensaver-base \
-      xscreensaver-extras \
-      xscreensaver-extras-base \
-      xscreensaver-extras-gss \
-      xscreensaver-gl-base \
-      xscreensaver-gl-extras
+      xreader
 
-RUN dbus-uuidgen > /var/lib/dbus/machine-id && \
+RUN --mount=type=secret,id=remotepassword \
+    dbus-uuidgen > /var/lib/dbus/machine-id && \
     echo "enforcing=0" | sudo tee -a /etc/security/pwquality.conf && \
     groupadd nogroup && \
     echo "###############################################" && \
@@ -407,7 +403,7 @@ fi\n\
     echo "# https://jmeter.apache.org/" && \
     ( \
       cd /opt/ && \
-      sudo wget -q https://www.apache.org/dist/jmeter/binaries/apache-jmeter-5.1.1.zip && \
+      sudo wget -q https://www.apache.org/dist/jmeter/binaries/apache-jmeter-5.2.zip && \
       sudo unzip -q apache-jmeter*.zip && \
       sudo rm -f apache-jmeter*.zip && \
       sudo mv apache-jmeter* apache-jmeter && \
@@ -451,11 +447,9 @@ gpgkey=https://packages.microsoft.com/keys/microsoft.asc\n\
       sudo unzip -q gradle.zip && \
       sudo rm -f gradle.zip \
     ) && \
-    sudo ln -s /opt/gradle-4.10.2/bin/gradle /usr/local/bin/gradle
-
-RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh
-
-RUN echo "############################" && \
+    sudo ln -s /opt/gradle-4.10.2/bin/gradle /usr/local/bin/gradle && \
+    echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh && \
+    echo "############################" && \
     echo "# Final user configuration #" && \
     echo "############################" && \
     echo "# root's Desktop cannot take links (it doesn't work in this image seemingly because of some D-Bus/XFCE issue)" && \
@@ -495,10 +489,8 @@ xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image
     echo "################" && \
     echo "# Set the default PDF reader to xreader; otherwise, the default" && \
     echo "# becomes LibreOffice Draw which isn't a great PDF viewer." && \
-    xdg-mime default xreader.desktop application/pdf
-
-# cn=Manager,dc=example,dc=com
-RUN --mount=type=secret,id=remotepassword \
+    xdg-mime default xreader.desktop application/pdf && \
+    echo "# cn=Manager,dc=example,dc=com" && \
     sed -i 's/my-domain/example/g' /usr/share/openldap-servers/slapd.ldif && \
     mkdir -p /var/lib/ldap && \
     rm -rf /etc/openldap/slapd.d/* && \
@@ -580,17 +572,14 @@ add: olcDbMaxSize\n\
 olcDbMaxSize: 1073741824\n\
 \n' | sudo tee /root/openldaploggingdb.ldif && \
     sudo ldapmodify -H ldapi:// -Y EXTERNAL -f /root/openldaploggingdb.ldif && \
-    echo "local4.* /var/log/slapd.log" | sudo tee -a /etc/rsyslog.conf
-
-USER was
-RUN xdg-mime default xreader.desktop application/pdf && \
+    echo "local4.* /var/log/slapd.log" | sudo tee -a /etc/rsyslog.conf && \
     mkdir -p /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/ && \
     printf '<?xml version="1.0" encoding="UTF-8"?>\n\
 <channel name="xfce4-screensaver" version="1.0">\n\
   <property name="saver" type="empty">\n\
     <property name="mode" type="int" value="2"/>\n\
     <property name="idle-activation" type="empty">\n\
-      <property name="delay" type="int" value="1"/>\n\
+      <property name="delay" type="int" value="30"/>\n\
     </property>\n\
     <property name="themes" type="empty">\n\
       <property name="list" type="array">\n\
@@ -600,14 +589,18 @@ RUN xdg-mime default xreader.desktop application/pdf && \
   </property>\n\
 </channel>\n' > /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-screensaver.xml
 
-EXPOSE 22 3389 5901 5902
-
-# Last statement must be switching to root for supervisord
-USER root
+RUN rm -rf /etc/xdg/autostart/xscreensaver*
 
 # Random tips:
 # * List all available Gnome settings: gsettings list-recursively
 # * List all available Xfce settings: for i in $(xfconf-query -l | grep -v Channels); do xfconf-query -c $i -l -v; done
 # * Available vncserver options: vncserver --help; Xvnc --help
 
+USER was
+RUN xdg-mime default xreader.desktop application/pdf
+
+EXPOSE 22 3389 5901 5902
+
+# Last statement must be switching to root for supervisord
+USER root
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
