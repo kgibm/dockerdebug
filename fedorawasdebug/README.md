@@ -96,4 +96,4 @@ Tip: To share files with your host machine, add the following to the `docker run
 
 ## Known Limitations
 
-* Audio does not work. You can start start pulseaudio in the container with `pulseaudio -D`, but you'll need to configure your host, potentially configure `docker run`, and potentially configure the container for audio passthrough depending on your host operating system.
+* Audio does not work. You can start pulseaudio in the container with `pulseaudio -D`, but you'll need to configure your host, potentially configure `docker run`, and potentially configure the container for audio passthrough depending on your host operating system.
