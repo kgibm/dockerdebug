@@ -93,3 +93,7 @@ Tip: To share files with your host machine, add the following to the `docker run
 
 * Docker Hub page: https://hub.docker.com/r/kgibm/fedorawasdebug
 * This lab is based on a Java Dockerfile (https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile) which is based on a Fedora Dockerfile (https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile).
+
+## Known Limitations
+
+* Audio does not work. You can start start pulseaudio in the container with `pulseaudio -D`, but you'll need to configure your host, potentially configure `docker run`, and potentially configure the container for audio passthrough depending on your host operating system.
