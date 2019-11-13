@@ -1,5 +1,7 @@
 # WebSphere Application Server Troubleshooting and Performance Lab on Docker
 
+A lab on Troubleshooting and Performance Tuning WAS Liberty and Traditional WAS covering various topics like CPU usage, thread dumps, garbage collection, memory analysis, profiling, and more. The Docker container provides a full Linux VM with GUI (see screenshots below) which runs on Windows, Mac, and Linux hosts.
+
 * Full lab instructions: https://raw.githubusercontent.com/kgibm/dockerdebug/master/fedorawasdebug/WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf
 * Preparation instructions only: https://raw.githubusercontent.com/kgibm/dockerdebug/master/fedorawasdebug/Supplemental/WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker-Prep.pdf
 
