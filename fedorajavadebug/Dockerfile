@@ -275,8 +275,17 @@ RUN echo "############################" && \
         done \
       done
 
-# TODO:
-#   * Install MAT Source: https://wiki.eclipse.org/MemoryAnalyzer/Contributor_Reference
+# Install MAT Source (still requires configuration in Eclipse): https://wiki.eclipse.org/MemoryAnalyzer/Contributor_Reference
+RUN sudo git clone git://git.eclipse.org/gitroot/mat/org.eclipse.mat.git /usr/local/src/mat && \
+    sudo mkdir /opt/mat/dev/ && \
+    ( \
+      cd /opt/mat/dev/ && \
+      sudo wget -q http://www.eclipse.org/mat/dev/mat_code_formatter.xml && \
+      sudo wget -q https://wiki.eclipse.org/MemoryAnalyzer/Contributor_Reference && \
+      sudo wget -O updatesite.zip -q $(curl -s https://www.eclipse.org/mat/downloads.php | grep "Archived Update Site" | sed 's/.*href="//g' | sed 's/".*/\&r=1/g') && \
+      sudo unzip -q updatesite.zip && \
+      sudo rm -f updatesite.zip \
+    )
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh
 

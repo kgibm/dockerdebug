@@ -806,13 +806,43 @@ SECURITY=true\n\
 SHELL_X=0\n\
 ' | sudo tee /opt/sibperf/sibPerf.properties && \
     sudo chown was:root /opt/sibperf/sibPerf.properties && \
-    sudo chmod -R a+w /opt/sibperf/ && \
     sudo sed -i 's/.\/env.sh/\/opt\/sibperf\/env.sh/g' /opt/sibperf/sibperf.sh && \
     sudo sed -i 's/^\. \.\/setup.*/. $WAS_HOME\/profiles\/AppSrv01\/bin\/setupCmdLine.sh/g' /opt/sibperf/sibperf.sh && \
     printf '[Desktop Entry]\nType=Application\nName=SIB Performance\nExec=/opt/sibperf/sibperf.sh\nPath=/opt/sibperf/\nTerminal=false\n' | sudo tee /opt/sibperf/sibperf.desktop && \
     sudo chmod a+x /opt/sibperf/sibperf.desktop && \
     sudo ln -s /opt/sibperf/sibperf.desktop /opt/programs/ && \
     sudo ln -s /opt/programs/sibperf.desktop /home/was/Desktop/
+
+RUN echo "# IBM Database Connection Pool Analyzer for IBM WebSphere Application Server" && \
+    echo "# https://www.ibm.com/support/pages/ibm-database-connection-pool-analyzer-ibm-websphere-application-server" && \
+    ( \
+      sudo mkdir /opt/dbconnpoolanalyzer/ && \
+      cd /opt/dbconnpoolanalyzer/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jcp/jcp23.zip && \
+      sudo unzip -q *.zip && \
+      sudo rm -f *.zip *.exe \
+    ) && \
+    ln -s /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/ /home/was/Desktop/exampledata
+
+RUN ( \
+      cd /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/verbosegc_and_oom/ && \
+      ./unpack.sh \
+    )
+
+RUN ( \
+      cd /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/crash/ && \
+      ./unpack.sh \
+    )
+
+RUN ( \
+      cd /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/nativememoryleak/ && \
+      ./unpack.sh \
+    )
+
+RUN sudo chmod -R a+w /usr/local/src/open-liberty
+RUN sudo chmod -R a+w /usr/local/src/mat
+RUN sudo chmod -R a+w /usr/local/src/openj9
+RUN sudo chmod -R a+w /usr/local/src/openj9-omr
 
 # This should be the last real command because it's the most likely file to get a minor update.
 COPY ["WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf", "/opt/docs/"]

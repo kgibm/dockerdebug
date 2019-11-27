@@ -617,16 +617,20 @@ olcDbMaxSize: 1073741824\n\
     printf 'tooltip { opacity: 0; }\n' > /home/was/.config/gtk-3.0/gtk.css && \
     chown -R was:root /home/was/.config/gtk-3.0/
 
-# Random tips:
-# * List all available Gnome settings: gsettings list-recursively
-# * List all available Xfce settings: for i in $(xfconf-query -l | grep -v Channels); do xfconf-query -c $i -l -v; done
-# * Available vncserver options: vncserver --help; Xvnc --help
-
 USER was
-RUN xdg-mime default xreader.desktop application/pdf
+
+# Query file mimetype: xdg-mime query filetype $FILE
+RUN xdg-mime default xreader.desktop application/pdf && \
+    xdg-mime default mousepad.desktop text/x-log && \
+    xdg-mime default mousepad.desktop text/plain
 
 EXPOSE 22 3389 5901 5902
 
 # Last statement must be switching to root for supervisord
 USER root
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Random tips:
+# * List all available Gnome settings: gsettings list-recursively
+# * List all available Xfce settings: for i in $(xfconf-query -l | grep -v Channels); do xfconf-query -c $i -l -v; done
+# * Available vncserver options: vncserver --help; Xvnc --help
