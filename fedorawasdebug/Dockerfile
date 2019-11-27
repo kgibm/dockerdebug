@@ -38,7 +38,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 # The following Liberty version is used in the liberty-bikes builds. Find the latest version here:
 # https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
-ARG MAVEN_LIBERTY_VERSION="19.0.0.10"
+ARG MAVEN_LIBERTY_VERSION="19.0.0.11"
 
 ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
@@ -77,7 +77,30 @@ COPY --from=websphere-liberty:javaee7 --chown=was:root /logs /logs
 COPY --from=websphere-liberty:javaee7 --chown=was:root /licenses /licenses
 COPY --from=websphere-liberty:javaee7 --chown=was:root /etc/wlp /etc/wlp
 
-RUN sudo ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
+#############################
+# "Install" Traditional WAS #
+#############################
+
+# https://hub.docker.com/r/ibmcom/websphere-traditional
+
+COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /work /work
+COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /licenses/
+COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /opt/IBM /opt/IBM
+COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /etc/websphere /etc/websphere
+
+#################
+# "Install" IHS #
+#################
+
+# https://hub.docker.com/r/ibmcom/ibm-http-server/tags
+# https://github.com/WASdev/ci.docker.ibm-http-server/blob/master/production/Dockerfile.install
+COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/HTTPServer /opt/IBM/HTTPServer
+COPY --from=ibmcom/ibm-http-server --chown=was:root /work/ihsstart.sh /work/ihsstart.sh
+COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Plugins /opt/IBM/WebSphere/Plugins
+COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Toolbox /opt/IBM/WebSphere/Toolbox
+
+RUN --mount=type=secret,id=remotepassword \
+    sudo ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     sudo chown was:root /output && \
     sudo ln -s /opt/ibm/wlp/usr/servers/defaultServer /config && \
     sudo chown was:root /config && \
@@ -94,22 +117,10 @@ TLS=true\n\
 RANDFILE=/tmp/.rnd\n\
 JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX:+UseContainerSupport"\n\
 \n' >> /config/server.env && \
-    /opt/ibm/helpers/runtime/docker-server.sh
-
-#############################
-# "Install" Traditional WAS #
-#############################
-
-# https://hub.docker.com/r/ibmcom/websphere-traditional
-
-COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /work /work
-COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /licenses/
-COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /opt/IBM /opt/IBM
-COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /etc/websphere /etc/websphere
-
-# * libxcrypt-compat provides /lib64/libcrypt.so.1 needed for things like tWAS; otherwise: "java.lang.UnsatisfiedLinkError: Ws60ProcessManagement (Not found in java.library.path)"
-#    https://fedoraproject.org/wiki/Changes/FullyRemoveDeprecatedAndUnsafeFunctionsFromLibcrypt
-RUN sudo dnf install -y libxcrypt-compat && \
+    /opt/ibm/helpers/runtime/docker-server.sh && \
+    echo "* libxcrypt-compat provides /lib64/libcrypt.so.1 needed for things like tWAS; otherwise: java.lang.UnsatisfiedLinkError: Ws60ProcessManagement (Not found in java.library.path)" && \
+    echo "https://fedoraproject.org/wiki/Changes/FullyRemoveDeprecatedAndUnsafeFunctionsFromLibcrypt" && \
+    sudo dnf install -y libxcrypt-compat && \
     sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
     sed -i 's/"7276"/"7277"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
     sed -i 's/"7286"/"7287"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
@@ -119,6 +130,97 @@ RUN sudo dnf install -y libxcrypt-compat && \
     sed -i 's/9080/9081/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
     sed -i 's/9443/9444/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
     sed -i "s/ps -C .*/pgrep -f 'WsServer ')/g" /work/start_server.sh && \
+    echo "# IBM Trace and Request Analyzer for WebSphere Application Server" && \
+    echo "# https://www.ibm.com/support/pages/ibm-trace-and-request-analyzer-websphere-application-server" && \
+    ( \
+      sudo mkdir /opt/tracerequestanalyzer/ && \
+      cd /opt/tracerequestanalyzer/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/tra/tra303.jar && \
+      printf '[Desktop Entry]\nType=Application\nName=Trace and Request Analyzer\nExec=java -jar /opt/tracerequestanalyzer/tra303.jar\nPath=~/\nTerminal=false\n' | sudo tee tra.desktop && \
+      sudo chmod a+x tra.desktop && \
+      sudo ln -s /opt/tracerequestanalyzer/tra.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/tra.desktop /home/was/Desktop/ \
+    ) && \
+    echo "# IBM Channel Framework Analyzer" && \
+    echo "# https://www.ibm.com/support/pages/ibm-channel-framework-analyzer" && \
+    ( \
+      sudo mkdir /opt/channelframeworkanalyzer/ && \
+      cd /opt/channelframeworkanalyzer/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/cfa/cfa108.jar && \
+      printf '[Desktop Entry]\nType=Application\nName=Channel Framework Analyzer\nExec=java -jar /opt/channelframeworkanalyzer/cfa108.jar\nPath=~/\nTerminal=false\n' | sudo tee cfa.desktop && \
+      sudo chmod a+x cfa.desktop && \
+      sudo ln -s /opt/channelframeworkanalyzer/cfa.desktop /opt/programs/ \
+    ) && \
+    echo "# IBM Web Server Plug-in Analyzer for WebSphere Application Server (WSPA)" && \
+    echo "# https://www.ibm.com/support/pages/ibm-web-server-plug-analyzer-websphere-application-server-wspa" && \
+    ( \
+      sudo mkdir /opt/webserverpluginanalyzer/ && \
+      cd /opt/webserverpluginanalyzer/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/wspa/wspa35.zip && \
+      sudo unzip -q *.zip && \
+      sudo rm *.zip && \
+      printf '[Desktop Entry]\nType=Application\nName=Web Server Plug-in Analyzer\nExec=java -jar /opt/webserverpluginanalyzer/wspa35.jar\nPath=~/\nTerminal=false\n' | sudo tee wspa.desktop && \
+      sudo chmod a+x wspa.desktop && \
+      sudo ln -s /opt/webserverpluginanalyzer/wspa.desktop /opt/programs/ \
+    ) && \
+    echo "# Connection and Configuration Verification Tool for SSL/TLS" && \
+    echo "# https://www.ibm.com/support/pages/connection-and-configuration-verification-tool-ssltls" && \
+    ( \
+      sudo mkdir /opt/tlsverificationtool/ && \
+      cd /opt/tlsverificationtool/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/cvt/cvt102.zip && \
+      sudo unzip -q *.zip && \
+      sudo rm *.zip && \
+      printf '[Desktop Entry]\nType=Application\nName=SSL/TLS Connection and Configuration Verification Tool\nExec=java -jar /opt/tlsverificationtool/cvt102.jar\nPath=~/\nTerminal=false\n' | sudo tee cvt.desktop && \
+      sudo chmod a+x cvt.desktop && \
+      sudo ln -s /opt/tlsverificationtool/cvt.desktop /opt/programs/ \
+    ) && \
+    echo "# WebSphere Application Server Configuration Visualizer" && \
+    echo "# https://www.ibm.com/support/pages/websphere-application-server-configuration-visualizer" && \
+    ( \
+      sudo mkdir /opt/wsvisualizer/ && \
+      cd /opt/wsvisualizer/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/wsvisualizer/wsvisualizer_20131011.zip && \
+      sudo unzip -q *.zip && \
+      sudo rm *.zip \
+    ) && \
+    echo "# Problem Diagnostics Lab Toolkit" && \
+    echo "# https://www.ibm.com/support/pages/problem-diagnostics-lab-toolkit" && \
+    ( \
+      sudo mkdir /opt/problemdiagnosticstoolkit/ && \
+      cd /opt/problemdiagnosticstoolkit/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/pdlt/ProblemDiagnosticsLabToolkit_1.2.zip && \
+      sudo unzip -q *.zip && \
+      sudo rm *.zip \
+    ) && \
+    echo "# Eclipse SWT" && \
+    echo "# https://download.eclipse.org/eclipse/downloads/" && \
+    echo "# Click top version under Latest Release, then scroll to SWT Binary and Source, then go to downlod page, then get the 'Direct link to file' link" && \
+    ( \
+      sudo mkdir /opt/swt/ && \
+      cd /opt/swt/ && \
+      sudo wget -O swt.zip -q "https://www.eclipse.org/downloads/download.php?file=/eclipse/downloads/drops4/R-4.13-201909161045/swt-4.13-gtk-linux-x86_64.zip&r=1" && \
+      sudo unzip -q *.zip && \
+      sudo rm *.zip \
+    ) && \
+    echo "# Service Integration Bus Explorer" && \
+    echo "# https://www.ibm.com/support/pages/service-integration-bus-explorer" && \
+    ( \
+      sudo mkdir /opt/sibexplorer/ && \
+      cd /opt/sibexplorer/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/sibexplorer/sibexplorer_1.01b.zip && \
+      sudo unzip -q *.zip && \
+      sudo rm *.zip \
+    ) && \
+    echo "# Service Integration Bus Performance" && \
+    echo "# https://www.ibm.com/support/pages/service-integration-bus-performance" && \
+    ( \
+      sudo mkdir /opt/sibperf/ && \
+      cd /opt/sibperf/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/sibperf/sibperf.zip && \
+      sudo unzip -q *.zip && \
+      sudo rm *.zip \
+    ) && \
     echo "# https://www-01.ibm.com/support/docview.wss?uid=swg21644180" && \
     ( \
       sudo mkdir /opt/trapit/ && \
@@ -191,13 +293,10 @@ serverName = serverName[:serverName.find("(")]\n\
 #AdminApplication.uninstallApplication("DefaultApplication")\n\
 # https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/rxml_taskoptions.html\n\
 AdminApp.install("/opt/problemdetermination/swat.ear", ["-appname", "swat", "-node", nodeName, "-server", serverName, "-usedefaultbindings"])\n\
-AdminConfig.save()\n' > /work/config/install_app.py
-
-RUN --mount=type=secret,id=remotepassword if [ "$(sudo head -n 1 /run/secrets/remotepassword)" != "" ]; then echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" > /tmp/PASSWORD; fi
-
-RUN /work/configure.sh
-
-RUN cp /opt/problemdetermination/swat.ear /config/dropins/ && chown was:root /config/dropins/swat.ear && \
+AdminConfig.save()\n' > /work/config/install_app.py && \
+    if [ "$(sudo head -n 1 /run/secrets/remotepassword)" != "" ]; then echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" > /tmp/PASSWORD; fi && \
+    /work/configure.sh && \
+    cp /opt/problemdetermination/swat.ear /config/dropins/ && chown was:root /config/dropins/swat.ear && \
     echo "############################" && \
     echo "# Add supervisord programs #" && \
     echo "############################" && \
@@ -237,11 +336,9 @@ autostart=true\n\
 environment=\n\
     HOME="/home/was",\n\
     USER="was",\n\
-\n' | sudo tee /etc/supervisord.d/twas.supervisord.conf
-
-RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh
-
-RUN sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+\n' | sudo tee /etc/supervisord.d/twas.supervisord.conf && \
+    echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh && \
+    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     sudo mkdir /tmp/wlp-cache/ && \
     sudo chmod 777 /tmp/wlp-cache/ && \
     echo "# https://github.com/WASdev/sample.daytrader7" && \
@@ -390,7 +487,7 @@ environment=\n\
     ( \
       cd /opt/ && \
       sudo wget -q -O /opt/derby.zip https://www.apache.org/dist//db/derby/db-derby-10.14.2.0/db-derby-10.14.2.0-bin.zip && \
-      sudo unzip derby.zip && \
+      sudo unzip -q derby.zip && \
       sudo rm derby.zip && \
       sudo mv *derby* derby \
     ) && \
@@ -447,9 +544,7 @@ environment=\n\
       mkdir -p build/wlp/usr/servers/frontendServer/configDropins/overrides/ && \
       printf '<server><featureManager><feature>ssl-1.0</feature></featureManager></server>' > build/wlp/usr/servers/frontendServer/configDropins/overrides/ssl.xml \
     ) && \
-    ( \
-      cp /opt/problemdetermination/swat.ear /home/was/liberty-bikes/build/wlp/usr/servers/frontendServer/dropins/ \
-    ) && \
+    cp /opt/problemdetermination/swat.ear /home/was/liberty-bikes/build/wlp/usr/servers/frontendServer/dropins/ && \
     echo "# Start Liberty which creates the DB, then build the DB tables, restart Liberty, and then populate the DB." && \
     echo "# A benign FFDC is created initially which we can just destroy later." && \
     sudo mkdir -p /opt/ibm/wlp/usr/shared/resources/data/ && \
@@ -556,20 +651,7 @@ AdminConfig.save()\n\
     sudo mv /opt/daytrader7/jmeter_files/daytrader7.jmx /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx && \
     sudo cp /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
     sudo sed -i 's/9080/9083/g' /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
-    sudo chmod a+rw /opt/daytrader7/jmeter_files/daytrader7_twas.jmx
-
-#################
-# "Install" IHS #
-#################
-
-# https://hub.docker.com/r/ibmcom/ibm-http-server/tags
-# https://github.com/WASdev/ci.docker.ibm-http-server/blob/master/production/Dockerfile.install
-COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/HTTPServer /opt/IBM/HTTPServer
-COPY --from=ibmcom/ibm-http-server --chown=was:root /work/ihsstart.sh /work/ihsstart.sh
-COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Plugins /opt/IBM/WebSphere/Plugins
-COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Toolbox /opt/IBM/WebSphere/Toolbox
-
-RUN --mount=type=secret,id=remotepassword \
+    sudo chmod a+rw /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
     printf "\n\
 AdminConfig.create('HostAlias', AdminConfig.getid('/Cell:DefaultCell01/VirtualHost:default_host/'), '[[hostname \"*\"] [port \"9083\"]]')\n\
 AdminConfig.save()\n\
@@ -599,11 +681,8 @@ autostart=true\n\
 environment=\n\
     HOME="/root",\n\
     USER="root",\n\
-\n' | sudo tee /etc/supervisord.d/ihs.supervisord.conf
-
-RUN --mount=type=secret,id=remotepassword \
+\n' | sudo tee /etc/supervisord.d/ihs.supervisord.conf && \
     echo "Configure global security" && \
-    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     printf 'dn: cn=wsadminldap,ou=Users,dc=example,dc=com\n\
 cn: wsadminldap\n\
 sn: wsadminldap\n\
@@ -638,16 +717,22 @@ AdminApp.edit('DayTrader7', '[ -MapRolesToUsers [[ grp1 AppDeploymentOption.No A
 \n\
 AdminConfig.save()\n\
 \n" "$(echo -n "$(sudo head -n 1 /root/password.txt)")" > /home/was/twas_config_ldap.jy && \
-      /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
-      /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_ldap.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
-      /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)"
-
-RUN sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+    /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+    /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_ldap.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+    /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
     sudo sed -i 's/Accept-Language/Authorization/g' /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
     sudo sed -i "s/en-us/Basic $(echo -n "Admin1:$(echo -n "$(sudo head -n 1 /root/password.txt)")" | base64)/g" /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
     sudo sed -i 's/Accept-Language/Authorization/g' /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx && \
     sudo sed -i "s/en-us/Basic $(echo -n "Admin1:$(echo -n "$(sudo head -n 1 /root/password.txt)")" | base64)/g" /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx && \
-    /opt/ibm/wlp/bin/installUtility install --acceptLicense webProfile-8.0
+    /opt/ibm/wlp/bin/installUtility install --acceptLicense webProfile-8.0 && \
+    printf '\n\
+LOG_DIR=/opt/ibm/wlp/usr/servers/test/logs/\n\
+WLP_OUTPUT_DIR=/opt/ibm/wlp/usr/servers/\n\
+' >> /opt/ibm/wlp/usr/servers/test/server.env && \
+    sudo sed -i 's/-Xmx2g/-Xmx3g/g' /opt/mat/MemoryAnalyzer.ini && \
+    echo "https://github.com/kgibm/dockerdebug/" && \
+    sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
+    sudo chown -R was:root /opt/dockerdebug/
 
 # Backup and clear Liberty and tWAS logs
 RUN sudo mkdir /backup/ && \
@@ -659,16 +744,75 @@ RUN sudo mkdir /backup/ && \
     sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
     sudo sudo chown -R was:root /backup/
 
-RUN printf '\n\
-LOG_DIR=/opt/ibm/wlp/usr/servers/test/logs/\n\
-WLP_OUTPUT_DIR=/opt/ibm/wlp/usr/servers/\n\
-' >> /opt/ibm/wlp/usr/servers/test/server.env && \
-    sudo sed -i 's/-Xmx2g/-Xmx3g/g' /opt/mat/MemoryAnalyzer.ini
-
-RUN echo "https://github.com/kgibm/dockerdebug/ 20191112" && \
-    sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
-    sudo chown -R was:root /opt/dockerdebug/ && \
-    ln -s /opt/dockerdebug/fedorawasdebug/supplemental/videos/demo1.webm /home/was/Desktop/demo1.webm
+RUN sudo chmod a+x /opt/sibexplorer/sibexplorer.sh && \
+    sudo rm /opt/sibexplorer/*.bat && \
+    sudo sed -i 's/SWTJARS=.*/SWTJARS=\/opt\/swt\//g' /opt/sibexplorer/env.sh && \
+    sudo sed -i 's/CUR=.*/CUR=\/opt\/sibexplorer\//g' /opt/sibexplorer/env.sh && \
+    sudo sed -i 's/WAS\/java/WAS\/java\/8.0/g' /opt/sibexplorer/sibexplorer.sh && \
+    sudo sed -i 's/.\/env.sh/\/opt\/sibexplorer\/env.sh/g' /opt/sibexplorer/sibexplorer.sh && \
+    printf '[Desktop Entry]\nType=Application\nName=SIB Explorer\nExec=/opt/sibexplorer/sibexplorer.sh\nPath=/opt/sibexplorer/\nTerminal=false\n' | sudo tee /opt/sibexplorer/sibexplorer.desktop && \
+    sudo chmod a+x /opt/sibexplorer/sibexplorer.desktop && \
+    sudo ln -s /opt/sibexplorer/sibexplorer.desktop /opt/programs/ && \
+    sudo ln -s /opt/programs/sibexplorer.desktop /home/was/Desktop/ && \
+    printf '#SIBExplorer properties\n\
+Y=0\n\
+X=0\n\
+trustPassword0={xor}CDo9Hgw\\=\n\
+jsChain0=BootstrapBasicMessaging\n\
+soapPort0=8880\n\
+serverIds=0\n\
+resyncOnObjCreate=1\n\
+jsUserAlternateUserName0=0\n\
+maximised=1\n\
+protocol0=SOAP\n\
+keyLocation0=/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/etc/DummyClientKeyFile.jks\n\
+viewSystemObjs=0\n\
+jsHost0=\n\
+serverName0=tWAS\n\
+jsUserName0=\n\
+keyPassword0={xor}CDo9Hgw\\=\n\
+password0={xor}KDo9LC83Oi06\n\
+serverHostName0=localhost\n\
+jsPassword0={xor}\n\
+createNewSSLStores0=0\n\
+securityEnabled0=1\n\
+height=400\n\
+autoRefresh=0\n\
+width=400\n\
+jsPort0=7276\n\
+userName0=wsadmin\n\
+trustLocation0=/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/etc/DummyClientTrustFile.jks\n\
+viewTempObjs=0\n\
+' > /home/was/.sibExplorer.conf && \
+    sudo chown was:root /home/was/.sibExplorer.conf && \
+    sudo mv /opt/sibperf/SIBPerf/* /opt/sibperf/ && \
+    sudo rmdir /opt/sibperf/SIBPerf/ && \
+    sudo chmod a+x /opt/sibperf/sibperf.sh && \
+    sudo rm /opt/sibperf/*.bat && \
+    sudo sed -i 's/SWTJARS=.*/SWTJARS=\/opt\/swt\//g' /opt/sibperf/env.sh && \
+    sudo sed -i 's/SIBPerfDir=.*/SIBPerfDir=\/opt\/sibperf\//g' /opt/sibperf/env.sh && \
+    sudo sed -i 's/WAS_HOME=.*/WAS_HOME=\/opt\/IBM\/WebSphere\/AppServer/g' /opt/sibperf/env.sh && \
+    sudo sed -i 's/WAS_HOME\/java/WAS_HOME\/java\/8.0/g' /opt/sibperf/sibperf.sh && \
+    printf '##SIBPerf Properties file Tue Nov 26 23:42:49 UTC 2019\n\
+SHELL_YLEN=746\n\
+PORT=8880\n\
+USER=wsadmin\n\
+MAXIMISE_WINDOW=false\n\
+SHELL_XLEN=1030\n\
+CONNECTOR=0\n\
+HOST=localhost\n\
+SHELL_Y=3\n\
+SECURITY=true\n\
+SHELL_X=0\n\
+' | sudo tee /opt/sibperf/sibPerf.properties && \
+    sudo chown was:root /opt/sibperf/sibPerf.properties && \
+    sudo chmod -R a+w /opt/sibperf/ && \
+    sudo sed -i 's/.\/env.sh/\/opt\/sibperf\/env.sh/g' /opt/sibperf/sibperf.sh && \
+    sudo sed -i 's/^\. \.\/setup.*/. $WAS_HOME\/profiles\/AppSrv01\/bin\/setupCmdLine.sh/g' /opt/sibperf/sibperf.sh && \
+    printf '[Desktop Entry]\nType=Application\nName=SIB Performance\nExec=/opt/sibperf/sibperf.sh\nPath=/opt/sibperf/\nTerminal=false\n' | sudo tee /opt/sibperf/sibperf.desktop && \
+    sudo chmod a+x /opt/sibperf/sibperf.desktop && \
+    sudo ln -s /opt/sibperf/sibperf.desktop /opt/programs/ && \
+    sudo ln -s /opt/programs/sibperf.desktop /home/was/Desktop/
 
 # This should be the last real command because it's the most likely file to get a minor update.
 COPY ["WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf", "/opt/docs/"]

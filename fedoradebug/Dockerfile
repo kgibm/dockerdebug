@@ -59,6 +59,7 @@ RUN dnf install -y \
       bison-devel \
       cmake \
       collectl \
+      dconf-editor \
       e2fsprogs \
       emacs \
       file-devel \
@@ -173,6 +174,34 @@ RUN dnf install -y \
       xrdp \
       xreader
 
+RUN echo "# Install VS Code: https://code.visualstudio.com/docs/setup/linux" && \
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
+    printf '[code]\n\
+name=Visual Studio Code\n\
+baseurl=https://packages.microsoft.com/yumrepos/vscode\n\
+enabled=1\n\
+gpgcheck=1\n\
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc\n\
+    ' | sudo tee /etc/yum.repos.d/vscode.repo && \
+    sudo dnf install -y code && \
+    echo "# Install some Node basics" && \
+    sudo mkdir /opt/express && \
+    sudo npm install --prefix /opt/express/ express --save && \
+    printf "\n\
+      const express = require('express')\n\
+      const app = express()\n\
+      const port = 3000\n\
+      \n\
+      app.get('/', (req, res) => res.send('Hello World!'))\n\
+      \n\
+      app.listen(port, () => console.log(`Example app listening on port ${port}!`))\n\
+    " | sudo tee /opt/express/app.js && \
+    printf '#!/bin/sh\n\
+      echo "Starting server at http://localhost:3000/"\n\
+      node /opt/express/app.js\n\
+    ' | sudo tee /opt/express/run.sh && \
+    sudo chmod a+x /opt/express/run.sh
+
 RUN --mount=type=secret,id=remotepassword \
     dbus-uuidgen > /var/lib/dbus/machine-id && \
     echo "enforcing=0" | sudo tee -a /etc/security/pwquality.conf && \
@@ -181,20 +210,20 @@ RUN --mount=type=secret,id=remotepassword \
     echo "# Create the script that can update passwords #" && \
     echo "###############################################" && \
     printf '#!/bin/sh\n\
-read password\n\
-echo "${password}" | sudo tee /root/password.txt\n\
-if [ "${password}" = "" ]; then\n\
-  password=$(cat /dev/urandom | tr -dc "a-z0-9" | fold -w 8 | head -n 1)\n\
-fi\n\
-echo -n "${password}" | sudo sh -c "vncpasswd -f > /root/.vnc/passwd" || exit 1\n\
-echo "root:$(echo -n "${password}")" | sudo sh -c "chpasswd" || exit 1\n\
-echo -n "${password}" | sudo sh -c "vncpasswd -f > /home/was/.vnc/passwd" || exit 1\n\
-echo -n "${password}" | sudo sh -c "passwd --stdin was" || exit 1\n\
-sudo sed -i "s/password={SHA}.*/password={SHA}$(echo -n "${password}" | sha1sum | awk "{print \\$1}")/g" /etc/supervisord.conf || exit 1\n\
-sudo chmod 600 /root/.vnc/passwd || exit 1\n\
-sudo chmod -R go-rwx /home/was/.vnc || exit 1\n\
-sudo chown -R was:root /home/was/ || exit 1\n\
-\n' | sudo tee /usr/local/bin/setpassword.sh && chmod +x /usr/local/bin/setpassword.sh && \
+      read password\n\
+      echo "${password}" | sudo tee /root/password.txt\n\
+      if [ "${password}" = "" ]; then\n\
+        password=$(cat /dev/urandom | tr -dc "a-z0-9" | fold -w 8 | head -n 1)\n\
+      fi\n\
+      echo -n "${password}" | sudo sh -c "vncpasswd -f > /root/.vnc/passwd" || exit 1\n\
+      echo "root:$(echo -n "${password}")" | sudo sh -c "chpasswd" || exit 1\n\
+      echo -n "${password}" | sudo sh -c "vncpasswd -f > /home/was/.vnc/passwd" || exit 1\n\
+      echo -n "${password}" | sudo sh -c "passwd --stdin was" || exit 1\n\
+      sudo sed -i "s/password={SHA}.*/password={SHA}$(echo -n "${password}" | sha1sum | awk "{print \\$1}")/g" /etc/supervisord.conf || exit 1\n\
+      sudo chmod 600 /root/.vnc/passwd || exit 1\n\
+      sudo chmod -R go-rwx /home/was/.vnc || exit 1\n\
+      sudo chown -R was:root /home/was/ || exit 1\n\
+    \n' | sudo tee /usr/local/bin/setpassword.sh && chmod +x /usr/local/bin/setpassword.sh && \
     echo "######################################" && \
     echo "# Configure VNC, XRDP, and the users #" && \
     echo "######################################" && \
@@ -219,9 +248,10 @@ sudo chown -R was:root /home/was/ || exit 1\n\
     sed -i 's/#xserverbpp=24/xserverbpp=24/g' /etc/xrdp/xrdp.ini && \
     sed -i 's/code=20/code=20\nxserverbpp=24/g' /etc/xrdp/xrdp.ini && \
     printf '#!/bin/sh\n\
-unset SESSION_MANAGER\n\
-unset DBUS_SESSION_BUS_ADDRESS\n\
-exec xfce4-session\n' | sudo tee -a /root/.vnc/xstartup && \
+      unset SESSION_MANAGER\n\
+      unset DBUS_SESSION_BUS_ADDRESS\n\
+      exec xfce4-session\n\
+    ' | sudo tee -a /root/.vnc/xstartup && \
     chmod a+x /root/.vnc/xstartup && \
     cp /root/.vnc/xstartup /home/was/.vnc/xstartup && \
     chown was:root /home/was/.vnc/xstartup && \
@@ -236,102 +266,109 @@ exec xfce4-session\n' | sudo tee -a /root/.vnc/xstartup && \
     echo "#########################" && \
     echo "# https://docs.docker.com/config/containers/multi-service_container/" && \
     printf '\n\
-[supervisord]\n\
-user=root\n\
-logfile=/dev/stdout\n\
-logfile_maxbytes=0\n\
-loglevel=info\n\
-pidfile=/var/run/supervisor/supervisord.pid\n\
-minfds=1024\n\
-minprocs=200\n\
-\n\
-[unix_http_server]\n\
-file=/var/run/supervisor/supervisor.sock\n\
-username=root\n\
-password={SHA}REPLACEPASSWORD\n\
-\n\
-[rpcinterface:supervisor]\n\
-supervisor.rpcinterface_factory=supervisor.rpcinterface:make_main_rpcinterface\n\
-\n\
-[supervisorctl]\n\
-serverurl=unix:///var/run/supervisor/supervisor.sock\n\
-\n\
-[include]\n\
-files=/etc/supervisord.d/*.supervisord.conf\n\
-\n' | sudo tee /etc/supervisord.conf && \
+      [supervisord]\n\
+      user=root\n\
+      logfile=/dev/stdout\n\
+      logfile_maxbytes=0\n\
+      loglevel=info\n\
+      pidfile=/var/run/supervisor/supervisord.pid\n\
+      minfds=1024\n\
+      minprocs=200\n\
+      \n\
+      [unix_http_server]\n\
+      file=/var/run/supervisor/supervisor.sock\n\
+      username=root\n\
+      password={SHA}REPLACEPASSWORD\n\
+      \n\
+      [rpcinterface:supervisor]\n\
+      supervisor.rpcinterface_factory=supervisor.rpcinterface:make_main_rpcinterface\n\
+      \n\
+      [supervisorctl]\n\
+      serverurl=unix:///var/run/supervisor/supervisor.sock\n\
+      \n\
+      [include]\n\
+      files=/etc/supervisord.d/*.supervisord.conf\n\
+    ' | sudo tee /etc/supervisord.conf && \
     printf '\n\
-[program:rsyslog]\n\
-command=/usr/sbin/rsyslogd -n\n\
-stdout_logfile=/dev/stdout\n\
-stdout_logfile_maxbytes=0\n\
-redirect_stderr=true\n\
-priority=1\n\
-\n' | sudo tee /etc/supervisord.d/rsyslog.supervisord.conf && \
+      [program:rsyslog]\n\
+      command=/usr/sbin/rsyslogd -n\n\
+      stdout_logfile=/dev/stdout\n\
+      stdout_logfile_maxbytes=0\n\
+      redirect_stderr=true\n\
+      priority=1\n\
+    ' | sudo tee /etc/supervisord.d/rsyslog.supervisord.conf && \
     printf '\n\
-[program:xrdp]\n\
-command=/usr/sbin/xrdp -nodaemon\n\
-stdout_logfile=/dev/stdout\n\
-stdout_logfile_maxbytes=0\n\
-redirect_stderr=true\n\
-priority=20\n\
-\n' | sudo tee /etc/supervisord.d/xrdp.supervisord.conf && \
+      [program:xrdp]\n\
+      command=/usr/sbin/xrdp -nodaemon\n\
+      stdout_logfile=/dev/stdout\n\
+      stdout_logfile_maxbytes=0\n\
+      redirect_stderr=true\n\
+      priority=20\n\
+    ' | sudo tee /etc/supervisord.d/xrdp.supervisord.conf && \
     printf '\n\
-[program:xrdp-sesman]\n\
-command=/usr/sbin/xrdp-sesman --nodaemon\n\
-stdout_logfile=/dev/stdout\n\
-stdout_logfile_maxbytes=0\n\
-redirect_stderr=true\n\
-priority=25\n\
-\n' | sudo tee /etc/supervisord.d/xrdp-sesman.supervisord.conf && \
+      [program:xrdp-sesman]\n\
+      command=/usr/sbin/xrdp-sesman --nodaemon\n\
+      stdout_logfile=/dev/stdout\n\
+      stdout_logfile_maxbytes=0\n\
+      redirect_stderr=true\n\
+      priority=25\n\
+    ' | sudo tee /etc/supervisord.d/xrdp-sesman.supervisord.conf && \
     printf '\n\
-[program:ssh]\n\
-command=/usr/sbin/sshd -D\n\
-stdout_logfile=/dev/stdout\n\
-stdout_logfile_maxbytes=0\n\
-redirect_stderr=true\n\
-priority=30\n\
-\n' | sudo tee /etc/supervisord.d/ssh.supervisord.conf && \
+      [program:ssh]\n\
+      command=/usr/sbin/sshd -D\n\
+      stdout_logfile=/dev/stdout\n\
+      stdout_logfile_maxbytes=0\n\
+      redirect_stderr=true\n\
+      priority=30\n\
+    ' | sudo tee /etc/supervisord.d/ssh.supervisord.conf && \
     printf '\n\
-[program:vncserver1]\n\
-command=/usr/bin/vncserver :1 -fg\n\
-stdout_logfile=/dev/stdout\n\
-stdout_logfile_maxbytes=0\n\
-redirect_stderr=true\n\
-priority=50\n\
-\n' | sudo tee /etc/supervisord.d/vncserver1.supervisord.conf && \
+      [program:vncserver1]\n\
+      command=/usr/bin/vncserver :1 -fg\n\
+      stdout_logfile=/dev/stdout\n\
+      stdout_logfile_maxbytes=0\n\
+      redirect_stderr=true\n\
+      startsecs=1\n\
+      priority=50\n\
+    ' | sudo tee /etc/supervisord.d/vncserver1.supervisord.conf && \
+    printf '#!/bin/sh\n\
+      sleep 5 # Try to avoid deadlock with the root VNC starting at the same time\n\
+      /usr/sbin/runuser -l was -c "/usr/bin/vncserver :2 -fg"\n\
+    ' | sudo tee /usr/local/bin/startvncwas.sh && \
+    sudo chmod +x /usr/local/bin/startvncwas.sh && \
     printf '\n\
-[program:vncserver2]\n\
-command=/usr/sbin/runuser -l was -c "/usr/bin/vncserver :2 -fg"\n\
-stdout_logfile=/dev/stdout\n\
-stdout_logfile_maxbytes=0\n\
-redirect_stderr=true\n\
-priority=50\n\
-\n' | sudo tee /etc/supervisord.d/vncserver2.supervisord.conf && \
+      [program:vncserver2]\n\
+      command=/usr/local/bin/startvncwas.sh\n\
+      stdout_logfile=/dev/stdout\n\
+      stdout_logfile_maxbytes=0\n\
+      redirect_stderr=true\n\
+      startsecs=1\n\
+      priority=51\n\
+    ' | sudo tee /etc/supervisord.d/vncserver2.supervisord.conf && \
     printf '\n\
-[program:slapd]\n\
-command=/usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://"\n\
-stdout_logfile=/dev/stdout\n\
-stdout_logfile_maxbytes=0\n\
-redirect_stderr=true\n\
-priority=60\n\
-startsecs=0\n\
-\n' | sudo tee /etc/supervisord.d/slapd.supervisord.conf && \
+      [program:slapd]\n\
+      command=/usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://"\n\
+      stdout_logfile=/dev/stdout\n\
+      stdout_logfile_maxbytes=0\n\
+      redirect_stderr=true\n\
+      priority=60\n\
+      startsecs=0\n\
+    ' | sudo tee /etc/supervisord.d/slapd.supervisord.conf && \
     echo "# Print environment variables inherited by supervisord-spawned programs" && \
     printf '\n\
-[program:debugsupervisord]\n\
-command=/usr/bin/env\n\
-stdout_logfile=/dev/stdout\n\
-stdout_logfile_maxbytes=0\n\
-redirect_stderr=true\n\
-autorestart=false\n\
-startretries=0\n\
-startsecs=0\n\
-priority=1\n\
-user=was\n\
-environment=\n\
-    HOME="/home/was",\n\
-    USER="was",\n\
-\n' | sudo tee /etc/supervisord.d/debugsupervisord.supervisord.conf && \
+      [program:debugsupervisord]\n\
+      command=/usr/bin/env\n\
+      stdout_logfile=/dev/stdout\n\
+      stdout_logfile_maxbytes=0\n\
+      redirect_stderr=true\n\
+      autorestart=false\n\
+      startretries=0\n\
+      startsecs=0\n\
+      priority=1\n\
+      user=was\n\
+      environment=\n\
+          HOME="/home/was",\n\
+          USER="was",\n\
+    ' | sudo tee /etc/supervisord.d/debugsupervisord.supervisord.conf && \
     sudo mkdir -p /var/run/supervisor/ && \
     echo "# If a CMD is specified or a program through docker run," && \
     echo "# then start supervisord in the background and run the CMD." && \
@@ -341,26 +378,26 @@ environment=\n\
     echo "# USER root before ENTRYPOINT/CMD is run. Attempted" && \
     echo "# with sudo but ulimits don't pass through." && \
     printf '#!/bin/sh\n\
-ssh-keygen -A || exit 1\n\
-\n\
-if [ -e /usr/local/bin/extended_entrypoint.sh ]; then\n\
-  chmod a+x /usr/local/bin/extended_entrypoint.sh\n\
-  /usr/local/bin/extended_entrypoint.sh || exit 1\n\
-fi\n\
-\n\
-if [ "$#" -gt 0 ]; then\n\
-  supervisord -c /etc/supervisord.conf &> /var/log/supervisord.log || exit 1 &\n\
-  exec "$@" || exit 1\n\
-else\n\
-  supervisord -n -c /etc/supervisord.conf || exit 1\n\
-fi\n\
-\n\
-#Old code when CMD was added as a supervised program\n\
-#if [ "$#" -gt 0 ]; then\n\
-#  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" | tee /etc/supervisord.d/cmd.supervisord.conf > /dev/null\n\
-#fi\n\
-#supervisord -n -c /etc/supervisord.conf || exit 1\n\
-\n' | sudo tee -a /usr/local/bin/entrypoint.sh && chmod a+rx /usr/local/bin/entrypoint.sh && \
+      ssh-keygen -A || exit 1\n\
+      \n\
+      if [ -e /usr/local/bin/extended_entrypoint.sh ]; then\n\
+        chmod a+x /usr/local/bin/extended_entrypoint.sh\n\
+        /usr/local/bin/extended_entrypoint.sh || exit 1\n\
+      fi\n\
+      \n\
+      if [ "$#" -gt 0 ]; then\n\
+        supervisord -c /etc/supervisord.conf &> /var/log/supervisord.log || exit 1 &\n\
+        exec "$@" || exit 1\n\
+      else\n\
+        supervisord -n -c /etc/supervisord.conf || exit 1\n\
+      fi\n\
+      \n\
+      #Old code when CMD was added as a supervised program\n\
+      #if [ "$#" -gt 0 ]; then\n\
+      #  printf "[program:cmd]\\ncommand=$@\\nstdout_logfile=/dev/stdout\\nstdout_logfile_maxbytes=0\\nredirect_stderr=true\\n" | tee /etc/supervisord.d/cmd.supervisord.conf > /dev/null\n\
+      #fi\n\
+      #supervisord -n -c /etc/supervisord.conf || exit 1\n\
+    ' | sudo tee -a /usr/local/bin/entrypoint.sh && chmod a+rx /usr/local/bin/entrypoint.sh && \
     echo "######################" && \
     echo "# XFCE configuration #" && \
     echo "######################" && \
@@ -421,25 +458,10 @@ fi\n\
     echo "# Some kernels don't have CONFIG_TRACING=y CONFIG_EVENT_TRACING=y, so memleak.py won't work:" && \
     echo "# https://github.com/iovisor/bcc/issues/1530" && \
     sudo git clone https://github.com/iovisor/bcc /opt/bcc && \
-    echo "# Install some Node basics" && \
-    ( \
-      cd /opt/ && \
-      sudo npm install express --save \
-    ) && \
     echo "# Some Docker hosts run a different kernel than what gets installed above. The following hack" && \
     echo "# won't always work but it might for some cases (e.g. bcc)." && \
     echo "# Useless anyway without CONFIG_TRACING, so don't bother with the hack." && \
     echo "# See https://github.com/iovisor/bcc/issues/1000" && \
-    echo "# Install VS Code: https://code.visualstudio.com/docs/setup/linux" && \
-    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
-    printf '[code]\n\
-name=Visual Studio Code\n\
-baseurl=https://packages.microsoft.com/yumrepos/vscode\n\
-enabled=1\n\
-gpgcheck=1\n\
-gpgkey=https://packages.microsoft.com/keys/microsoft.asc\n\
-\n' | sudo tee /etc/yum.repos.d/vscode.repo && \
-    sudo dnf install -y code && \
     echo "# We have to stay below Gradle V5 for deprecated/removed Gradle features used by older projects" && \
     ( \
       cd /opt/ && \
@@ -476,8 +498,8 @@ gpgkey=https://packages.microsoft.com/keys/microsoft.asc\n\
     sudo usermod -a -G wireshark was && \
     echo "# Cannot set background before logging in" && \
     printf '#!/bin/sh\n\
-xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image-style -s 0\n\
-\n' > /home/was/Desktop/reset_desktop_background.sh && chmod a+x /home/was/Desktop/reset_desktop_background.sh && \
+      xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image-style -s 0\n\
+    \n' > /home/was/Desktop/reset_desktop_background.sh && chmod a+x /home/was/Desktop/reset_desktop_background.sh && \
     echo "# Set the default browser" && \
     sudo mkdir -p /root/.config/xfce4/ && \
     printf 'WebBrowser=firefox' | sudo tee /root/.config/xfce4/helpers.rc && \
@@ -575,21 +597,25 @@ olcDbMaxSize: 1073741824\n\
     echo "local4.* /var/log/slapd.log" | sudo tee -a /etc/rsyslog.conf && \
     mkdir -p /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/ && \
     printf '<?xml version="1.0" encoding="UTF-8"?>\n\
-<channel name="xfce4-screensaver" version="1.0">\n\
-  <property name="saver" type="empty">\n\
-    <property name="mode" type="int" value="2"/>\n\
-    <property name="idle-activation" type="empty">\n\
-      <property name="delay" type="int" value="30"/>\n\
-    </property>\n\
-    <property name="themes" type="empty">\n\
-      <property name="list" type="array">\n\
-        <value type="string" value="screensavers-xfce-popsquares"/>\n\
-      </property>\n\
-    </property>\n\
-  </property>\n\
-</channel>\n' > /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-screensaver.xml
-
-RUN rm -rf /etc/xdg/autostart/xscreensaver*
+      <channel name="xfce4-screensaver" version="1.0">\n\
+        <property name="saver" type="empty">\n\
+          <property name="mode" type="int" value="2"/>\n\
+          <property name="idle-activation" type="empty">\n\
+            <property name="delay" type="int" value="30"/>\n\
+          </property>\n\
+          <property name="themes" type="empty">\n\
+            <property name="list" type="array">\n\
+              <value type="string" value="screensavers-xfce-popsquares"/>\n\
+            </property>\n\
+          </property>\n\
+        </property>\n\
+      </channel>\n\
+    ' > /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-screensaver.xml && \
+    echo "Don't auto-start xscreensaver or otherwise the xfce4-screensaver lock gets locked out after a while: https://bugzilla.xfce.org/show_bug.cgi?id=16140" && \
+    rm -rf /etc/xdg/autostart/xscreensaver* && \
+    mkdir -p /home/was/.config/gtk-3.0/ && \
+    printf 'tooltip { opacity: 0; }\n' > /home/was/.config/gtk-3.0/gtk.css && \
+    chown -R was:root /home/was/.config/gtk-3.0/
 
 # Random tips:
 # * List all available Gnome settings: gsettings list-recursively

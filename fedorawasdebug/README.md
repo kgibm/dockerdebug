@@ -90,6 +90,13 @@ Tip: To share files with your host machine, add the following to the `docker run
 * Derby
 * Open Liberty Source
 * OpenJ9 Source
+* IBM Channel Framework Analyzer
+* IBM Web Server Plug-in Analyzer for WebSphere Application Server (WSPA)
+* Connection and Configuration Verification Tool for SSL/TLS
+* WebSphere Application Server Configuration Visualizer
+* Problem Diagnostics Lab Toolkit
+* SIB Explorer
+* SIB Performance
 
 ## Notes
 

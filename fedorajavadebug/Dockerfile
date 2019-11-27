@@ -97,7 +97,7 @@ RUN echo "# https://fedoraproject.org/wiki/Alternatives_system" && \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.was.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group && \
-    echo "# IBM Java >= 8.0.5.35 creates dumps that the MAT DTFJ can't read yet, so override it with the JDK's DTFJ until that's fixed." && \
+    echo "# IBM Java >= 8.0.5.35 and < 8.0.6.0 creates dumps that the public MAT DTFJ can't read, so override it in MAT with a recent JDK's DTFJ." && \
     sudo cp -f /opt/ibm/java/jre/lib/ddr/j9ddr.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/j9ddr.jar && \
     sudo cp -f /opt/ibm/java/jre/lib/ext/dtfj.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/dtfj.jar && \
     sudo mkdir -p /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
@@ -112,30 +112,26 @@ hide_welcome_screen=true\n\
 ' > /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs && \
     sudo cp /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs /root/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
     sudo chown root /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs && \
-    echo "# IBM HeapAnalyzer" && \
-    echo "# https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=4544bafe-c7a2-455f-9d43-eb866ea60091" && \
+    echo "# IBM Runtime Diagnostic Code Injection for the Java Platform (RDCI or Java Surgery)" && \
+    echo "# https://www.ibm.com/support/pages/ibm-runtime-diagnostic-code-injection-java-platform-java-surgery" && \
     ( \
-      sudo mkdir /opt/heapanalyzer/ && \
-      cd /opt/heapanalyzer/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha457.jar && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=Heap Analyzer\nExec=java -jar /opt/heapanalyzer/ha457.jar\nPath=~/\nTerminal=false\n' >> ha.desktop && \
-      sudo chmod a+x ha.desktop && \
-      sudo ln -s /opt/heapanalyzer/ha.desktop /opt/programs/ && \
-      sudo ln -s /opt/programs/ha.desktop /home/was/Desktop/ \
+      sudo mkdir /opt/surgery/ && \
+      cd /opt/surgery/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/surgery/surgery.jar \
     ) && \
     echo "# IBM Thread and Monitor Dump Analyzer (TMDA)" && \
-    echo "# https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=2245aa39-fa5c-4475-b891-14c205f7333c" && \
+    echo "# https://www.ibm.com/support/pages/ibm-thread-and-monitor-dump-analyzer-java-tmda" && \
     ( \
       sudo mkdir /opt/tmda/ && \
       cd /opt/tmda/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca463.jar && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca463.jar\nPath=~/\nTerminal=false\n' >> tmda.desktop && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca464.jar && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca464.jar\nPath=~/\nTerminal=false\n' >> tmda.desktop && \
       sudo chmod a+x tmda.desktop && \
       sudo ln -s /opt/tmda/tmda.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/tmda.desktop /home/was/Desktop/ \
     ) && \
     echo "# IBM ClassLoader Analyzer" && \
-    echo "# https://www.ibm.com/developerworks/community/groups/service/html/communitystart?communityUuid=a0a94b0d-38fe-4f4e-b2e6-4504b9d3f596" && \
+    echo "# https://www.ibm.com/support/pages/ibm-classloader-analyzer" && \
     ( \
       sudo mkdir /opt/classloaderanalyzer/ && \
       cd /opt/classloaderanalyzer/ && \
@@ -145,8 +141,19 @@ hide_welcome_screen=true\n\
       sudo ln -s /opt/classloaderanalyzer/cla.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/cla.desktop /home/was/Desktop/ \
     ) && \
+    echo "# IBM HeapAnalyzer" && \
+    echo "# https://www.ibm.com/support/pages/ibm-heapanalyzer" && \
+    ( \
+      sudo mkdir /opt/heapanalyzer/ && \
+      cd /opt/heapanalyzer/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha457.jar && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=Heap Analyzer\nExec=java -jar /opt/heapanalyzer/ha457.jar\nPath=~/\nTerminal=false\n' >> ha.desktop && \
+      sudo chmod a+x ha.desktop && \
+      sudo ln -s /opt/heapanalyzer/ha.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/ha.desktop /home/was/Desktop/ \
+    ) && \
     echo "# IBM Pattern Modeling and Analysis Tool for Java Garbage Collector (PMAT)" && \
-    echo "# https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=22d56091-3a7b-4497-b36e-634b51838e11" && \
+    echo "# https://www.ibm.com/support/pages/ibm-pattern-modeling-and-analysis-tool-java-garbage-collector-pmat" && \
     ( \
       sudo mkdir /opt/pmat/ && \
       cd /opt/pmat/ && \
@@ -156,29 +163,10 @@ hide_welcome_screen=true\n\
       sudo ln -s /opt/pmat/pmat.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/pmat.desktop /home/was/Desktop/ \
     ) && \
-    echo "# IBM Runtime Diagnostic Code Injection for the Java Platform (RDCI or Java Surgery)" && \
-    echo "# https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=7d3dc078-131f-404c-8b4d-68b3b9ddd07a" && \
-    ( \
-      sudo mkdir /opt/surgery/ && \
-      cd /opt/surgery/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/surgery/surgery.jar \
-    ) && \
-    echo "# IBM Trace and Request Analyzer for WebSphere Application Server" && \
-    echo "# https://www.ibm.com/developerworks/community/groups/service/html/communitystart?communityUuid=39153aad-6203-40ef-b239-e41243e27792" && \
-    ( \
-      sudo mkdir /opt/tracerequestanalyzer/ && \
-      cd /opt/tracerequestanalyzer/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/tra/tra303.jar && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=Trace and Request Analyzer\nExec=java -jar /opt/tracerequestanalyzer/tra303.jar\nPath=~/\nTerminal=false\n' >> tra.desktop && \
-      sudo chmod a+x tra.desktop && \
-      sudo ln -s /opt/tracerequestanalyzer/tra.desktop /opt/programs/ && \
-      sudo ln -s /opt/programs/tra.desktop /home/was/Desktop/ \
-    ) && \
     echo "#########################" && \
     echo "# Install Health Center #" && \
     echo "#########################" && \
-    echo "# Eclipse > Luna has some strange StackOverflowErrors with Health Center, so we install an old Eclipse" && \
-    echo "# for HC separately." && \
+    echo "# Eclipse > Luna has some strange StackOverflowErrors with Health Center, so we install an old Eclipse for HC separately." && \
     echo "# https://www.eclipse.org/downloads/packages/release/photon/r/eclipse-ide-java-ee-developers" && \
     echo "# https://www.eclipse.org/downloads/packages/release" && \
     sudo wget -q -O /opt/eclipse_old.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/SR2/eclipse-jee-luna-SR2-linux-gtk-x86_64.tar.gz&r=1" && \
@@ -286,6 +274,9 @@ RUN echo "############################" && \
           ) \
         done \
       done
+
+# TODO:
+#   * Install MAT Source: https://wiki.eclipse.org/MemoryAnalyzer/Contributor_Reference
 
 RUN --mount=type=secret,id=remotepassword echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh
 
