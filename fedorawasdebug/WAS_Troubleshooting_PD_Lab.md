@@ -121,7 +121,7 @@ Problem determination and performance tuning are best done with all layers of th
 
 6.  Start the lab by starting the Docker container from the command line:
 
-        docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug
+    `docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
 
 7.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
     
@@ -257,7 +257,7 @@ Now, let's run the script:
 
 > Note: You may skip the data collection steps and use example data packaged at /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/linperf/
 
-1.  *Start JMeter*
+1.  [Start JMeter](#start-jmeter)
 
 2.  Open a terminal on the lab image.
 
@@ -329,7 +329,7 @@ Now, let's run the script:
 
 9.  This will produce various **\*.out** files from the various Linux utilities.
 
-10.  *Stop JMeter*
+10.  [Stop JMeter](#stop-jmeter)
 
 # Linux top
 
@@ -698,7 +698,7 @@ Add the verbosegc option to the jvm.options file:
 
 > Note: You may skip the data collection steps and use example data packaged at /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/verbosegc\_and\_oom/
 
-1.  *Stop JMeter* if it is started
+1.  [Stop JMeter](#stop-jmeter) if it is started.
 
 1.  If learning Liberty:
 
@@ -720,11 +720,11 @@ Add the verbosegc option to the jvm.options file:
 
 3.  If learning Traditional WAS, verbosegc is enabled by default so you don\'t need to do anything.
 
-1.  *Start JMeter*
+1.  [Start JMeter](#start-jmeter)
 
 2.  Run the test for about 5 minutes.
 
-3.  *Stop JMeter*
+3.  [Stop JMeter](#stop-jmeter)
 
 4.  Open **/opt/programs/** in the file browser and double click on **GCMV**:
 
@@ -765,7 +765,7 @@ Next, let's simulate a memory issue.
 
 > Note: You may skip the data collection steps and use example data packaged at /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/verbosegc\_and\_oom/
 
-1.  *Stop JMeter* if it is started
+1.  [Stop JMeter](#stop-jmeter) if it is started.
 
 2.  If learning Liberty:
 
@@ -816,7 +816,7 @@ Next, let's simulate a memory issue.
 
             /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1
 
-4.  *Start JMeter*
+4.  [Start JMeter](#start-jmeter)
 
 5.  Let the JMeter test run for about 5 minutes.
 
@@ -840,7 +840,7 @@ Next, let's simulate a memory issue.
 
     6.  At some point, browser output will stop because the JVM has thrown an OutOfMemoryError.
 
-8.  *Stop JMeter*
+8.  [Stop JMeter](#stop-jmeter)
 
 9.  Close and re-open the **verbosegc\*log** file in GCMV:\
     \
@@ -1276,7 +1276,7 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
 > Note: You may skip the data collection steps and use example data packaged at /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/healthcenter/
 
-1.  *Stop JMeter* if it is started
+1.  [Stop JMeter](#stop-jmeter) if it is started.
 
 2.  Stop the Liberty server:
 
@@ -1309,9 +1309,9 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
             /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1
 
-5.  *Start JMeter* and run it for 5 minutes.
+5.  [Start JMeter](#start-jmeter) and run it for 5 minutes.
 
-6.  *Stop JMeter*
+6.  [Stop JMeter](#stop-jmeter)
 
 7.  Stop WAS as in step 2 above.
 
@@ -2178,8 +2178,7 @@ You may run this from the **bin** directory. For example:
     $ /home/was/liberty-bikes/build/wlp/bin/server dump frontendServer
     Dumping server frontendServer.
     Server frontendServer dump complete in /home/was/liberty-bikes/build/wlp/usr/servers/frontendServer/frontendServer.dump-19.06.10_08.18.18.zip.
-
-Server frontendServer dump complete in /home/was/liberty-bikes/build/wlp/usr/servers/frontendServer/frontendServer.dump-19.06.10\_08.18.18.zip.
+    Server frontendServer dump complete in /home/was/liberty-bikes/build/wlp/usr/servers/frontendServer/frontendServer.dump-19.06.10\_08.18.18.zip.
 
 The dump command works whether the server is started or not. Taking a dump in the latter case gathers less information but is still an easy way to gather up logs, configuration, and other potentially interesting information even if the server is stopped.
 
