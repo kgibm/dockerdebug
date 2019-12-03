@@ -3,7 +3,7 @@
 FROM websphere-liberty:javaee7
 USER root
 RUN apt-get update && \
-    apt-get install -y wget
+    apt-get install -y wget iproute2
 USER default
 RUN wget -q -O /config/dropins/swat.ear https://raw.githubusercontent.com/kgibm/problemdetermination/master/swat.ear && \
     echo '\n\
