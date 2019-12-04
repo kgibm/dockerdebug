@@ -526,7 +526,6 @@ environment=\n\
     sudo mkdir /opt/docs/ && \
     mkdir -p /home/was/Desktop && \
     chown was /home/was/Desktop && \
-    ln -s "/opt/docs/WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf" "/home/was/Desktop/" && \
     echo "# https://github.com/OpenLiberty/open-liberty" && \
     sudo git clone https://github.com/OpenLiberty/open-liberty /usr/local/src/open-liberty && \
     echo "# https://github.com/OpenLiberty/liberty-bikes" && \
@@ -729,10 +728,7 @@ AdminConfig.save()\n\
 LOG_DIR=/opt/ibm/wlp/usr/servers/test/logs/\n\
 WLP_OUTPUT_DIR=/opt/ibm/wlp/usr/servers/\n\
 ' >> /opt/ibm/wlp/usr/servers/test/server.env && \
-    sudo sed -i 's/-Xmx2g/-Xmx3g/g' /opt/mat/MemoryAnalyzer.ini && \
-    echo "https://github.com/kgibm/dockerdebug/" && \
-    sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
-    sudo chown -R was:root /opt/dockerdebug/
+    sudo sed -i 's/-Xmx2g/-Xmx3g/g' /opt/mat/MemoryAnalyzer.ini
 
 # Backup and clear Liberty and tWAS logs
 RUN sudo mkdir /backup/ && \
@@ -821,7 +817,16 @@ RUN echo "# IBM Database Connection Pool Analyzer for IBM WebSphere Application 
       sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jcp/jcp23.zip && \
       sudo unzip -q *.zip && \
       sudo rm -f *.zip *.exe \
-    ) && \
+    )
+
+RUN sudo chmod -R a+w /usr/local/src/open-liberty
+RUN sudo chmod -R a+w /usr/local/src/mat
+RUN sudo chmod -R a+w /usr/local/src/openj9
+RUN sudo chmod -R a+w /usr/local/src/openj9-omr
+
+RUN echo "https://github.com/kgibm/dockerdebug/" && \
+    sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
+    sudo chown -R was:root /opt/dockerdebug/ && \
     ln -s /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/ /home/was/Desktop/exampledata
 
 RUN ( \
@@ -839,13 +844,13 @@ RUN ( \
       ./unpack.sh \
     )
 
-RUN sudo chmod -R a+w /usr/local/src/open-liberty
-RUN sudo chmod -R a+w /usr/local/src/mat
-RUN sudo chmod -R a+w /usr/local/src/openj9
-RUN sudo chmod -R a+w /usr/local/src/openj9-omr
-
-# This should be the last real command because it's the most likely file to get a minor update.
-COPY ["WebSphere_Application_Server_Troubleshooting_and_Performance_Lab_on_Docker.pdf", "/opt/docs/"]
+RUN ( \
+      echo "Version 20191204" && \
+      cd /opt/dockerdebug/fedorawasdebug && \
+      sudo dnf install -y pandoc && \
+      sudo pandoc -s --toc --toc-depth=2 --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" -o WAS_Troubleshooting_PD_Lab.html WAS_Troubleshooting_PD_Lab.md && \
+      ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_PD_Lab.html" "/home/was/Desktop/" \
+    )
 
 EXPOSE 8080 8081 8082 9080 9081 9082 9083 9443 9444 9445 12000 12005
 

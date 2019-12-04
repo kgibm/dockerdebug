@@ -68,7 +68,7 @@ Problem determination and performance tuning are best done with all layers of th
 
 ![](./media/image4.png)
 
-# Starting the Docker Container
+# Docker Basics
 
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
     \
@@ -331,7 +331,7 @@ Now, let's run the script:
 
 10.  [Stop JMeter](#stop-jmeter)
 
-# Linux top
+### Linux top
 
 **top** is one of the most basic Linux performance tools. Open **top.out** to review the output.
 
@@ -411,7 +411,7 @@ The **top** command may be run in interactive mode by simply running the **top**
 
 ![](./media/image24.png)
 
-# Linux top -H
+### Linux top -H
 
 **top -H** is similar to top except that the **-H** flag shows the top CPU usage by thread instead of by PID. Open **topdashH\*.out** to review the output. Again, this file shows multiple intervals, so it's important to review all intervals to understand CPU usage over time. Here is an example interval from Liberty (on Traditional WAS, the main difference will be **WebContai+** threads instead of **Default E+**):
 
@@ -2414,7 +2414,7 @@ Any currently running Java programs will need to be restarted if you want them t
 
 -   V1 (December 14, 2016): First version on VMWare.
 
-Tip: to compare between tags; for example: https://github.com/kgibm/dockerdebug/compare/V4...V5
+Tip: to compare between tags; for example: [https://github.com/kgibm/dockerdebug/compare/V4...V5](https://github.com/kgibm/dockerdebug/compare/V4...V5)
 
 ##  Acknowledgments
 
