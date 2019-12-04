@@ -848,8 +848,8 @@ RUN ( \
       echo "Version 20191204" && \
       cd /opt/dockerdebug/fedorawasdebug && \
       sudo dnf install -y pandoc && \
-      sudo pandoc -s --toc --toc-depth=2 --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" -o WAS_Troubleshooting_PD_Lab.html WAS_Troubleshooting_PD_Lab.md && \
-      ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_PD_Lab.html" "/home/was/Desktop/" \
+      sudo pandoc -s --toc --toc-depth=2 --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
+      ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
     )
 
 EXPOSE 8080 8081 8082 9080 9081 9082 9083 9443 9444 9445 12000 12005
