@@ -924,148 +924,33 @@ Keep track of a summary of the situation, a list of problems, hypotheses, and ex
 
 ### Problems
 
-+----------+-------------+-------------+-------------+-------------+
-| > **\#** | >           | > **Case    | >           | > **Next    |
-|          | **Problem** | > \#**      |  **Status** | > Steps**   |
-+==========+=============+=============+=============+=============+
-| > 1      | > Average   | TS001234567 | > Reduced   | Investigate |
-|          | > response  |             | > average   | database    |
-|          | > time      |             | > response  | response    |
-|          | > greater   |             | > time to   | times       |
-|          | > than      |             | > 2000ms by |             |
-|          | > 300ms     |             | >           |             |
-|          |             |             |  increasing |             |
-|          |             |             | > heap size |             |
-+----------+-------------+-------------+-------------+-------------+
-| > 2      | > Website   | TS001234568 | > Reduced   | Run         |
-|          | > error     |             | > website   | diagnostic  |
-|          | > rate      |             | > error     | trace for   |
-|          | > greater   |             | > rate to   | remaining   |
-|          | > than 1%   |             | > 5% by     | errors      |
-|          |             |             | > fixing an |             |
-|          |             |             | >           |             |
-|          |             |             | application |             |
-|          |             |             | > bug       |             |
-+----------+-------------+-------------+-------------+-------------+
+| \# | Problem | Case \# | Status | Next Steps |
+|---|---|---|---|---|
+| 1 | Average response time greater than 300ms | TS001234567 | <ol><li>Reduced average response time to 2000ms by increasing heap size</li></ol> | <ol><li>Investigate database response times</li></ol> |
+| 2 | Website error rate greater than 1% | TS001234568 | <ol><li>Reduced website error rate to 5% by fixing an application bug</li></ol> | <ol><li>Run diagnostic trace for remaining errors</li></ol> |
 
 ### Hypotheses for Problem \#1
 
-+----------+------------------+------------------+------------------+
-| > **\#** | > **Hypothesis** | > **Evidence**   | > **Status**     |
-+==========+==================+==================+==================+
-| > 1      | > High           | -   Verbosegc    | -   Further      |
-|          | > proportion of  |     showed       |     fine-tuning  |
-|          | > time in        |     proportion   |     can be done, |
-|          | > garbage        |     of time in   |     but at this  |
-|          | > collection     |     GC of 20%    |     point 5% is  |
-|          | > leading to     |                  |     a reasonable |
-|          | > reduced        | -   Increased    |     number       |
-|          | > performance    |     Java maximum |                  |
-|          |                  |     heap size to |                  |
-|          |                  |     -Xmx1g and   |                  |
-|          |                  |     proportion   |                  |
-|          |                  |     of time in   |                  |
-|          |                  |     GC went down |                  |
-|          |                  |     to 5%        |                  |
-+----------+------------------+------------------+------------------+
-| > 2      | > Slow database  | -   Thread       | -   Gather       |
-|          | > response times |     stacks       |     database     |
-|          |                  |     showed many  |     response     |
-|          |                  |     threads      |     times        |
-|          |                  |     waiting on   |                  |
-|          |                  |     the database |                  |
-+----------+------------------+------------------+------------------+
+| \# | Hypothesis | Evidence | Status |
+|---|---|---|---|
+| 1 | High proportion of time in garbage collection leading to reduced performance | <ol><li>Verbosegc showed proportion of time in GC of 20%</li><li>Increased Java maximum heap size to -Xmx1g and proportion of time in GC went down to 5%</li></ol> | <ol><li>Further fine-tuning can be done, but at this point 5% is a reasona-ble number</li></ol> |
+| 2 | Slow database response times | <ol><li>Thread stacks showed many threads waiting on the data-base</li></ol> | <ol><li>Gather database re-sponse times</li></ol> |
 
 ### Hypotheses for Problem \#2
 
-+----------+------------------+------------------+------------------+
-| > **\#** | > **Hypothesis** | > **Evidence**   | > **Status**     |
-+==========+==================+==================+==================+
-| > 1      | > Null           | -   NullP        | -   Application  |
-|          | PointerException | ointerExceptions |     fixed the    |
-|          | > in             |     in the logs  |     Null         |
-|          | > com            |     correlate    | PointerException |
-|          | .application.foo |     with HTTP    |     and error    |
-|          | > is causing     |     500 response |     rates were   |
-|          | > errors         |     codes        |     halved       |
-+----------+------------------+------------------+------------------+
-| > 2      | >                | -                | -   Gather WAS   |
-|          |  ConcurrentModif | ConcurrentModifi |     diagnostic   |
-|          | icationException | cationExceptions |     trace        |
-|          | > in             |     correlate    |     capturing    |
-|          | > c              |     with HTTP    |     some         |
-|          | om.websphere.bar |     500 response |     exceptions   |
-|          | > is causing     |     codes        |                  |
-|          | > errors         |                  |                  |
-+----------+------------------+------------------+------------------+
+| \# | Hypothesis | Evidence | Status |
+|---|---|---|---|
+| 1 | NullPointerException in com.application.foo is causing errors | <ol><li>NullPointerExceptions in the logs correlate with HTTP 500 response codes</li></ol> | <ol><li>Application fixed the NullPointerException and error rates were halved</li></ol> |
+| 2 | ConcurrentModificationExcep-tion in com.websphere.bar is causing errors | <ol><li>ConcurrentModificationExcep-tions correlate with HTTP 500 response codes</li></ol> | <ol><li>Gather WAS diagnostic trace capturing some exceptions</li></ol> |
 
 ### Experiments/Tests
 
-+----------+----------+----------+----------+----------+----------+
-| > **\#** | > **E    | > **Dat  | >        | > **C    | > **R    |
-|          | xperimen | e/Time** |  **Envir | hanges** | esults** |
-|          | t/Test** |          | onment** |          |          |
-+==========+==========+==========+==========+==========+==========+
-| > 1      | >        | 20       | > Pr     | None     | -        |
-|          | Baseline | 19-01-01 | oduction |          |  Average |
-|          |          | 09:00:00 | >        |          |          |
-|          |          | UTC      |  server1 |          | response |
-|          |          |          |          |          |     time |
-|          |          | to       |          |          |          |
-|          |          |          |          |          |   5000ms |
-|          |          | 20       |          |          |          |
-|          |          | 19-01-01 |          |          | -        |
-|          |          | 17:00:00 |          |          |  Website |
-|          |          | UTC      |          |          |          |
-|          |          |          |          |          |    error |
-|          |          |          |          |          |     rate |
-|          |          |          |          |          |     10%  |
-+----------+----------+----------+----------+----------+----------+
-| > 2      | > R      | 20       | > Test   | None     | -        |
-|          | eproduce | 19-01-02 | >        |          |  Average |
-|          | > in a   | 11:00:00 |  server1 |          |          |
-|          | > test   | UTC      |          |          | response |
-|          | > env    |          |          |          |     time |
-|          | ironment | to       |          |          |          |
-|          |          |          |          |          |   8000ms |
-|          |          | 20       |          |          |          |
-|          |          | 19-01-01 |          |          | -        |
-|          |          | 12:00:00 |          |          |  Website |
-|          |          | UTC      |          |          |          |
-|          |          |          |          |          |    error |
-|          |          |          |          |          |     rate |
-|          |          |          |          |          |     15%  |
-+----------+----------+----------+----------+----------+----------+
-| > 3      | > Test   | 20       | > Test   | Increase | -        |
-|          | >        | 19-01-03 | >        | Java     |  Average |
-|          |  problem | 12:30:00 |  server1 | heap     |          |
-|          | > \#1 -  | UTC      |          | size to  | response |
-|          | > hy     |          |          | 1g       |     time |
-|          | pothesis | to       |          |          |          |
-|          | > \#1    |          |          |          |   4000ms |
-|          |          | 20       |          |          |          |
-|          |          | 19-01-01 |          |          | -        |
-|          |          | 14:00:00 |          |          |  Website |
-|          |          | UTC      |          |          |          |
-|          |          |          |          |          |    error |
-|          |          |          |          |          |     rate |
-|          |          |          |          |          |     15%  |
-+----------+----------+----------+----------+----------+----------+
-| > 4      | > Test   | 20       | > Pr     | Increase | -        |
-|          | >        | 19-01-04 | oduction | Java     |  Average |
-|          |  problem | 09:00:00 | >        | heap     |          |
-|          | > \#1 -  | UTC      |  server1 | size to  | response |
-|          | > hy     |          |          | 1g       |     time |
-|          | pothesis | to       |          |          |          |
-|          | > \#1    |          |          |          |   2000ms |
-|          |          | 20       |          |          |          |
-|          |          | 19-01-01 |          |          | -        |
-|          |          | 17:00:00 |          |          |  Website |
-|          |          | UTC      |          |          |          |
-|          |          |          |          |          |    error |
-|          |          |          |          |          |     rate |
-|          |          |          |          |          |     10%  |
-+----------+----------+----------+----------+----------+----------+
+| \# | Experiment/Test | Start | End | Environment | Changes | Results |
+|---|---|---|---|---|---|---|
+| 1 | Baseline | 2019-01-01 09:00:00 UTC | 2019-01-01 17:00:00 UTC | Production server1 | <ol><li>None</li></ol> | <ol><li>Average response time 5000ms</li><li>Website error rate 10%</li></ol> |
+| 2 | Reproduce in a test environment | 2019-01-02 11:00:00 UTC | 2019-01-01 12:00:00 UTC | Test server1 | <ol><li>None</li></ol> | <ol><li>Average response time 8000ms</li><li>Website error rate 15%</li></ol> |
+| 3 | Test problem #1 - hypothesis #1 | 2019-01-03 12:30:00 UTC | 2019-01-01 14:00:00 UTC | Test server1 | <ol><li>Increase Java heap size to 1g</li></ol> | <ol><li>Average response time 4000ms</li><li>Website error rate 15%</li></ol> |
+| 4 | Test problem #1 - hypothesis #1 | 2019-01-04 09:00:00 UTC | 2019-01-01 17:00:00 UTC | Production server1 | <ol><li>Increase Java heap size to 1g</li></ol> | <ol><li>Average response time 2000ms</li><li>Website error rate 10%</li></ol> |
 
 ##  Performance Tuning Tips
 
