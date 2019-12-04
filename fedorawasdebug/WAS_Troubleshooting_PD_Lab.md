@@ -93,7 +93,7 @@ Problem determination and performance tuning are best done with all layers of th
         \
         Windows:\
         \
-        ![](./media/image8.png)
+        ![](./media/image10.png)
 
     1.  Select the **Disk** tab.
 
