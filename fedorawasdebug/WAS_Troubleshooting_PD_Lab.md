@@ -8,7 +8,7 @@
 
 [WebSphere Application Server](https://www.ibm.com/cloud/websphere-application-platform) (WAS) is a platform for serving Java-based applications. WAS comes in two major product forms:
 
-1.  [Traditional WAS](https://www.ibm.com/support/knowledgecenter/en/SSAW57/mapfiles/product_welcome_wasnd.html) (colloquially: tWAS or WAS Classic): Released in 1998 and still fully supported and used by many.
+1.  [Traditional WAS](https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.5/com.ibm.websphere.nd.multiplatform.doc/ae/welcome_ndmp.html) (colloquially: tWAS or WAS Classic): Released in 1998 and still fully supported and used by many.
 
 2.  [WAS Liberty](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/as_ditamaps/was900_welcome_liberty_ndmp.html) (or WebSphere Liberty): Released in 2012 and designed for fast startup, composability, and the cloud. The commercial WAS Liberty product is built on top of the open source [OpenLiberty](https://github.com/OpenLiberty/open-liberty). The colloquial term \'Liberty\' may refer to WAS Liberty, OpenLiberty, or both.
 
@@ -471,7 +471,7 @@ Thread dumps are snapshots of process activity, including the thread stacks that
 
 For IBM Java or OpenJ9, a thread dump is also called a javacore or javadump. [HotSpot-based thread dumps](https://publib.boulder.ibm.com/httpserv/cookbook/Troubleshooting-Troubleshooting_Java-Troubleshooting_HotSpot_JVM.html#Troubleshooting-Troubleshooting_HotSpot_JVM-Thread_Dump) are covered elsewhere.
 
-This exercise will demonstrate how to review thread dumps in the free [IBM Thread and Monitor Dump Analyzer (TMDA) tool](https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=2245aa39-fa5c-4475-b891-14c205f7333c).
+This exercise will demonstrate how to review thread dumps in the free [IBM Thread and Monitor Dump Analyzer (TMDA) tool](https://www.ibm.com/support/pages/ibm-thread-and-monitor-dump-analyzer-java-tmda).
 
 ## Thread Dumps Theory
 
@@ -787,32 +787,34 @@ Next, let's simulate a memory issue.
 
     1.  Open the Administrative Console at <https://localhost:9043/ibm/console>
 
-    2.  Click **Servers** \> **Server Types** \> **WebSphere application server** \> **server1**\
+    1.  Login with user **wsadmin** and password **websphere**
+
+    1.  Click **Servers** \> **Server Types** \> **WebSphere application server** \> **server1**\
         \
         ![](./media/image62.png)
 
-    3.  Click **Java and Process Management** \> **Process Definition**:\
+    1.  Click **Java and Process Management** \> **Process Definition**:\
         \
         ![](./media/image63.png)
 
-    4.  Click **Java Virtual Machine**:\
+    1.  Click **Java Virtual Machine**:\
         \
         ![](./media/image64.png)
 
-    5.  Set **-Xmx** to **256MB**:\
+    1.  Set **-Xmx** to **256MB**:\
         ![](./media/image65.png)
 
-    6.  Scroll down and click OK:\
+    1.  Scroll down and click OK:\
         ![](./media/image66.png)
 
-    7.  Click Save:\
+    1.  Click Save:\
         ![](./media/image67.png)
 
-    8.  Stop the server.
+    1.  Stop the server.
 
             /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1 -username wsadmin -password websphere
 
-    9.  Start the server
+    1.  Start the server
 
             /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1
 
@@ -924,33 +926,33 @@ Keep track of a summary of the situation, a list of problems, hypotheses, and ex
 
 ### Problems
 
-| \# | Problem | Case \# | Status | Next Steps |
-|---|---|---|---|---|
-| 1 | Average response time greater than 300ms | TS001234567 | <ol><li>Reduced average response time to 2000ms by increasing heap size</li></ol> | <ol><li>Investigate database response times</li></ol> |
-| 2 | Website error rate greater than 1% | TS001234568 | <ol><li>Reduced website error rate to 5% by fixing an application bug</li></ol> | <ol><li>Run diagnostic trace for remaining errors</li></ol> |
+| \#  | Problem                                  | Case \#     | Status                                                          | Next Steps                                         |
+| :-: | ---------------------------------------- | ----------- | --------------------------------------------------------------- | ------------------------------------- |
+| 1   | Average response time greater than 300ms | TS001234567 | Reduced average response time to 2000ms by increasing heap size | Investigate database response times               |
+| 2   | Website error rate greater than 1%       | TS001234568 | Reduced website error rate to 5% by fixing an application bug.  | Run diagnostic trace for remaining errors |
 
 ### Hypotheses for Problem \#1
 
-| \# | Hypothesis | Evidence | Status |
-|---|---|---|---|
-| 1 | High proportion of time in garbage collection leading to reduced performance | <ol><li>Verbosegc showed proportion of time in GC of 20%</li><li>Increased Java maximum heap size to -Xmx1g and proportion of time in GC went down to 5%</li></ol> | <ol><li>Further fine-tuning can be done, but at this point 5% is a reasona-ble number</li></ol> |
-| 2 | Slow database response times | <ol><li>Thread stacks showed many threads waiting on the data-base</li></ol> | <ol><li>Gather database re-sponse times</li></ol> |
+| \#  | Hypothesis                                                                   | Evidence                                                       | Status                                                                                     |
+| :-: | ---------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 1   | High proportion of time in garbage collection leading to reduced performance | Verbosegc showed proportion of time in GC of 20%                  | Increased Java maximum heap size to -Xmx1g and proportion of time in GC went down to 5% |
+| 2   | Slow database response times                                                 | Thread stacks showed many threads waiting on the database | Gather database re-sponse times                                                         |
 
 ### Hypotheses for Problem \#2
 
-| \# | Hypothesis | Evidence | Status |
-|---|---|---|---|
-| 1 | NullPointerException in com.application.foo is causing errors | <ol><li>NullPointerExceptions in the logs correlate with HTTP 500 response codes</li></ol> | <ol><li>Application fixed the NullPointerException and error rates were halved</li></ol> |
-| 2 | ConcurrentModificationExcep-tion in com.websphere.bar is causing errors | <ol><li>ConcurrentModificationExcep-tions correlate with HTTP 500 response codes</li></ol> | <ol><li>Gather WAS diagnostic trace capturing some exceptions</li></ol> |
+| \#  | Hypothesis                                                            | Evidence                                                                       | Status                                                                 |
+| :-: | --------------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| 1 | NullPointerException in com.application.foo is causing errors           | NullPointerExceptions in the logs correlate with HTTP 500 response codes | Application fixed the NullPointerException and error rates were halved |
+| 2 | ConcurrentModificationException in com.websphere.bar is causing errors  | ConcurrentModificationExceptions correlate with HTTP 500 response codes | Gather WAS diagnostic trace capturing some exceptions                  |
 
 ### Experiments/Tests
 
-| \# | Experiment/Test | Start | End | Environment | Changes | Results |
-|---|---|---|---|---|---|---|
-| 1 | Baseline | 2019-01-01 09:00:00 UTC | 2019-01-01 17:00:00 UTC | Production server1 | <ol><li>None</li></ol> | <ol><li>Average response time 5000ms</li><li>Website error rate 10%</li></ol> |
-| 2 | Reproduce in a test environment | 2019-01-02 11:00:00 UTC | 2019-01-01 12:00:00 UTC | Test server1 | <ol><li>None</li></ol> | <ol><li>Average response time 8000ms</li><li>Website error rate 15%</li></ol> |
-| 3 | Test problem #1 - hypothesis #1 | 2019-01-03 12:30:00 UTC | 2019-01-01 14:00:00 UTC | Test server1 | <ol><li>Increase Java heap size to 1g</li></ol> | <ol><li>Average response time 4000ms</li><li>Website error rate 15%</li></ol> |
-| 4 | Test problem #1 - hypothesis #1 | 2019-01-04 09:00:00 UTC | 2019-01-01 17:00:00 UTC | Production server1 | <ol><li>Increase Java heap size to 1g</li></ol> | <ol><li>Average response time 2000ms</li><li>Website error rate 10%</li></ol> |
+| \#  | Experiment/Test               | Start                   | End                     | Environment        | Changes                       | Results                                              |
+| :-: | ----------------------------- | ----------------------- | ----------------------- | ------------------ | ----------------------------- | ---------------------------------------------------- |
+| 1 | Baseline                        | 2019-01-01 09:00:00 UTC | 2019-01-01 17:00:00 UTC | Production server1 | None                          | Average response time 5000ms; Website error rate 10% |
+| 2 | Reproduce in a test environment | 2019-01-02 11:00:00 UTC | 2019-01-01 12:00:00 UTC | Test server1       | None                          | Average response time 8000ms; Website error rate 15% |
+| 3 | Test problem #1 - hypothesis #1 | 2019-01-03 12:30:00 UTC | 2019-01-01 14:00:00 UTC | Test server1       | Increase Java heap size to 1g | Average response time 4000ms; Website error rate 15% |
+| 4 | Test problem #1 - hypothesis #1 | 2019-01-04 09:00:00 UTC | 2019-01-01 17:00:00 UTC | Production server1 | Increase Java heap size to 1g | Average response time 2000ms; Website error rate 10% |
 
 ##  Performance Tuning Tips
 
@@ -2198,8 +2200,6 @@ OpenLiberty [publishes example guides](https://openliberty.io/guides/) on how to
 # IBM HTTP Server
 
 IBM HTTP Server is a reverse proxy HTTP server in this image which proxies to Traditional WAS. It is installed at **/opt/IBM/HTTPServer** and may be accessed at http://localhost:9083/.
-
-##  
 
 # Appendix
 
