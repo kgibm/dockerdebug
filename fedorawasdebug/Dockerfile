@@ -847,6 +847,7 @@ RUN ( \
 RUN ( \
       echo "Version 20191204" && \
       cd /opt/dockerdebug/fedorawasdebug && \
+      sudo git pull && \
       sudo dnf install -y pandoc && \
       sudo pandoc -s --toc --toc-depth=2 --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
       ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
