@@ -4,6 +4,57 @@
 - Version: V10 (November 27, 2019)
 - Source: [https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug](https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug)
 
+# Table of Contents
+
+-   [Introduction](#introduction)
+-   [Core Concepts](#core-concepts)
+-   [Docker Basics](#docker-basics)
+    -   [Apache Jmeter](#apache-jmeter)
+-   [Linux CPU and Memory Usage](#linux-cpu-and-memory-usage)
+    -   [linperf Theory](#linperf-theory)
+    -   [linperf Lab](#linperf-lab)
+-   [IBM Java and OpenJ9 Thread
+    Dumps](#ibm-java-and-openj9-thread-dumps)
+    -   [Thread Dumps Theory](#thread-dumps-theory)
+    -   [Thread Dumps Lab](#thread-dumps-lab)
+-   [Garbage Collection](#garbage-collection)
+    -   [Garbage Collection Theory](#garbage-collection-theory)
+    -   [Garbage Collection Lab](#garbage-collection-lab)
+-   [Methodology](#methodology)
+    -   [The Scientific Method](#the-scientific-method)
+    -   [Organizing an Investigation](#organizing-an-investigation)
+    -   [Performance Tuning Tips](#performance-tuning-tips)
+-   [Heap Dumps](#heap-dumps)
+    -   [Heap Dump Theory](#heap-dump-theory)
+    -   [Heap Dump Lab](#heap-dump-lab)
+-   [Health Center](#health-center)
+    -   [Health Center Theory](#health-center-theory)
+    -   [Health Center Lab](#health-center-lab)
+-   [Crashes](#crashes)
+    -   [Crashes Theory](#crashes-theory)
+    -   [Crash Lab](#crash-lab)
+-   [Native Memory Leaks](#native-memory-leaks)
+    -   [Native Memory Theory](#native-memory-theory)
+    -   [Native Memory Leak Lab](#native-memory-leak-lab)
+-   [WAS Liberty](#was-liberty)
+    -   [Liberty Bikes](#liberty-bikes)
+    -   [Server Configuration
+        (server.xml)](#server-configuration-serverxml)
+    -   [Java Arguments](#java-arguments)
+    -   [Liberty Log Files](#liberty-log-files)
+    -   [Admin Center](#admin-center)
+    -   [Request Timing](#request-timing)
+    -   [HTTP NCSA Access Log](#http-ncsa-access-log)
+    -   [MXBean Monitoring](#mxbean-monitoring)
+    -   [Server Dumps](#server-dumps)
+    -   [Event Logging](#event-logging)
+    -   [Diagnostic Trace](#diagnostic-trace)
+    -   [Binary Logging](#binary-logging)
+    -   [Liberty Timed Operations](#liberty-timed-operations)
+    -   [MicroServices](#microservices)
+-   [IBM HTTP Server](#ibm-http-server)
+-   [Appendix](#appendix)
+
 # Introduction
 
 [WebSphere Application Server](https://www.ibm.com/cloud/websphere-application-platform) (WAS) is a platform for serving Java-based applications. WAS comes in two major product forms:
@@ -227,7 +278,7 @@ First, we'll start with the three basics that should be checked for most problem
 
 3.  Garbage Collection
 
-# WebSphere Linux Performance and Hang MustGather
+# Linux CPU and Memory Usage
 
 IBM WebSphere Support provides a script called **linperf.sh** as part of the document, ["MustGather: Performance, hang, or high CPU issues with WebSphere Application Server on Linux"](https://www-01.ibm.com/support/docview.wss?uid=swg21115785) (similar scripts exist for other operating systems). This script should be pre-installed on all machines where you run WAS and it should be run when you have performance or hang issues and the resulting files should be uploaded if you open such a support case with IBM.
 
