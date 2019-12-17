@@ -32,22 +32,23 @@ Tip: To share files with your host machine, add the following to the `docker run
 
 ## Lab Highlights
 
-* Using Apache JMeter to run a stress test on WebSphere Liberty or Traditional WAS
-* Basic Linux CPU and memory analysis
-* IBM Java thread dump analysis
-* IBM Java garbage collection analysis
-* Java heap analysis
-* IBM Java CPU sampling profiler analysis
-* Native crash analysis
-* Native memory leak analysis
-* WebSphere Liberty Admin Center
-* WebSphere Liberty Request Timing
-* WebSphere Liberty HTTP access log
-* WebSphere Liberty MXBean monitoring
-* WebSphere Liberty Server dumps
-* WebSphere Liberty Event Logging
-* WebSphere Liberty Diagnostic Trace
-* WebSphere Liberty Binary Logging
+* [Using Apache JMeter to run a stress test on WebSphere Liberty or Traditional WAS](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#apache-jmeter)
+* [Basic Linux CPU and memory analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#linux-cpu-and-memory-usage)
+* [IBM Java thread dump analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#ibm-java-and-openj9-thread-dumps)
+* [IBM Java garbage collection analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#garbage-collection)
+* [Java heap analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#heap-dumps)
+* [IBM Java CPU sampling profiler analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#health-center)
+* [Native crash analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#crashes)
+* [Native memory leak analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#native-memory-leaks)
+* WebSphere Liberty
+    * [Admin Center](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#admin-center)
+    * [Request Timing](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#request-timing)
+    * [HTTP access log](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#http-ncsa-access-log)
+    * [MXBean monitoring](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#mxbean-monitoring)
+    * [Server dumps](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#server-dumps)
+    * [Event Logging](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#event-logging)
+    * [Diagnostic Trace](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#diagnostic-trace)
+    * [Binary Logging](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#binary-logging)
 
 ## Installation Highlights
 
