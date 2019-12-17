@@ -66,7 +66,7 @@ Tip: To share files with your host machine, add the following to the `docker run
 * [IBM Java Health Center (HC)](https://marketplace.eclipse.org/content/ibm-monitoring-and-diagnostic-tools-health-center)
 * [NMONVisualizer](https://nmonvisualizer.github.io/nmonvisualizer/)
 * [IBM Runtime Diagnostic Code Injection (Java Surgery)](https://www.ibm.com/support/pages/ibm-runtime-diagnostic-code-injection-java-platform-java-surgery)
-* [Request Metrics Analyzer](https://github.com/kgibm/request-metrics-analyzer-next)
+* [Request Metrics Analyzer Next](https://github.com/kgibm/request-metrics-analyzer-next)
 * [IBM Interactive Diagnostic Data Explorer (IDDE)](https://marketplace.eclipse.org/content/ibm-monitoring-and-diagnostic-tools-interactive-diagnostic-data-explorer-idde)
 * [IBM Thread and Monitor Dump Analyzer (TMDA)](https://www.ibm.com/support/pages/ibm-thread-and-monitor-dump-analyzer-java-tmda)
 * [IBM HeapAnalyzer (HA)](https://www.ibm.com/support/pages/ibm-heapanalyzer)
