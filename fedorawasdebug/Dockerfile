@@ -820,7 +820,7 @@ SHELL_X=0\n\
     ) && \
     ( \
       echo "# PerformanceTuningToolkit: https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/" && \
-      echo "# # SOAP Port: 8880" && \
+      echo "# SOAP Port: 8880" && \
       XULVERSION=3.6.28 && \
       sudo mkdir -p /opt/xulrunner/${XULVERSION} && \
       cd /opt/xulrunner/${XULVERSION} && \
@@ -860,7 +860,7 @@ SHELL_X=0\n\
     sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
     sudo sudo chown -R was:root /backup/
 
-# Update lab document:
+# Update lab document by updating the date in the echo and rebuild:
 RUN ( \
       echo "Version 20191209" && \
       cd /opt/dockerdebug/fedorawasdebug && \
