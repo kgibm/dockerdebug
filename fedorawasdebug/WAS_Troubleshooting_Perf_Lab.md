@@ -52,6 +52,8 @@
     -   [Binary Logging](#binary-logging)
     -   [Liberty Timed Operations](#liberty-timed-operations)
     -   [MicroServices](#microservices)
+-   [Traditional WAS](#traditional-was)
+    -   [Diagnostic Plans](#diagnostic-plans)
 -   [IBM HTTP Server](#ibm-http-server)
 -   [Appendix](#appendix)
 
@@ -2248,11 +2250,60 @@ The base of MicroProfile are three Java EE technologies: CDI, JAX-RS, and JSON-P
 
 OpenLiberty [publishes example guides](https://openliberty.io/guides/) on how to use each MicroProfile technology.
 
+# Traditional WAS
+
+## Diagnostic Plans
+
+tWAS [diagnostic plans](https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.5/com.ibm.websphere.nd.multiplatform.doc/ae/ttrb_diagplan.html) allows you to [automatically perform certain actions](https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.5/com.ibm.websphere.nd.multiplatform.doc/ae/rtrb_diagplan.html) such as thread dumps, heapdumps, or system dumps, or set, restore, or dump diagnostic trace when certain strings are printed in logs, trace, and/or FFDC, or at particular times in the day.
+
+In this lab, we will demonstrate a simple diagnostic plan which watches for the application System.out message of `Invoking com.ibm.Sleep*30000` and reacts by sleeping for 5 seconds, requesting a thread dump, enabling WebContainer diagnostic trace, sleeping for 30 seconds, and resetting diagnostic trace.
+
+1. From a terminal, start wsadmin:
+
+        /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/wsadmin.sh -lang jython -username wsadmin -password websphere
+
+1. Run the following command (the `*` in the MATCH TRACE is a wildcard, although it is not required either at the beginning nor at the end if you are doing a simple substring match; in this example, we want to match a particular duration):
+
+        AdminControl.invoke_jmx(AdminControl.makeObjectName(AdminControl.queryNames("WebSphere:type=DiagPlanManager,process=server1,*")), "setDiagPlan", ["MATCH=TRACE:Invoking com.ibm.Sleep*30000,DELAY=5,JAVACORE,SET_TRACESPEC=*=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all,DELAY=30,RESTORE_TRACESPEC"], ["java.lang.String"])
+
+1. List the diagnostic plan by running the following command:
+
+        print AdminControl.invoke_jmx(AdminControl.makeObjectName(AdminControl.queryNames("WebSphere:type=DiagPlanManager,process=server1,*")), "getDiagPlan",[],[])
+
+1. Open your browser to http://localhost:9081/swat/Sleep?duration=30000
+
+1. tWAS logs should show output similar to the following:
+
+        [12/17/19 21:54:52:727 UTC] 000000cd SystemOut     O swat.ear: Invoking com.ibm.Sleep by anonymous (172.17.0.1)... [duration=30000]
+        [12/17/19 21:54:58:733 UTC] 000000d8 DumpJavaCoreA I   TRAS1107I: JAVACORE action completed. The generated java core file is at /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/./javacore.20191217.215457.1469.0001.txt.
+        [12/17/19 21:54:58:776 UTC] 000000d8 ManagerAdmin  I   TRAS0018I: The trace state has changed. The new trace state is *=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all.
+        [12/17/19 21:55:22:747 UTC] 000000cd SystemOut     O SWAT EAR: Done com.ibm.Sleep
+        [12/17/19 21:55:28:791 UTC] 000000d8 ManagerAdmin  I   TRAS0018I: The trace state has changed. The new trace state is *=info.
+
+1. Clear the diagnostic plan by running:
+
+        AdminControl.invoke_jmx(AdminControl.makeObjectName(AdminControl.queryNames("WebSphere:type=DiagPlanManager,process=server1,*")), "clearDiagPlan",[],[])
+
+1. For additional options, see the [DiagPlanManager MBean API](https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.5/com.ibm.websphere.javadoc.doc/web/mbeanDocs/DiagPlanManager.html).
+
 # IBM HTTP Server
 
 IBM HTTP Server is a reverse proxy HTTP server in this image which proxies to Traditional WAS. It is installed at **/opt/IBM/HTTPServer** and may be accessed at http://localhost:9083/.
 
 # Appendix
+
+## Stopping the container
+
+The `docker run` commands in this lab do not use the `-d` (daemon) flag which means that they run in the foreground. To stop such a container, use one of the following methods:
+
+1. Hold down the `Control (or Ctrl) ⌃` key on your keyboard and press `C` in the terminal window where `docker run` is running.
+1. In a separate terminal window, find the container ID with `docker ps` and then run `docker stop $ID`.
+
+If you add `-d` to `docker run`, then to view the std logs, find the container ID with `docker ps` and then run `docker logs $ID`. To stop, use `docker stop $ID`.
+
+## Remote terminal into the container
+
+The container supports `ssh` into the container, but it's more common to simply use Docker commands. In a separate terminal window, find the container ID with `docker ps` and then run `docker exec -u was -it $ID sh`.
 
 ##  Windows Remote Desktop Client
 

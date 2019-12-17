@@ -49,6 +49,8 @@ Tip: To share files with your host machine, add the following to the `docker run
     * [Event Logging](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#event-logging)
     * [Diagnostic Trace](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#diagnostic-trace)
     * [Binary Logging](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#binary-logging)
+* Traditional WAS
+    * [Diagnostic Plans](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#diagnostic-plans)
 
 ## Installation Highlights
 
