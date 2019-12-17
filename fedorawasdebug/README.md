@@ -6,7 +6,7 @@ Full lab instructions: https://github.com/kgibm/dockerdebug/blob/master/fedorawa
 
 ## Quick Start
 
-Watch a Quick Start video: https://www.youtube.com/watch?v=X57kGMsM8RA
+Watch a Quick Start video: https://www.youtube.com/watch?v=7o25Sq_-T44
 
 Note: You'll need more than 40GB of disk space and configure Docker with 4GB or more of RAM. For detailed instructions, see the Lab PDF above.
 
