@@ -1,11 +1,11 @@
 #!/bin/sh
 set -e
 (
-  sleep 10
+  sleep 15
 
   case $OSTYPE in
     darwin*)
-      open vnc://localhost:5902 ;;
+      open vnc://:websphere@localhost:5902 ;;
     *)
       vncviewer localhost:5902 ;;
   esac
