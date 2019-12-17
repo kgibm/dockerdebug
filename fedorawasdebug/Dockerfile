@@ -862,10 +862,10 @@ SHELL_X=0\n\
 
 # Update lab document by updating the date in the echo and rebuild:
 RUN ( \
-      echo "Version 20191209" && \
+      echo "Version 20191217" && \
       cd /opt/dockerdebug/fedorawasdebug && \
       sudo git pull && \
-      sudo pandoc -s --toc --toc-depth=2 --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
+      sudo pandoc -s --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
       ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
     )
 
