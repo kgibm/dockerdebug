@@ -38,7 +38,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 # The following Liberty version is used in the liberty-bikes builds. Find the latest version here:
 # https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
-ARG MAVEN_LIBERTY_VERSION="19.0.0.11"
+ARG MAVEN_LIBERTY_VERSION="19.0.0.12"
 
 ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
@@ -70,7 +70,6 @@ USER was
 #   https://hub.docker.com/_/open-liberty
 #   https://github.com/OpenLiberty/ci.docker/blob/master/official/latest/javaee8/java8/ibmjava/Dockerfile
 
-# We use JEE7 while we wait for a fix to https://github.com/OpenLiberty/open-liberty/issues/9505
 COPY --from=websphere-liberty:javaee7 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
 COPY --from=websphere-liberty:javaee7 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
 COPY --from=websphere-liberty:javaee7 --chown=was:root /logs /logs
@@ -239,10 +238,10 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/problemdetermination \
     ) && \
-    echo "# https://github.com/skliche/request-metrics-analyzer-next" && \
+    echo "# https://github.com/kgibm/request-metrics-analyzer-next" && \
     ( \
       cd /opt/ && \
-      sudo git clone https://github.com/skliche/request-metrics-analyzer-next && \
+      sudo git clone https://github.com/kgibm/request-metrics-analyzer-next && \
       cd /opt/request-metrics-analyzer-next && \
       sudo mvn -q clean install && \
       printf '[Desktop Entry]\nType=Application\nName=Request Metrics Analyzer\nExec=java -jar /opt/request-metrics-analyzer-next/target/analyzer-next-0.0.1-SNAPSHOT-jar-with-dependencies.jar\nPath=~/\nTerminal=false\n' | sudo tee rma.desktop && \
@@ -728,19 +727,8 @@ AdminConfig.save()\n\
 LOG_DIR=/opt/ibm/wlp/usr/servers/test/logs/\n\
 WLP_OUTPUT_DIR=/opt/ibm/wlp/usr/servers/\n\
 ' >> /opt/ibm/wlp/usr/servers/test/server.env && \
-    sudo sed -i 's/-Xmx2g/-Xmx3g/g' /opt/mat/MemoryAnalyzer.ini
-
-# Backup and clear Liberty and tWAS logs
-RUN sudo mkdir /backup/ && \
-    sudo mkdir /backup/liberty/ && \
-    sudo mkdir /backup/twas/ && \
-    sudo mkdir /backup/twas/ffdc/ && \
-    sudo mv /logs/* /backup/liberty/ && \
-    sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/* /backup/twas/ && \
-    sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
-    sudo sudo chown -R was:root /backup/
-
-RUN sudo chmod a+x /opt/sibexplorer/sibexplorer.sh && \
+    sudo sed -i 's/-Xmx2g/-Xmx3g/g' /opt/mat/MemoryAnalyzer.ini && \
+    sudo chmod a+x /opt/sibexplorer/sibexplorer.sh && \
     sudo rm /opt/sibexplorer/*.bat && \
     sudo sed -i 's/SWTJARS=.*/SWTJARS=\/opt\/swt\//g' /opt/sibexplorer/env.sh && \
     sudo sed -i 's/CUR=.*/CUR=\/opt\/sibexplorer\//g' /opt/sibexplorer/env.sh && \
@@ -807,9 +795,8 @@ SHELL_X=0\n\
     printf '[Desktop Entry]\nType=Application\nName=SIB Performance\nExec=/opt/sibperf/sibperf.sh\nPath=/opt/sibperf/\nTerminal=false\n' | sudo tee /opt/sibperf/sibperf.desktop && \
     sudo chmod a+x /opt/sibperf/sibperf.desktop && \
     sudo ln -s /opt/sibperf/sibperf.desktop /opt/programs/ && \
-    sudo ln -s /opt/programs/sibperf.desktop /home/was/Desktop/
-
-RUN echo "# IBM Database Connection Pool Analyzer for IBM WebSphere Application Server" && \
+    sudo ln -s /opt/programs/sibperf.desktop /home/was/Desktop/ && \
+    echo "# IBM Database Connection Pool Analyzer for IBM WebSphere Application Server" && \
     echo "# https://www.ibm.com/support/pages/ibm-database-connection-pool-analyzer-ibm-websphere-application-server" && \
     ( \
       sudo mkdir /opt/dbconnpoolanalyzer/ && \
@@ -817,38 +804,67 @@ RUN echo "# IBM Database Connection Pool Analyzer for IBM WebSphere Application 
       sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jcp/jcp23.zip && \
       sudo unzip -q *.zip && \
       sudo rm -f *.zip *.exe \
-    )
-
-RUN sudo chmod -R a+w /usr/local/src/open-liberty
-RUN sudo chmod -R a+w /usr/local/src/mat
-RUN sudo chmod -R a+w /usr/local/src/openj9
-RUN sudo chmod -R a+w /usr/local/src/openj9-omr
-
-RUN echo "https://github.com/kgibm/dockerdebug/" && \
+    ) && \
+    sudo chmod -R a+w /usr/local/src/open-liberty && \
+    echo "https://github.com/kgibm/dockerdebug/" && \
     sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
     sudo chown -R was:root /opt/dockerdebug/ && \
-    ln -s /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/ /home/was/Desktop/exampledata
-
-RUN ( \
+    ln -s /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/ /home/was/Desktop/exampledata && \
+    ( \
       cd /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/verbosegc_and_oom/ && \
-      ./unpack.sh \
-    )
-
-RUN ( \
+      ./unpack.sh && \
       cd /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/crash/ && \
-      ./unpack.sh \
-    )
-
-RUN ( \
+      ./unpack.sh && \
       cd /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/nativememoryleak/ && \
       ./unpack.sh \
-    )
+    ) && \
+    ( \
+      echo "# PerformanceTuningToolkit: https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/" && \
+      echo "# # SOAP Port: 8880" && \
+      XULVERSION=3.6.28 && \
+      sudo mkdir -p /opt/xulrunner/${XULVERSION} && \
+      cd /opt/xulrunner/${XULVERSION} && \
+      sudo wget -q https://ftp.mozilla.org/pub/xulrunner/releases/${XULVERSION}/runtimes/xulrunner-${XULVERSION}.en-US.linux-i686.tar.bz2 && \
+      sudo bunzip2 xulrunner-${XULVERSION}.en-US.linux-i686.tar.bz2 && \
+      sudo tar xf xulrunner-${XULVERSION}.en-US.linux-i686.tar && \
+      sudo mkdir /opt/ptt/ && \
+      cd /opt/ptt/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/PerformanceTuningToolkit2_linux32.zip && \
+      sudo unzip -q *.zip && \
+      sudo rm -f *.zip && \
+      sudo mv PerformanceTuningToolkit*/* . && \
+      sudo chmod a+x /opt/ptt/PerfTuningToolkit && \
+      sudo rmdir PerformanceTuningToolkit* && \
+      sudo chmod a+x /opt/ptt/jre/bin/java && \
+      printf -- '-Dorg.eclipse.swt.browser.XULRunnerPath=/opt/xulrunner/%s/xulrunner/\n' "${XULVERSION}" | sudo tee -a /opt/ptt/PerfTuningToolkit.ini && \
+      printf '#!/bin/sh\n\
+        export LC_ALL=en_US\n\
+        export LANG=en_US\n\
+        export LANGUAGE=en_US\n\
+        export MOZILLA_FIVE_HOME=/opt/xulrunner/%s/xulrunner/\n\
+        /opt/ptt/PerfTuningToolkit -debug -consoleLog\n\
+      ' "${XULVERSION}" | sudo tee /opt/ptt/ptt.sh && \
+      sudo chmod a+x /opt/ptt/ptt.sh && \
+      printf '[Desktop Entry]\nType=Application\nName=Performance Tuning Toolkit\nExec=/opt/ptt/ptt.sh\nPath=~/\nTerminal=false\n' | sudo tee /opt/ptt/ptt.desktop && \
+      sudo chmod a+x /opt/ptt/ptt.desktop && \
+      sudo ln -s /opt/ptt/ptt.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/ptt.desktop /home/was/Desktop/ \
+    ) && \
+    echo "# Backup and clear Liberty and tWAS logs" && \
+    sudo mkdir /backup/ && \
+    sudo mkdir /backup/liberty/ && \
+    sudo mkdir /backup/twas/ && \
+    sudo mkdir /backup/twas/ffdc/ && \
+    sudo mv /logs/* /backup/liberty/ && \
+    sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/* /backup/twas/ && \
+    sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
+    sudo sudo chown -R was:root /backup/
 
+# Update lab document:
 RUN ( \
-      echo "Version 20191204" && \
+      echo "Version 20191209" && \
       cd /opt/dockerdebug/fedorawasdebug && \
       sudo git pull && \
-      sudo dnf install -y pandoc && \
       sudo pandoc -s --toc --toc-depth=2 --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
       ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
     )

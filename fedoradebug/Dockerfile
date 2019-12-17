@@ -59,6 +59,7 @@ RUN dnf install -y \
       bison-devel \
       cmake \
       collectl \
+      dbus-glib.i686 \
       dconf-editor \
       e2fsprogs \
       emacs \
@@ -78,6 +79,7 @@ RUN dnf install -y \
       htop \
       httpd \
       iftop \
+      ImageMagick \
       iotop \
       iperf \
       iputils \
@@ -88,6 +90,7 @@ RUN dnf install -y \
       kexec-tools \
       less \
       libnsl \
+      libnsl.i686 \
       libreoffice \
       llvm \
       lsof \
@@ -121,6 +124,7 @@ RUN dnf install -y \
       openldap-servers \
       openssh-server \
       p7zip \
+      pandoc \
       patch \
       perf \
       perl \
@@ -136,6 +140,7 @@ RUN dnf install -y \
       qt5 \
       R \
       R-devel \
+      redhat-lsb.i686 \
       rsyslog \
       ruby \
       ruby-devel \
@@ -354,9 +359,12 @@ RUN --mount=type=secret,id=remotepassword \
       startsecs=0\n\
     ' | sudo tee /etc/supervisord.d/slapd.supervisord.conf && \
     echo "# Print environment variables inherited by supervisord-spawned programs" && \
+    printf '#!/bin/sh\n\
+      #/usr/bin/env\n\
+    ' | sudo tee /usr/local/bin/debugsupervisord.sh && chmod a+rx /usr/local/bin/debugsupervisord.sh && \
     printf '\n\
       [program:debugsupervisord]\n\
-      command=/usr/bin/env\n\
+      command=/usr/local/bin/debugsupervisord.sh\n\
       stdout_logfile=/dev/stdout\n\
       stdout_logfile_maxbytes=0\n\
       redirect_stderr=true\n\
@@ -505,7 +513,7 @@ RUN --mount=type=secret,id=remotepassword \
     printf 'WebBrowser=firefox' | sudo tee /root/.config/xfce4/helpers.rc && \
     sudo mkdir -p /home/was/.config/xfce4/ && \
     printf 'WebBrowser=firefox' | sudo tee /home/was/.config/xfce4/helpers.rc && \
-    sudo chown -R was:root /home/was/.config && \
+    sudo chown -R was:root /home/was/ && \
     echo "################" && \
     echo "# Finalization #" && \
     echo "################" && \
@@ -594,14 +602,31 @@ add: olcDbMaxSize\n\
 olcDbMaxSize: 1073741824\n\
 \n' | sudo tee /root/openldaploggingdb.ldif && \
     sudo ldapmodify -H ldapi:// -Y EXTERNAL -f /root/openldaploggingdb.ldif && \
-    echo "local4.* /var/log/slapd.log" | sudo tee -a /etc/rsyslog.conf && \
+    echo "local4.* /var/log/slapd.log" | sudo tee -a /etc/rsyslog.conf
+
+USER was
+
+RUN printf "Built fedoradebug at $(date)\n" >> /tmp/tmp.log && \
+    sudo chmod a+rw /tmp/tmp.log && \
+    printf '#!/bin/sh\n\
+      echo "Starting /usr/local/bin/xinit.sh at $(date)" >> /tmp/tmp.log\n\
+      sleep 30\n\
+      xset s 7200 7200 >> /tmp/tmp.log 2>&1\n\
+      echo "Finished /usr/local/bin/xinit.sh at $(date)" >> /tmp/tmp.log\n\
+    ' | sudo tee /usr/local/bin/xinit.sh && \
+    sudo chmod a+x /usr/local/bin/xinit.sh && \
+    mkdir -p /home/was/.config/autostart && \
+    printf '[Desktop Entry]\nType=Application\nName=Xinit\nExec=/usr/local/bin/xinit.sh\nPath=~/\nTerminal=false\n' >> /home/was/.config/autostart/xinit.desktop && \
+    mkdir -p /home/was/.config/gtk-3.0/ && \
+    printf 'tooltip { opacity: 0; }\n' > /home/was/.config/gtk-3.0/gtk.css && \
+    chown -R was:root /home/was/.config/gtk-3.0/ && \
     mkdir -p /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/ && \
     printf '<?xml version="1.0" encoding="UTF-8"?>\n\
       <channel name="xfce4-screensaver" version="1.0">\n\
         <property name="saver" type="empty">\n\
           <property name="mode" type="int" value="2"/>\n\
           <property name="idle-activation" type="empty">\n\
-            <property name="delay" type="int" value="30"/>\n\
+            <property name="delay" type="int" value="120"/>\n\
           </property>\n\
           <property name="themes" type="empty">\n\
             <property name="list" type="array">\n\
@@ -612,22 +637,20 @@ olcDbMaxSize: 1073741824\n\
       </channel>\n\
     ' > /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-screensaver.xml && \
     echo "Don't auto-start xscreensaver or otherwise the xfce4-screensaver lock gets locked out after a while: https://bugzilla.xfce.org/show_bug.cgi?id=16140" && \
-    rm -rf /etc/xdg/autostart/xscreensaver* && \
-    mkdir -p /home/was/.config/gtk-3.0/ && \
-    printf 'tooltip { opacity: 0; }\n' > /home/was/.config/gtk-3.0/gtk.css && \
-    chown -R was:root /home/was/.config/gtk-3.0/
-
-USER was
+    sudo rm -rf /etc/xdg/autostart/xscreensaver* && \
+    sudo rm -f /usr/share/applications/xscreensaver-properties.desktop && \
+    sudo sed -i 's/timeout:.*/timeout: 2:00:00/g' /usr/share/X11/app-defaults/XScreenSaver
 
 # Query file mimetype: xdg-mime query filetype $FILE
 RUN xdg-mime default xreader.desktop application/pdf && \
     xdg-mime default mousepad.desktop text/x-log && \
     xdg-mime default mousepad.desktop text/plain
 
-EXPOSE 22 3389 5901 5902
-
 # Last statement must be switching to root for supervisord
 USER root
+
+EXPOSE 22 3389 5901 5902
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # Random tips:
