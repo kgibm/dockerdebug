@@ -12,7 +12,7 @@
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedoradebug .
 # Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedoradebug
+#   docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedoradebug
 # Step 4: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -71,6 +71,7 @@ RUN dnf install -y \
       gcc-c++ \
       gdb \
       git \
+      gnome-calculator \
       gnupg \
       gnuplot \
       golang \
@@ -85,6 +86,8 @@ RUN dnf install -y \
       iputils \
       java-1.8.0-openjdk \
       java-1.8.0-openjdk-devel \
+      kcalc \
+      kdesu \
       kernel-devel \
       kernel-headers \
       kexec-tools \
@@ -167,6 +170,8 @@ RUN dnf install -y \
       vim \
       wget \
       wireshark \
+      xcalc \
+      xeyes \
       @xfce \
       xfce4-calculator-plugin \
       xfce4-cpugraph-plugin \
@@ -502,7 +507,6 @@ RUN --mount=type=secret,id=remotepassword \
     echo "# https://superuser.com/questions/1347723/" && \
     sudo strip --remove-section=.note.ABI-tag /usr/lib64/libQt5Core.so.5 && \
     echo "# Allow the was user to perform Wireshark captures:" && \
-    echo "# This doesn't seem to actually work; instead, use command line tcpdump. Leaving here for completeness." && \
     sudo usermod -a -G wireshark was && \
     echo "# Cannot set background before logging in" && \
     printf '#!/bin/sh\n\
