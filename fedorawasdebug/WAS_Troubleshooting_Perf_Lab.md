@@ -168,7 +168,7 @@ Problem determination and performance tuning are best done with all layers of th
 
 5.  Download the images:
 
-        docker pull kgibm/fedorawasdebug
+    `docker pull kgibm/fedorawasdebug`
 
     1.  Note that these images are \>20GB. If you plan to run this in a classroom setting, consider performing all the steps up to and including this item before arriving at the classroom.
 
@@ -824,17 +824,17 @@ Next, let's simulate a memory issue.
 
     1.  Stop Liberty:
 
-            /opt/ibm/wlp/bin/server stop defaultServer
+        `/opt/ibm/wlp/bin/server stop defaultServer`
 
     2.  Edit **/opt/ibm/wlp/usr/servers/defaultServer/jvm.options**, add an explicit maximum heap size of 256MB on a new line and save the file:
 
-            -Xmx256m\
+        `-Xmx256m`
 
         ![](./media/image61.png)
 
     3.  Start Liberty
 
-            /opt/ibm/wlp/bin/server start defaultServer
+        `/opt/ibm/wlp/bin/server start defaultServer`
 
 3.  If learning Traditional WAS:
 
@@ -865,11 +865,11 @@ Next, let's simulate a memory issue.
 
     1.  Stop the server.
 
-            /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1 -username wsadmin -password websphere
+        `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1 -username wsadmin -password websphere`
 
     1.  Start the server
 
-            /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1
+        `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1`
 
 4.  [Start JMeter](#start-jmeter)
 
@@ -889,7 +889,7 @@ Next, let's simulate a memory issue.
 
     5.  You can run **top -H** while this is running. As memory pressure builds, you'll start to see **GC Slave** threads consuming most of the CPUs instead of application threads (garbage collection also happens on the thread where the allocation failure occurs, so you may also see a single application thread consuming a similar amount of CPU as the GC Slave threads):
 
-            top -H -p \$(pgrep -f defaultServer) -d 5
+        `top -H -p $(pgrep -f defaultServer) -d 5`
 
         ![](./media/image68.png)
 
@@ -1222,17 +1222,17 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
     1.  If learning Liberty:
 
-            /opt/ibm/wlp/bin/server stop defaultServer
+        `/opt/ibm/wlp/bin/server stop defaultServer`
 
     2.  If learning Traditional WAS:
 
-            /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1 -username wsadmin -password websphere
+        `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1 -username wsadmin -password websphere`
 
 3.  Add Health Center arguments to the JVM:
 
     1.  If learning Liberty, add the following line to **/opt/ibm/wlp/usr/servers/defaultServer/jvm.options**:
 
-            -Xhealthcenter:level=headless
+        `-Xhealthcenter:level=headless`
 
     2.  If learning Traditional WAS, go to the same place where you entered the maximum heap size and add a space and **-Xhealthcenter:level=headless** to **Generic JVM arguments**:\
         ![](./media/image106.png)
@@ -1243,11 +1243,11 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
     1.  If learning Liberty:
 
-            /opt/ibm/wlp/bin/server start defaultServer
+        `/opt/ibm/wlp/bin/server start defaultServer`
 
     2.  If learning Traditional WAS:
 
-            /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1
+        `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1`
 
 5.  [Start JMeter](#start-jmeter) and run it for 5 minutes.
 
