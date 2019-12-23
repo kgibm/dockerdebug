@@ -8,7 +8,7 @@ Full lab instructions: https://github.com/kgibm/dockerdebug/blob/master/fedorawa
 
 Watch a Quick Start video: https://www.youtube.com/watch?v=7o25Sq_-T44
 
-Note: You'll need more than 40GB of disk space and configure Docker with 4GB or more of RAM. For detailed instructions, see the [lab instructions](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#lab).
+Note: You'll need more than 40GB of disk space and configure Docker with 4GB or more of RAM. For details on how to install and configure Docker, see the [lab instructions](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#lab).
 
 1. `docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
 1. The container is fully started after about 2 minutes when the output shows:
