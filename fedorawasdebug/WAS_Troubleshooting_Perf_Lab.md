@@ -1961,9 +1961,9 @@ The slow request detection part of the feature monitors for HTTP requests that e
 
 5.  After about three minutes and the request completes, review the requestTiming warning in **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/logs/messages.log** -- in addition to the previous warning, multiple thread dumps are produced:
 
-        [6/10/19 7:27:52:950 UTC] 0000052d com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.
-        [6/10/19 7:28:52:950 UTC] 00000556 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.
-        [6/10/19 7:29:52:950 UTC] 00000584 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.
+    `[6/10/19 7:27:52:950 UTC] 0000052d com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`
+    `[6/10/19 7:28:52:950 UTC] 00000556 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`
+    `[6/10/19 7:29:52:950 UTC] 00000584 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`
 
     1.  Three thread dumps [will be captured](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/rwlp_requesttiming.html), one minute apart, after the threshold is breached.
 
@@ -2260,15 +2260,15 @@ In this lab, we will demonstrate a simple diagnostic plan which watches for the 
 
 1. From a terminal, start wsadmin:
 
-        /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/wsadmin.sh -lang jython -username wsadmin -password websphere
+    `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/wsadmin.sh -lang jython -username wsadmin -password websphere`
 
 1. Run the following command (the `*` in the MATCH TRACE is a wildcard, although it is not required either at the beginning nor at the end if you are doing a simple substring match; in this example, we want to match a particular duration):
 
-        AdminControl.invoke_jmx(AdminControl.makeObjectName(AdminControl.queryNames("WebSphere:type=DiagPlanManager,process=server1,*")), "setDiagPlan", ["MATCH=TRACE:Invoking com.ibm.Sleep*30000,DELAY=5,JAVACORE,SET_TRACESPEC=*=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all,DELAY=30,RESTORE_TRACESPEC"], ["java.lang.String"])
+    `AdminControl.invoke_jmx(AdminControl.makeObjectName(AdminControl.queryNames("WebSphere:type=DiagPlanManager,process=server1,*")), "setDiagPlan", ["MATCH=TRACE:Invoking com.ibm.Sleep*30000,DELAY=5,JAVACORE,SET_TRACESPEC=*=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all,DELAY=30,RESTORE_TRACESPEC"], ["java.lang.String"])`
 
 1. List the diagnostic plan by running the following command:
 
-        print AdminControl.invoke_jmx(AdminControl.makeObjectName(AdminControl.queryNames("WebSphere:type=DiagPlanManager,process=server1,*")), "getDiagPlan",[],[])
+    `print AdminControl.invoke_jmx(AdminControl.makeObjectName(AdminControl.queryNames("WebSphere:type=DiagPlanManager,process=server1,*")), "getDiagPlan",[],[])`
 
 1. Open your browser to http://localhost:9081/swat/Sleep?duration=30000
 
@@ -2282,7 +2282,7 @@ In this lab, we will demonstrate a simple diagnostic plan which watches for the 
 
 1. Clear the diagnostic plan by running:
 
-        AdminControl.invoke_jmx(AdminControl.makeObjectName(AdminControl.queryNames("WebSphere:type=DiagPlanManager,process=server1,*")), "clearDiagPlan",[],[])
+    `AdminControl.invoke_jmx(AdminControl.makeObjectName(AdminControl.queryNames("WebSphere:type=DiagPlanManager,process=server1,*")), "clearDiagPlan",[],[])`
 
 1. For additional options, see the [DiagPlanManager MBean API](https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.5/com.ibm.websphere.javadoc.doc/web/mbeanDocs/DiagPlanManager.html).
 
