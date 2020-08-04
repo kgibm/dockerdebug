@@ -20,12 +20,12 @@
 1. Run and test the image.
 1. `git commit -am "VXX: New version with ..."`
 1. `git push`
-1. `git tag VXX`
-1. `git push --tags`
 1. `docker login`
 1. `docker images`
 1. For each of the above images:
-    1. `docker tag $IMAGEID $NAME:VXX`
+    1. `docker tag $IMAGEID $NAME:VXX` (Example `$NAME`=`kgibm/fedoradebug`)
     1. `docker push $NAME:VXX`
 1. After all VXX versions are pushed, push the latest tags:
     1. `docker push $NAME:latest`
+1. `git tag VXX`
+1. `git push --tags`
