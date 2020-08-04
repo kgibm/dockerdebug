@@ -2514,7 +2514,7 @@ Any currently running Java programs will need to be restarted if you want them t
 
 * V12 (August 3, 2020): Refresh software:
     * Upgrade to Fedora 32
-    * Upgrade to Liberty 20.0.0.6
+    * Upgrade to Liberty 20.0.0.8
     * Upgrade to tWAS 9.0.5.3
     * Upgrade to Eclipse 2020-03
     * Add OpenJDK 14
