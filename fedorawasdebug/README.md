@@ -56,7 +56,7 @@ Tip: To share files with your host machine, add the following to the `docker run
 ## Installation Highlights
 
 * [Fedora 32 x64](https://hub.docker.com/_/fedora/)
-* [WAS Liberty 19.0.0.10](https://hub.docker.com/_/websphere-liberty)
+* [WAS Liberty 20.0.0.8](https://hub.docker.com/_/websphere-liberty)
 * [Traditional WAS Base 9.0.5.3](https://hub.docker.com/r/ibmcom/websphere-traditional)
 * [IBM Java 8](https://hub.docker.com/_/ibmjava)
 * [IBM HTTP Server 9.0.5.0](https://hub.docker.com/r/ibmcom/ibm-http-server)

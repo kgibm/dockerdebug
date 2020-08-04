@@ -873,23 +873,15 @@ RUN echo "# Backup and clear Liberty and tWAS logs" && \
     sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
     sudo chown -R was:root /backup/
 
-RUN echo "Example data V20200616" && \
+RUN echo "Example data V20200803" && \
     echo "https://github.com/kgibm/dockerdebug/" && \
     sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
     sudo chown -R was:root /opt/dockerdebug/ && \
-    ln -s /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/ /home/was/Desktop/exampledata && \
-    ( \
-      cd /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/verbosegc_and_oom/ && \
-      ./unpack.sh && \
-      cd /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/crash/ && \
-      ./unpack.sh && \
-      cd /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/nativememoryleak/ && \
-      ./unpack.sh \
-    )
+    ln -s /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/ /home/was/Desktop/exampledata
 
 # Update lab document by updating the date in the echo and rebuild:
 RUN ( \
-      echo "Lab Document V20200701" && \
+      echo "Lab Document V20200803" && \
       cd /opt/dockerdebug/fedorawasdebug && \
       sudo git pull && \
       sudo pandoc -s -o WAS_Troubleshooting_Perf_Lab.html --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" WAS_Troubleshooting_Perf_Lab.md && \
