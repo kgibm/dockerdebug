@@ -31,6 +31,7 @@
 #   * Because of a maximum of 125 layers (https://github.com/docker/for-linux/issues/414), minimize the number of RUN
 #     commands when finalizing a new version.
 
+# https://hub.docker.com/_/fedora
 FROM fedora:latest
 
 LABEL maintainer="kevin.grigorenko@us.ibm.com"
@@ -57,13 +58,17 @@ RUN dnf install -y \
       bindfs \
       bison \
       bison-devel \
+      bless \
       cmake \
       collectl \
       dbus-glib.i686 \
       dconf-editor \
+      dia \
       e2fsprogs \
       emacs \
+      fatrace \
       file-devel \
+      file-roller-nautilus \
       firefox \
       ftp \
       galculator \
@@ -76,6 +81,7 @@ RUN dnf install -y \
       gnuplot \
       golang \
       gstreamer1-vaapi \
+      gwenview \
       hostname \
       htop \
       httpd \
@@ -83,9 +89,11 @@ RUN dnf install -y \
       ImageMagick \
       iotop \
       iperf \
+      iptraf-ng \
       iputils \
       java-1.8.0-openjdk \
       java-1.8.0-openjdk-devel \
+      jnettop \
       kcalc \
       kdesu \
       kernel-devel \
@@ -110,6 +118,7 @@ RUN dnf install -y \
       mousepad \
       mtr \
       multitail \
+      ncompress \
       ncurses \
       ncurses-devel \
       net-tools \
@@ -140,6 +149,7 @@ RUN dnf install -y \
       python3-pip \
       python3-scipy \
       python3-statsmodels \
+      python3-xlsxwriter \
       qt5 \
       R \
       R-devel \
@@ -165,11 +175,13 @@ RUN dnf install -y \
       tigervnc-server \
       totem \
       traceroute \
+      trafshow \
       tuned \
       util-linux \
       vim \
       wget \
       wireshark \
+      wkhtmltopdf \
       xcalc \
       xeyes \
       @xfce \
@@ -424,7 +436,7 @@ RUN --mount=type=secret,id=remotepassword \
     echo "# https://ant.apache.org/" && \
     ( \
       cd /opt/ && \
-      sudo wget -q https://www.apache.org/dist/ant/binaries/apache-ant-1.10.7-bin.zip && \
+      sudo wget -q https://www.apache.org/dist/ant/binaries/apache-ant-1.10.8-bin.zip && \
       sudo unzip -q apache-ant*.zip && \
       sudo rm -f apache-ant*.zip && \
       sudo mv apache-ant* apache-ant \
@@ -438,12 +450,14 @@ RUN --mount=type=secret,id=remotepassword \
       cd /opt/nmonvisualizer/ && \
       sudo ANT_OPTS=-Dfile.encoding=iso-8859-1 /opt/apache-ant/bin/ant && \
       sudo mv NMONVisualizer*.jar NMONVisualizer.jar && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=NMON Visualizer\nExec=java -jar /opt/nmonvisualizer/NMONVisualizer.jar\nPath=~/\nTerminal=false\n' >> nmonvisualizer.desktop && \
+      sudo mkdir /home/was/nmon/ && \
+      sudo chown -R was:root /home/was/nmon/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=NMON Visualizer\nExec=java -jar /opt/nmonvisualizer/NMONVisualizer.jar\nPath=nmon/\nTerminal=false\n' >> nmonvisualizer.desktop && \
       sudo chmod a+x nmonvisualizer.desktop && \
       sudo ln -s /opt/nmonvisualizer/nmonvisualizer.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/nmonvisualizer.desktop /home/was/Desktop/ \
     ) && \
-    echo "# http://www-01.ibm.com/support/docview.wss?uid=swg21115785" && \
+    echo "# https://www.ibm.com/support/pages/node/72419" && \
     ( \
       sudo mkdir /opt/linperf/ && \
       cd /opt/linperf/ && \
@@ -453,12 +467,14 @@ RUN --mount=type=secret,id=remotepassword \
     echo "# https://jmeter.apache.org/" && \
     ( \
       cd /opt/ && \
-      sudo wget -q https://www.apache.org/dist/jmeter/binaries/apache-jmeter-5.2.zip && \
+      sudo wget -q https://www.apache.org/dist/jmeter/binaries/apache-jmeter-5.3.zip && \
       sudo unzip -q apache-jmeter*.zip && \
       sudo rm -f apache-jmeter*.zip && \
       sudo mv apache-jmeter* apache-jmeter && \
       cd /opt/apache-jmeter/ && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=JMeter\nExec=/opt/apache-jmeter/bin/jmeter\nPath=~/\nTerminal=false\n' >> jmeter.desktop && \
+      sudo mkdir /home/was/jmeter/ && \
+      sudo chown -R was:root /home/was/jmeter/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=JMeter\nExec=/opt/apache-jmeter/bin/jmeter\nPath=jmeter/\nTerminal=false\n' >> jmeter.desktop && \
       sudo chmod a+x jmeter.desktop && \
       sudo ln -s /opt/apache-jmeter/jmeter.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/jmeter.desktop /home/was/Desktop/ && \
@@ -478,11 +494,11 @@ RUN --mount=type=secret,id=remotepassword \
     echo "# We have to stay below Gradle V5 for deprecated/removed Gradle features used by older projects" && \
     ( \
       cd /opt/ && \
-      sudo wget -q -O gradle.zip https://services.gradle.org/distributions/gradle-4.10.2-bin.zip && \
+      sudo wget -q -O gradle.zip https://services.gradle.org/distributions/gradle-4.10.3-bin.zip && \
       sudo unzip -q gradle.zip && \
       sudo rm -f gradle.zip \
     ) && \
-    sudo ln -s /opt/gradle-4.10.2/bin/gradle /usr/local/bin/gradle && \
+    sudo ln -s /opt/gradle-4.10.3/bin/gradle /usr/local/bin/gradle && \
     echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh && \
     echo "############################" && \
     echo "# Final user configuration #" && \

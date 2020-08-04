@@ -1,0 +1,356 @@
+************ Start Display Current Environment ************
+Log file started at: [6/30/20 22:12:58:179 UTC]
+************* End Display Current Environment *************
+[6/30/20 22:32:26:092 UTC] 000000c8 SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:32:26:498 UTC] 000000c8 SystemErr     R 	at com.ibm.AllocateObject.doWork(AllocateObject.java:47)
+[6/30/20 22:32:26:503 UTC] 000000c8 SystemErr     R 	at com.ibm.BaseServlet.service(BaseServlet.java:73)
+[6/30/20 22:32:26:505 UTC] 000000c8 SystemErr     R 	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+[6/30/20 22:32:26:507 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.servlet.ServletWrapper.service(ServletWrapper.java:1235)
+[6/30/20 22:32:26:509 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.servlet.ServletWrapper.handleRequest(ServletWrapper.java:779)
+[6/30/20 22:32:26:511 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.servlet.ServletWrapper.handleRequest(ServletWrapper.java:478)
+[6/30/20 22:32:26:511 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.servlet.ServletWrapperImpl.handleRequest(ServletWrapperImpl.java:179)
+[6/30/20 22:32:26:516 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters(WebAppFilterManager.java:1124)
+[6/30/20 22:32:26:516 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.webapp.WebApp.handleRequest(WebApp.java:4219)
+[6/30/20 22:32:26:519 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.webapp.WebAppImpl.handleRequest(WebAppImpl.java:2210)
+[6/30/20 22:32:26:519 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.webapp.WebGroup.handleRequest(WebGroup.java:304)
+[6/30/20 22:32:26:626 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.WebContainer.handleRequest(WebContainer.java:1030)
+[6/30/20 22:32:26:627 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.WSWebContainer.handleRequest(WSWebContainer.java:1817)
+[6/30/20 22:32:26:630 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.webcontainer.channel.WCChannelLink.ready(WCChannelLink.java:382)
+[6/30/20 22:32:26:744 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.http.channel.inbound.impl.HttpInboundLink.handleDiscrimination(HttpInboundLink.java:465)
+[6/30/20 22:32:26:748 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.http.channel.inbound.impl.HttpInboundLink.handleNewRequest(HttpInboundLink.java:532)
+[6/30/20 22:32:26:751 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.http.channel.inbound.impl.HttpInboundLink.processRequest(HttpInboundLink.java:318)
+[6/30/20 22:32:26:753 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.http.channel.inbound.impl.HttpInboundLink.ready(HttpInboundLink.java:289)
+[6/30/20 22:32:26:753 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.tcp.channel.impl.NewConnectionInitialReadCallback.sendToDiscriminators(NewConnectionInitialReadCallback.java:214)
+[6/30/20 22:32:26:755 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.tcp.channel.impl.NewConnectionInitialReadCallback.complete(NewConnectionInitialReadCallback.java:113)
+[6/30/20 22:32:26:755 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.tcp.channel.impl.AioReadCompletionListener.futureCompleted(AioReadCompletionListener.java:175)
+[6/30/20 22:32:26:851 UTC] 000000c8 SystemErr     R 	at com.ibm.io.async.AbstractAsyncFuture.invokeCallback(AbstractAsyncFuture.java:217)
+[6/30/20 22:32:26:853 UTC] 000000c8 SystemErr     R 	at com.ibm.io.async.AsyncChannelFuture.fireCompletionActions(AsyncChannelFuture.java:161)
+[6/30/20 22:32:26:856 UTC] 000000c8 SystemErr     R 	at com.ibm.io.async.AsyncFuture.completed(AsyncFuture.java:138)
+[6/30/20 22:32:26:856 UTC] 000000c8 SystemErr     R 	at com.ibm.io.async.ResultHandler.complete(ResultHandler.java:204)
+[6/30/20 22:32:26:948 UTC] 000000c8 SystemErr     R 	at com.ibm.io.async.ResultHandler.runEventProcessingLoop(ResultHandler.java:775)
+[6/30/20 22:32:26:950 UTC] 000000c8 SystemErr     R 	at com.ibm.io.async.ResultHandler$2.run(ResultHandler.java:905)
+[6/30/20 22:32:26:952 UTC] 000000c8 SystemErr     R 	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1909)
+[6/30/20 22:33:21:908 UTC] 0000009e SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:21:915 UTC] 000000cd SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:21:919 UTC] 000000ca SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:22:031 UTC] 000000ca SystemErr     R 	at com.ibm.ejs.ras.SystemErrStream.createEvent(SystemErrStream.java:252)
+[6/30/20 22:33:22:032 UTC] 000000ca SystemErr     R 	at com.ibm.ejs.ras.SystemStream.cacheTraceData(SystemStream.java:838)
+[6/30/20 22:33:30:837 UTC] 00000029 SystemErr     R java.lang.OutOfMemoryErrorjava.lang.OutOfMemoryError: : Java heap spaceJava heap space
+[6/30/20 22:33:30:945 UTC] 0000009e SystemErr     R 	at java.util.HashMapjava.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:31:307 UTC] 00000090 SystemErr     R 	at Exception in thread "SIBJMSRAThreadPool : 1" com.ibm.ejs.ras.SystemErrStreamjava.lang.Error: java.lang.OutOfMemoryError: Java heap space.createEventException in thread "HAManager.thread.pool : 1" 
+[6/30/20 22:33:31:318 UTC] 00000090 SystemErr     R (	at com.ibm.ws.util.ThreadPool.getTask(ThreadPool.java:1089)SystemErrStream.java
+[6/30/20 22:33:31:318 UTC] 0000005f SystemErr     R Exception in thread "server.startup : 2" :	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1933)java.lang.OutOfMemoryError: 
+[6/30/20 22:33:31:319 UTC] 000000cf SystemErr     R java.lang.OutOfMemoryErrorCaused by: : 2java.lang.OutOfMemoryError: Java heap spaceException in thread "LocalNotificationServiceDispatcher : 0" java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:31:320 UTC] 000000d7 SystemErr     R Java heap space5
+[6/30/20 22:33:31:322 UTC] 00000090 SystemErr     R 2)
+[6/30/20 22:33:31:324 UTC] 000000d4 SystemErr     R Exception in thread "Deferrable Alarm : 2" .java.lang.OutOfMemoryError: resizeException in thread "Non-deferrable Alarm : 0" (HashMap.java:7Java heap space15java.lang.OutOfMemoryError)
+[6/30/20 22:33:31:326 UTC] 0000009e SystemErr     R 	at : java.util.HashMapJava heap space.putVal(HashMap.java
+[6/30/20 22:33:31:327 UTC] 0000009e SystemErr     R :640)Exception in thread "SIBJMSRAThreadPool : 2" 
+[6/30/20 22:33:31:328 UTC] 000000dd SystemErr     R java.lang.Error: java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:31:330 UTC] 000000dd SystemErr     R 	at com.ibm.ws.util.ThreadPool.getTask(ThreadPool.java:1089)
+[6/30/20 22:33:31:331 UTC] 00000102 SystemErr     R Exception in thread "SoapConnectorThreadPool : 5" java.lang.Error: java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:31:334 UTC] 00000102 SystemErr     R 	at com.ibm.ws.util.ThreadPool.getTask(ThreadPool.java:1089)
+[6/30/20 22:33:31:335 UTC] 00000102 SystemErr     R 	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1933)java.lang.Error: java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:31:514 UTC] 00000102 SystemErr     R Caused by: java.lang.OutOfMemoryErrorJava heap space: Java heap spaceException in thread "LT=1:P=905597:O=0:port=9403" 
+[6/30/20 22:33:32:282 UTC] 00000102 SystemErr     R 
+[6/30/20 22:33:32:282 UTC] 00000028 SystemErr     R Exception in thread "Deferred Alarm Manager" 
+[6/30/20 22:33:32:283 UTC] 00000028 SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:32:284 UTC] 000000c8 SystemErr     R Exception in thread "WebContainer : 7" 	at java.lang.OutOfMemoryErrorcom.ibm.ejs.ras.SystemErrStream.: Java heap spacecreateEvent	at (java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObjectSystemErrStream.java.addConditionWaiter(Exception in thread "WebContainer : 0" AbstractQueuedSynchronizer.java:18:6java.lang.OutOfMemoryError62)52)
+[6/30/20 22:33:32:286 UTC] 00000029 SystemErr     R 
+[6/30/20 22:33:32:287 UTC] 00000029 SystemErr     R 	at com.ibm.ejs.ras.SystemStream.doPrint(SystemStream.java:764)
+[6/30/20 22:33:32:288 UTC] 00000029 SystemErr     R 	at com.ibm.ejs.ras.SystemStream.print	at (SystemStream.java:515)com.ibm.ejs.ras.SystemStream
+[6/30/20 22:33:32:391 UTC] 00000029 SystemErr     R 
+[6/30/20 22:33:32:393 UTC] 00000043 SystemErr     R 	at org.eclipse.osgi.internal.module.ResolverBundle.initialize(ResolverBundle.java:95	at )java.util.HashMap	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1933).put(
+[6/30/20 22:33:32:395 UTC] 0000009e SystemErr     R HashMap.java:623)
+[6/30/20 22:33:37:227 UTC] 0000003d SystemErr     R java.lang.OutOfMemoryError(?): 	at Java heap space
+[6/30/20 22:33:37:243 UTC] 0000003d SystemErr     R 
+[6/30/20 22:33:37:243 UTC] 000000d7 SystemErr     R java.lang.OutOfMemoryError: : Java heap spaceJava heap space
+[6/30/20 22:33:37:244 UTC] 0000005f SystemErr     R java.lang.OutOfMemoryError	at java.lang.OutOfMemoryError: : com.ibm.ejs.ras.SystemErrStreamJava heap spaceJava heap space.createEvent
+[6/30/20 22:33:37:245 UTC] 0000005f SystemErr     R 
+[6/30/20 22:33:37:248 UTC] 000000d4 SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:37:361 UTC] 000000d4 SystemErr     R 	at 	at com.ibm.websphere.ras.WsJrasTraceLogger.exception(WsJrasTraceLogger.java:1414)
+[6/30/20 22:33:37:362 UTC] 0000003d SystemErr     R 	at com.ibm.CORBA.ras.Trc.ffdc(Trc.java:844)
+[6/30/20 22:33:37:363 UTC] 0000003d SystemErr     R 	at com.ibm.rmi.transport.ListenerThread
+[6/30/20 22:33:37:365 UTC] 0000003d SystemErr     R .
+[6/30/20 22:33:37:366 UTC] 0000003d SystemErr     R run(ListenerThread.javaException in thread "Timer-0" Exception in thread "WebContainer : 6" java.lang.Error: java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:37:462 UTC] 000000c7 SystemErr     R 	at com.ibm.ws.util.ThreadPool.getTask(ThreadPool.java:1089)Exception in thread "SoapConnectorThreadPool : 0" (SystemErrStream.javajava.lang.OutOfMemoryError:: Java heap space
+[6/30/20 22:33:39:671 UTC] 000000c7 SystemErr     R 	at Caused by: java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:39:679 UTC] 000000dd SystemErr     R 	at ?
+[6/30/20 22:33:39:862 UTC] 000000a0 SystemErr     R 	at java.io.BufferedWriter.<init>(BufferedWriter.javacom.ibm.ejs.ras.SystemStream.	at java.lang.Throwable.fillInStackTrace(Native Method)
+[6/30/20 22:33:41:437 UTC] 00000061 SystemErr     R java.lang.OutOfMemoryError(?): 	at Java heap spacejava.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject2.5addConditionWaiter2()AbstractQueuedSynchronizer.java:1866)
+[6/30/20 22:33:41:446 UTC] 00000061 SystemErr     R 
+[6/30/20 22:33:41:447 UTC] 00000102 SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:41:447 UTC] 000000cb SystemErr     R 	at ?
+[6/30/20 22:33:41:447 UTC] 000000c3 SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:41:450 UTC] 000000c7 SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:41:452 UTC] 000000c8 SystemErr     R java.lang.OutOfMemoryError: 	at 	at com.ibm.ejs.ras.SystemErrStreamsun.util.resources.TimeZoneNamesException in thread "HungThreadDetectorForDeferrable Alarm" ..java.lang.OutOfMemoryErrorgetContents: Java heap space(createEventTimeZoneNames.java
+[6/30/20 22:33:41:556 UTC] 00000061 SystemErr     R :303)
+[6/30/20 22:33:41:557 UTC] 00000061 SystemErr     R 	at Exception in thread "WebContainer : 1" 	at java.lang.Error: java.lang.OutOfMemoryError: Java heap spacecom.ibm.ws.util.ThreadPool.getTask(ThreadPool.java
+[6/30/20 22:33:41:559 UTC] 00000045 SystemErr     R :sun.util.resources.OpenListResourceBundle1	at com.ibm.ws.util.ThreadPool.getTask(ThreadPool.java:1089)0.89)
+[6/30/20 22:33:41:560 UTC] 00000045 SystemErr     R 
+[6/30/20 22:33:41:730 UTC] 00000045 SystemErr     R 	at java.lang.OutOfMemoryErrorjava.lang.OutOfMemoryError: : Java heap spaceJava heap space	at org.eclipse.osgi.internal.module.ResolverBundle.
+[6/30/20 22:33:41:732 UTC] 00000028 SystemErr     R 
+[6/30/20 22:33:41:733 UTC] 00000045 SystemErr     R com.ibm.ws.util.ThreadPool$Worker	at .java.io.BufferedWriterrun.<init>(Java heap spaceBufferedWriter.java:116)
+[6/30/20 22:33:41:735 UTC] 00000102 SystemErr     R 
+[6/30/20 22:33:41:736 UTC] 00000045 SystemErr     R (	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1933)	at com.ibm.ejs.ras.SystemErrStream.
+[6/30/20 22:33:41:738 UTC] 00000045 SystemErr     R ThreadPool.javajava.lang.OutOfMemoryError	at com.ibm.ejs.ras.SystemStream.cacheTraceData(SystemStream.java:841)
+[6/30/20 22:33:41:880 UTC] 00000028 SystemErr     R 	at com.ibm.ejs.ras.SystemStream(SystemErrStream.java:252)
+[6/30/20 22:33:45:187 UTC] 00000026 SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:45:431 UTC] 000000c3 SystemErr     R createEvent(SystemErrStream.java:252)
+[6/30/20 22:33:46:963 UTC] 0000009c SystemErr     R java.lang.OutOfMemoryError	at com.ibm.ejs.ras.SystemErrStream	at <init>java.util.LinkedHashMap: .(newNodeJava heap spaceResolverBundle.java(:LinkedHashMap.java5:.5doPrint2)6(7SystemStream.java
+[6/30/20 22:33:47:438 UTC] 000000d2 SystemErr     R )
+[6/30/20 22:33:47:439 UTC] 000000d2 SystemErr     R 
+[6/30/20 22:33:47:440 UTC] 00000044 SystemErr     R Exception in thread "HAManager.thread.pool : 0" 	at java.lang.OutOfMemoryErrorException in thread "HungThreadDetectorForNon-deferrable Alarm" : java.lang.OutOfMemoryErrorJava heap space: Java heap space
+[6/30/20 22:33:47:440 UTC] 00000027 SystemErr     R 
+[6/30/20 22:33:47:441 UTC] 000000d2 SystemErr     R java.util.HashMap.putVal	at com.ibm.ejs.ras.SystemStream	at .com.ibm.ejs.ras.SystemErrStream.cacheTraceDatacreateEvent: ((SystemErrStream.java:SystemStream.java::Java heap space28154291))
+[6/30/20 22:33:47:444 UTC] 0000005f SystemErr     R 
+[6/30/20 22:33:47:444 UTC] 00000045 SystemErr     R 3	at 3()com.ibm.ejs.ras.SystemStream.cacheTraceData(
+[6/30/20 22:33:47:445 UTC] 0000005f SystemErr     R SystemStream.java:838)
+[6/30/20 22:33:47:446 UTC] 0000005f SystemErr     R 	at com.ibm.ejs.ras.SystemStream..doPrintcreateEvent(SystemStream.java:7(4:9SystemErrStream.java)238
+[6/30/20 22:33:47:448 UTC] 0000003d SystemErr     R )	at com.ibm.ejs.ras.SystemStream.
+[6/30/20 22:33:47:448 UTC] 0000005f SystemErr     R print(SystemStream.java:515)
+[6/30/20 22:33:47:448 UTC] 0000005f SystemErr     R 	at :2com.ibm.ejs.ras.SystemErrStream.5print:7(2SystemErrStream.java4:)66)
+[6/30/20 22:33:47:449 UTC] 000000c8 SystemErr     R 	at 
+[6/30/20 22:33:47:449 UTC] 0000005f SystemErr     R 	at Caused by: java.io.PrintStream
+[6/30/20 22:33:47:451 UTC] 000000a1 SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:47:453 UTC] 000000a1 SystemErr     R 	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.addConditionWaiter(AbstractQueuedSynchronizer.java:1866)
+[6/30/20 22:33:47:454 UTC] 000000a1 SystemErr     R 	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.HashMap.java:642	at )org.eclipse.osgi.internal.module.ResolverImpl
+[6/30/20 22:33:47:485 UTC] 000000c8 SystemErr     R com.ibm.ejs.ras.SystemStream.doPrint(SystemStream.java:764)
+[6/30/20 22:33:47:486 UTC] 000000c8 SystemErr     R 	at 	at .com.ibm.ejs.ras.SystemStream.appendprint(	at 	at java.util.ArrayListCaused by: .java.lang.OutOfMemoryError: <init>sun.nio.cs.UTF_8.newEncoder(ArrayList.java:(16Java heap space4UTF_8.java):88)
+[6/30/20 22:33:47:491 UTC] 0000002d SystemErr     R 
+[6/30/20 22:33:47:493 UTC] 0000002d SystemErr     R 	at java.lang.StringCoding$StringEncoder.<init>(StringCoding.java:304)
+[6/30/20 22:33:47:494 UTC] 00000045 SystemErr     R 
+[6/30/20 22:33:47:495 UTC] 00000045 SystemErr     R 	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.addConditionWaiter(AbstractQueuedSynchronizer.java:1866)
+[6/30/20 22:33:50:921 UTC] 00000045 SystemErr     R java.lang.OutOfMemoryError: 	at java.util.HashMap.put(HashMap.java:623)
+[6/30/20 22:33:51:588 UTC] 000000d2 SystemErr     R 	at sun.util.resources.OpenListResourceBundle.loadLookup(OpenListResourceBundle.java:170)
+[6/30/20 22:33:51:690 UTC] 000000a3 SystemErr     R Exception in thread "WebContainer : 3" PrintStream.javajava.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:51:702 UTC] 00000044 SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:51:704 UTC] 000000a1 SystemErr     R java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:51:817 UTC] 00000043 SystemErr     R .initResolverBundleJava heap space(
+[6/30/20 22:33:51:818 UTC] 00000028 SystemErr     R 9com.ibm.ejs.ras.SystemStream.doPrint(SystemStream.java:749)(
+[6/30/20 22:33:51:983 UTC] 00000026 SystemErr     R 	at com.ibm.ejs.ras.SystemStream	at .printorg.eclipse.osgi.internal.module.MappedList	at .putjava.lang.StringCoding$StringEncoder(.(<init>MappedList.javaSystemStream.java(:StringCoding.java:2:95295))15)Exception in thread "WebSphere_EJB_Timer_Service_WorkManager.Alarm Pool : 1" java.lang.Error: java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:52:020 UTC] 000000a3 SystemErr     R 	at org.eclipse.osgi.internal.module.ResolverBundle.initialize(ResolverBundle.java:97)
+[6/30/20 22:33:52:089 UTC] 000000a3 SystemErr     R 	at org.eclipse.osgi.internal.module.ResolverBundle.<init>(ResolverBundle.java:java.lang.OutOfMemoryErrorResolverImpl.java:	at java.util.LinkedHashMap.SystemStream.javanewNode:(5LinkedHashMap.java1:2)67)
+[6/30/20 22:33:52:128 UTC] 00000045 SystemErr     R 
+[6/30/20 22:33:52:133 UTC] 0000002d SystemErr     R 
+[6/30/20 22:33:52:134 UTC] 0000002d SystemErr     R 	at java.lang.StringCoding.encode(StringCoding.java:3	at com.ibm.ejs.ras.SystemStream.cacheTraceData(SystemStream.java:841)
+[6/30/20 22:33:52:232 UTC] 00000044 SystemErr     R 
+[6/30/20 22:33:52:260 UTC] 000000a3 SystemErr     R 55)
+[6/30/20 22:33:52:261 UTC] 000000a3 SystemErr     R 	at org.eclipse.osgi.internal.module.ResolverImpl.initResolverBundle(ResolverImpl.java1:3135)3)3)
+[6/30/20 22:33:52:264 UTC] 00000043 SystemErr     R 	at org.eclipse.osgi.internal.module.ResolverImpl.initialize(ResolverImpl.java:111)
+[6/30/20 22:33:52:356 UTC] 00000043 SystemErr     R 	at org.eclipse.osgi.internal.module.ResolverImpl.	at resolveDynamicImportjava.util.HashMap
+[6/30/20 22:33:52:358 UTC] 00000045 SystemErr     R .putVal(HashMap.java:642)6
+[6/30/20 22:33:52:360 UTC] 00000045 SystemErr     R 	at java.util.HashMap.put(HashMap.java:623)
+[6/30/20 22:33:52:449 UTC] 00000045 SystemErr     R 	at sun.util.resources.OpenListResourceBundle.loadLookup(OpenListResourceBundle.java:170)
+[6/30/20 22:33:52:450 UTC] 00000045 SystemErr     R 	at sun.util.resources.OpenListResourceBundle.loadLookupTablesIfNecessary(OpenListResourceBundle.java:143)
+[6/30/20 22:33:52:452 UTC] 00000045 SystemErr     R 	at sun.util.resources.OpenListResourceBundle.handleKeySet(OpenListResourceBundle.java:111)
+[6/30/20 22:33:52:454 UTC] 00000045 SystemErr     R 	at java.util.ResourceBundle: Java heap space
+[6/30/20 22:33:52:542 UTC] 000000a3 SystemErr     R 	at org.eclipse.osgi.internal.module.ResolverImpl	at .com.ibm.ejs.ras.SystemStream.initializeprint((SystemStream.java:ResolverImpl.java51:511)1
+[6/30/20 22:33:52:544 UTC] 000000a3 SystemErr     R )	at com.ibm.ws.util.ThreadPool.getTask(ThreadPool.java:1089)
+[6/30/20 22:33:52:634 UTC] 000000a3 SystemErr     R 	at org.eclipse.osgi.internal.module.ResolverImpl.	at resolveDynamicImportcom.ibm.ejs.ras.SystemErrStream.print(0ResolverImpl.java):1980)
+[6/30/20 22:33:52:636 UTC] 0000002d SystemErr     R 	at (java.lang.String.getBytesSystemErrStream.java:6	at 6()com.ibm.ejs.ras.SystemStream.doPrint
+[6/30/20 22:33:52:637 UTC] 0000002d SystemErr     R String.java:1951)
+[6/30/20 22:33:52:639 UTC] 0000002d SystemErr     R 	at java.util.prefs.FileSystemPreferences.lockFile0(Native Method)
+[6/30/20 22:33:52:640 UTC] 0000002d SystemErr     R 	at java.util.prefs.FileSystemPreferences	at com.ibm.ejs.ras.SystemErrStream.createEvent(SystemErrStream.java
+[6/30/20 22:33:52:727 UTC] 000000c8 SystemErr     R 	at com.ibm.ejs.ras.SystemErrStream	at org.eclipse.osgi.internal.module.VersionHashMap(ResolverImpl.java:1980)
+[6/30/20 22:33:52:749 UTC] 00000043 SystemErr     R 	at org.eclipse.osgi.internal.resolver.StateImpl.linkDynamicImport(StateImpl.java:1038)
+[6/30/20 22:33:52:750 UTC] 00000043 SystemErr     R 	at org.eclipse.osgi.internal.loader.BundleLoader.findDynamicSource(BundleLoader.java:1169)
+[6/30/20 22:33:52:751 UTC] 00000043 SystemErr     R 	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:469)
+[6/30/20 22:33:52:753 UTC] 00000043 SystemErr     R 	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:421)
+[6/30/20 22:33:52:754 UTC] 00000043 SystemErr     R 	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:412)
+[6/30/20 22:33:52:756 UTC] 00000043 SystemErr     R 	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.loadClass(DefaultClassLoader.java:107)
+[6/30/20 22:33:52:856 UTC] 000000a3 SystemErr     R 	at (org.eclipse.osgi.internal.resolver.StateImpl..linkDynamicImport(lockFileStateImpl.javaSystemStream.java:1(038)FileSystemPreferences.java:
+[6/30/20 22:33:52:881 UTC] 00000045 SystemErr     R .
+[6/30/20 22:33:52:882 UTC] 0000006e SystemErr     R 	at com.ibm.oti.vm.MsgHelp.format(MsgHelp.java:110)
+[6/30/20 22:33:52:884 UTC] 0000006e SystemErr     R 	at containsKeycom.ibm.oti.vm.MsgHelp.(ResourceBundle.javaformat:(MsgHelp.java18:49)76).
+[6/30/20 22:33:52:886 UTC] 00000045 SystemErr     R 	at sun.util.locale.provider.LocaleResources.	at getTimeZoneNamescom.ibm.ejs.ras.SystemErrStream(.printLocaleResources.java
+[6/30/20 22:33:52:888 UTC] 00000045 SystemErr     R :	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1933)275)
+[6/30/20 22:33:52:889 UTC] 00000106 SystemErr     R Caused by: java.lang.OutOfMemoryError: Java heap space
+[6/30/20 22:33:52:891 UTC] 00000106 SystemErr     R 	at java.lang.Throwable.fillInStackTrace(Native Method)
+[6/30/20 22:33:52:891 UTC] 00000106 SystemErr     R 	at .put(VersionHashMap.java:44)
+[6/30/20 22:33:52:981 UTC] 00000027 SystemErr     R 
+[6/30/20 22:33:52:982 UTC] 00000027 SystemErr     R 	at org.eclipse.osgi.internal.module.ResolverImpl.initResolverBundle(ResolverImpl.java:13	at 6)
+[6/30/20 22:33:52:984 UTC] 00000027 SystemErr     R 	at :749)
+[6/30/20 22:33:52:986 UTC] 00000044 SystemErr     R 	at com.ibm.ejs.ras.SystemStream.print(SystemStream.java:515)
+[6/30/20 22:33:52:988 UTC] 00000044 SystemErr     R 	at com.ibm.ejs.ras.SystemErrStream.print(SystemErrStream.java:66)
+[6/30/20 22:33:52:989 UTC] 00000044 SystemErr     R 	at java.io.PrintStream.append(PrintStream.java:1089)
+[6/30/20 22:33:52:991 UTC] 00000044 SystemErr     R 	at java.io.PrintStream.append(PrintStream.java:70)
+[6/30/20 22:33:52:991 UTC] 00000044 SystemErr     R 	at 	at com.ibm.oti.util.Util.appendTo(Util.java:225)
+[6/30/20 22:33:52:995 UTC] 00000044 SystemErr     R 	at com.ibm.oti.util.Util.appendTo(Util.java:263)
+[6/30/20 22:33:52:996 UTC] 00000044 SystemErr     R 	at java.lang.Throwable.printStackTrace(Throwable.java:586)
+[6/30/20 22:33:53:097 UTC] 00000044 SystemErr     R 	at java.lang.Throwable.printStackTraceHelper(Throwable.java:334)
+[6/30/20 22:33:53:097 UTC] 00000044 SystemErr     R 	at java.lang.Throwable.printStackTrace(Throwable.java:303)
+[6/30/20 22:33:53:098 UTC] 00000044 SystemErr     R 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:873)
+[6/30/20 22:33:53:098 UTC] 00000044 SystemErr     R 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:866)
+[6/30/20 22:33:53:098 UTC] 00000044 SystemErr     R 	at java.lang.Thread.uncaughtException(Thread.java:1334)
+[6/30/20 22:33:53:125 UTC] 000000a1 SystemErr     R :print2(52)SystemErrStream.java:66)
+[6/30/20 22:33:53:129 UTC] 000000c8 SystemErr     R 
+[6/30/20 22:33:53:130 UTC] 000000c8 SystemErr     R 	at (java.lang.ThrowableSystemErrStream.javajava.io.PrintStream..:	at append(<init>66java.lang.ClassLoaderPrintStream.java:.loadClassHelper)(Throwable.java1(ClassLoader.java:933)
+[6/30/20 22:33:53:133 UTC] 00000028 SystemErr     R 	at java.io.PrintStream.append(PrintStream.java:1089)
+[6/30/20 22:33:53:135 UTC] 00000028 SystemErr     R 	at java.io.PrintStream.append(PrintStream.java:7java.io.PrintStream.append(0)org.eclipse.osgi.internal.loader.BundleLoader.findDynamicSource(BundleLoader.java:1169)
+[6/30/20 22:33:53:219 UTC] 000000a3 SystemErr     R 	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:469)
+[6/30/20 22:33:53:220 UTC] 000000a3 SystemErr     R 	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:421)
+[6/30/20 22:33:53:221 UTC] 000000a3 SystemErr     R 	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:412)org.eclipse.osgi.internal.module.ResolverImpl.initialize(ResolverImpl.java:111)
+[6/30/20 22:33:53:224 UTC] 00000027 SystemErr     R 	at org.eclipse.osgi.internal.module.ResolverImpl.resolveDynamicImport(ResolverImpl.java:1980)
+[6/30/20 22:33:53:225 UTC] 00000027 SystemErr     R 	at 
+[6/30/20 22:33:53:227 UTC] 000000a3 SystemErr     R 	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.loadClass(DefaultClassLoader.java:10	at 7)
+[6/30/20 22:33:53:228 UTC] 000000a3 SystemErr     R 	at java.lang.ClassLoader.loadClassHelper(ClassLoader.java:93
+[6/30/20 22:33:53:230 UTC] 000000a3 SystemErr     R 3:90)
+[6/30/20 22:33:53:232 UTC] 00000106 SystemErr     R 	at java.lang.Throwable.<init>(Throwable.java:101)
+[6/30/20 22:33:53:233 UTC] 00000106 SystemErr     R 	at java.lang.Error.<init>(Error.java:81)089)
+[6/30/20 22:33:53:353 UTC] 000000c8 SystemErr     R 	at java.io.PrintStream.append(PrintStream.java:70)
+[6/30/20 22:33:53:353 UTC] 000000c8 SystemErr     R 	at com.ibm.oti.util.Util.appendTo(Util.java:225)
+[6/30/20 22:33:53:355 UTC] 000000c8 SystemErr     R 	at com.ibm.oti.util.Util.appendTo(Util.java:263)
+[6/30/20 22:33:53:356 UTC] 000000c8 SystemErr     R 	at java.lang.Throwable.printStackTrace(Throwable.java:573)
+[6/30/20 22:33:53:360 UTC] 000000c8 SystemErr     R 	at java.lang.Throwable.printStackTraceHelper(Throwable.java:334)
+[6/30/20 22:33:53:362 UTC] 000000c8 SystemErr     R 	at 
+[6/30/20 22:33:53:365 UTC] 000000a1 SystemErr     R 	at com.ibm.ejs.ras.SystemStream.cacheTraceData(SystemStream.java:838)
+[6/30/20 22:33:53:366 UTC] 0000006e SystemErr     R com.ibm.oti.util.Msg.getString(Msg.java:110)
+[6/30/20 22:33:53:368 UTC] 0000006e SystemErr     R 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:872)
+[6/30/20 22:33:53:456 UTC] 00000043 SystemErr     R 	at java.lang.ClassLoader.loadClass(ClassLoader.java:889)
+[6/30/20 22:33:53:459 UTC] 00000106 SystemErr     R 
+[6/30/20 22:33:53:479 UTC] 0000002d SystemErr     R 925PrintStream.java):
+[6/30/20 22:33:53:482 UTC] 00000026 SystemErr     R 1089)
+[6/30/20 22:33:53:483 UTC] 00000026 SystemErr     R 	at java.io.PrintStream.append(PrintStream.java:70)
+[6/30/20 22:33:53:485 UTC] 00000026 SystemErr     R 	at com.ibm.oti.util.Util.appendTo(Util.java:225)
+[6/30/20 22:33:53:487 UTC] 0000006e SystemErr     R 
+[6/30/20 22:33:53:488 UTC] 000000a3 SystemErr     R )	at java.lang.ThreadGroup
+[6/30/20 22:33:53:489 UTC] 0000006e SystemErr     R .uncaughtException(
+[6/30/20 22:33:53:490 UTC] 0000006e SystemErr     R ThreadGroup.java:866)
+[6/30/20 22:33:53:571 UTC] 0000006e SystemErr     R 	at java.lang.Thread.uncaughtException(Thread.java:1334)
+[6/30/20 22:33:53:574 UTC] 0000002d SystemErr     R 	at java.util.prefs.FileSystemPreferences.sync(FileSystemPreferences.java:752)	at 
+[6/30/20 22:33:53:575 UTC] 0000002d SystemErr     R 	at 	at com.ibm.ejs.ras.SystemStream.doPrint(SystemStream.java:	at 7com.ibm.oti.util.Util.java.util.prefs.FileSystemPreferencesappendTo4(.Util.javaflush:(269)3)
+[6/30/20 22:33:53:578 UTC] 000000a1 SystemErr     R 	at FileSystemPreferences.javacom.ibm.ejs.ras.SystemStream:8.print47(SystemStream.java):51	at 5com.ibm.ws.bootstrap.ExtClassLoader).
+[6/30/20 22:33:53:580 UTC] 0000002d SystemErr     R 	at java.util.prefs.FileSystemPreferences.syncWorld(FileSystemPreferences.java:487	at )java.lang.ClassLoader.
+[6/30/20 22:33:53:582 UTC] 000000a3 SystemErr     R loadClass(ClassLoader.java:889)
+[6/30/20 22:33:53:582 UTC] 000000a3 SystemErr     R 	at com.ibm.ws.bootstrap.ExtClassLoader.loadClass(ExtClassLoader.java:135)
+[6/30/20 22:33:53:584 UTC] 000000a3 SystemErr     R 	at java.lang.ClassLoader.loadClass(ClassLoader.java:872)
+[6/30/20 22:33:53:585 UTC] 000000a3 SystemErr     R 	at java.util.ResourceBundle$Control.newBundle(ResourceBundle.java:2682)
+[6/30/20 22:33:53:586 UTC] 000000a3 SystemErr     R 	at java.util.ResourceBundle.loadBundle(ResourceBundle.java:1543)
+[6/30/20 22:33:53:679 UTC] 000000a1 SystemErr     R 	at com.ibm.ejs.ras.SystemErrStream.print(SystemErrStream.java:66)
+[6/30/20 22:33:53:679 UTC] 000000a1 SystemErr     R 	at java.io.PrintStream.append(PrintStream.java:1089)
+[6/30/20 22:33:53:689 UTC] 000000a1 SystemErr     R 	at java.io.PrintStream.append(PrintStream.java:70)	at java.util.prefs.FileSystemPreferences.access$1200(FileSystemPreferences.java:61)
+[6/30/20 22:33:53:701 UTC] 0000002d SystemErr     R 	at java.util.prefs.FileSystemPreferences$3.runjava.lang.Throwable(.FileSystemPreferences.javaprintStackTrace:(Throwable.java4:53503))
+[6/30/20 22:33:53:702 UTC] 0000002d SystemErr     R 	at sun.util.locale.provider.TimeZoneNameProviderImpl.getDisplayNameArray(TimeZoneNameProviderImpl.java:136)
+[6/30/20 22:33:53:703 UTC] 0000002d SystemErr     R java.util.TimerThread.mainLoop(Timer.java:566)
+[6/30/20 22:33:53:705 UTC] 00000106 SystemErr     R 	at java.lang.VirtualMachineError.<init>(VirtualMachineError.java:64)loadClass
+[6/30/20 22:33:53:706 UTC] 00000043 SystemErr     R (ExtClassLoader.java:135)
+[6/30/20 22:33:53:707 UTC] 00000043 SystemErr     R 	at java.lang.ClassLoader.loadClass(ClassLoader.java:872)	at org.eclipse.osgi.internal.resolver.StateImpl.linkDynamicImport(StateImpl.java
+[6/30/20 22:33:53:791 UTC] 00000027 SystemErr     R :	at sun.util.locale.provider.TimeZoneNameProviderImpl.getDisplayName(TimeZoneNameProviderImpl.java:111)
+[6/30/20 22:33:53:802 UTC] 00000026 SystemErr     R 	at java.lang.Throwable.printStackTrace	at java.lang.OutOfMemoryError.<init>(OutOfMemoryError.java:69)
+[6/30/20 22:33:53:826 UTC] 000000a3 SystemErr     R 	at java.util.ResourceBundle.findBundle(ResourceBundle.java:1507
+[6/30/20 22:33:53:828 UTC] 000000a1 SystemErr     R 	at com.ibm.oti.util.Util.appendTo(Util.java:225)
+[6/30/20 22:33:53:829 UTC] 000000a1 SystemErr     R 	at com.ibm.oti.util.Util.printStackTraceElement(Util.java:290)
+[6/30/20 22:33:53:830 UTC] 000000a1 SystemErr     R 	at java.lang.Throwable.printStackTrace(Throwable.java:587)
+[6/30/20 22:33:53:831 UTC] 000000a1 SystemErr     R 	at java.lang.Throwable.printStackTraceHelper(Throwable.java:338)
+[6/30/20 22:33:53:833 UTC] 000000a1 SystemErr     R 	at java.lang.Throwable.printStackTrace(Throwable.java:303)
+[6/30/20 22:33:53:834 UTC] 000000a1 SystemErr     R 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:873)
+[6/30/20 22:33:53:834 UTC] 000000a1 SystemErr     R 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:866)
+[6/30/20 22:33:53:835 UTC] 000000a1 SystemErr     R 	at java.lang.Thread.uncaughtException(Thread.java:1334)
+[6/30/20 22:33:53:836 UTC] 000000a3 SystemErr     R )
+[6/30/20 22:33:53:934 UTC] 00000045 SystemErr     R 	at sun.util.locale.provider.TimeZoneNameUtility$TimeZoneNameGetter.getName(TimeZoneNameUtility.java:252)
+[6/30/20 22:33:53:935 UTC] 00000045 SystemErr     R 	at 	at java.util.TimerThread.run(Timer.java:516)
+[6/30/20 22:33:53:960 UTC] 00000045 SystemErr     R sun.util.locale.provider.TimeZoneNameUtility$TimeZoneNameGetter.getObject(TimeZoneNameUtility.java:210)
+[6/30/20 22:33:53:962 UTC] 00000045 SystemErr     R 	at sun.util.locale.provider.TimeZoneNameUtility$TimeZoneNameGetter.getObject(TimeZoneNameUtility.java:
+[6/30/20 22:33:53:963 UTC] 00000045 SystemErr     R 196com.ibm.oti.util.Util).appendTo(
+[6/30/20 22:33:53:965 UTC] 00000028 SystemErr     R Util.java:225)
+[6/30/20 22:33:53:966 UTC] 00000028 SystemErr     R 	at com.ibm.oti.util.Util.appendTo(Util.java:263(Throwable.java
+[6/30/20 22:33:53:969 UTC] 00000026 SystemErr     R :586)	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject
+[6/30/20 22:33:53:970 UTC] 000000c8 SystemErr     R 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:873)
+[6/30/20 22:33:53:970 UTC] 000000c8 SystemErr     R 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:866)	at java.util.ResourceBundle$Control.newBundle(ResourceBundle.java:2682)
+[6/30/20 22:33:54:109 UTC] 00000043 SystemErr     R 	at java.util.ResourceBundle.loadBundle(ResourceBundle.java:1543)
+[6/30/20 22:33:54:109 UTC] 00000043 SystemErr     R 	at java.util.ResourceBundle.findBundle(ResourceBundle.java:1507)	at sun.util.locale.provider.LocaleServiceProviderPool.getLocalizedObjectImpl(LocaleServiceProviderPool.java103)	at java.lang.Throwable.printStackTraceHelper(Throwable.java:334).addConditionWaiter(
+[6/30/20 22:33:54:133 UTC] 000000a3 SystemErr     R 
+[6/30/20 22:33:54:133 UTC] 000000a3 SystemErr     R 	at java.util.ResourceBundle.findBundle(ResourceBundle.java:1461)
+[6/30/20 22:33:54:135 UTC] 000000a3 SystemErr     R 	at java.util.ResourceBundle.findBundle(ResourceBundle.java:1461)
+[6/30/20 22:33:54:136 UTC] 000000a3 SystemErr     R 	at java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1389)
+[6/30/20 22:33:54:137 UTC] 000000a3 SystemErr     R 	at java.util.ResourceBundle.getBundle(ResourceBundle.java:8:29)3
+[6/30/20 22:33:54:140 UTC] 00000045 SystemErr     R )
+[6/30/20 22:33:54:153 UTC] 00000045 SystemErr     R 	at sun.util.locale.provider.LocaleServiceProviderPool.
+[6/30/20 22:33:54:154 UTC] 000000c8 SystemErr     R 	at java.lang.Thread.uncaughtException(Thread.java:1334)
+[6/30/20 22:33:54:155 UTC] 00000106 SystemErr     R AbstractQueuedSynchronizer.java:1
+[6/30/20 22:33:54:157 UTC] 00000043 SystemErr     R 	at java.util.ResourceBundle.findBundle(ResourceBundle.java:1461)
+[6/30/20 22:33:54:158 UTC] 00000043 SystemErr     R 	at java.util.ResourceBundle.findBundle(ResourceBundle.java:1461)
+[6/30/20 22:33:54:159 UTC] 00000043 SystemErr     R 	at java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1389)
+[6/30/20 22:33:54:160 UTC] 00000043 SystemErr     R 	at java.util.ResourceBundle.
+[6/30/20 22:33:54:162 UTC] 00000043 SystemErr     R getBundle(ResourceBundle.java:1102)
+[6/30/20 22:33:54:164 UTC] 00000043 SystemErr     R 	at 	at 8java.lang.Throwable.66)printStackTrace(Throwable.java:
+[6/30/20 22:33:54:166 UTC] 00000026 SystemErr     R 3com.ibm.ejs.ras.TraceNLS03.getResourceBundle(TraceNLS.java):7
+[6/30/20 22:33:54:167 UTC] 00000043 SystemErr     R 8	at 7	at )org.eclipse.osgi.internal.loader.BundleLoader.findDynamicSource(
+[6/30/20 22:33:54:167 UTC] 00000026 SystemErr     R java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:873)
+[6/30/20 22:33:54:169 UTC] 00000026 SystemErr     R 	at 	at java.lang.Throwable.printStackTrace(Throwable.java:586)getLocalizedObject(LocaleServiceProviderPool.java:277)110
+[6/30/20 22:33:54:287 UTC] 000000a3 SystemErr     R 2	at sun.util.locale.provider.TimeZoneNameUtility).retrieveDisplayNamesImpl
+[6/30/20 22:33:54:287 UTC] 000000a3 SystemErr     R 	at 	at com.ibm.ws.logging.WsLogger.getResourceBundle(WsLogger.java:1020)
+[6/30/20 22:33:54:310 UTC] 00000043 SystemErr     R 	at com.ibm.ws.logging.WsLogger.createLogRecord(WsLogger.java:461)
+[6/30/20 22:33:54:311 UTC] 00000043 SystemErr     R 	at com.ibm.ws.logging.WsLogger.logp(WsLogger.java:615)	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:(2TimeZoneNameUtility.java16:13)7
+[6/30/20 22:33:54:314 UTC] 00000027 SystemErr     R BundleLoader.java:1169)
+[6/30/20 22:33:54:316 UTC] 00000027 SystemErr     R 	at com.ibm.ejs.ras.TraceNLSorg.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:469)
+[6/30/20 22:33:54:318 UTC] 000000a3 SystemErr     R .getResourceBundle(TraceNLS.javajava.lang.ThreadGroup:.uncaughtException7(8ThreadGroup.java:8676))
+[6/30/20 22:33:54:322 UTC] 00000026 SystemErr     R 	at java.lang.Thread.uncaughtException(Thread.java:1334)
+[6/30/20 22:33:54:324 UTC] 000000a3 SystemErr     R 
+[6/30/20 22:33:54:324 UTC] 000000a3 SystemErr     R 	at 	at com.ibm.ws.util.BoundedBuffer$GetQueueLock
+[6/30/20 22:33:54:325 UTC] 00000106 SystemErr     R .awaitcom.ibm.ws.logging.WsLogger.getResourceBundle(WsLogger.java(:1
+[6/30/20 22:33:54:327 UTC] 00000106 SystemErr     R BoundedBuffer.java:298)8
+[6/30/20 22:33:54:328 UTC] 00000045 SystemErr     R )	at 
+[6/30/20 22:33:54:328 UTC] 00000028 SystemErr     R java.lang.Throwable.printStackTraceHelper(Throwable.java:334)
+[6/30/20 22:33:54:329 UTC] 00000028 SystemErr     R 	at java.lang.Throwable.printStackTrace(Throwable.java:303)
+[6/30/20 22:33:54:331 UTC] 00000028 SystemErr     R 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:873)
+[6/30/20 22:33:54:333 UTC] 00000028 SystemErr     R 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:866)
+[6/30/20 22:33:54:333 UTC] 00000028 SystemErr     R 	at java.lang.Thread.uncaughtException(Thread.java:1334)
+[6/30/20 22:33:54:335 UTC] 000000a3 SystemErr     R 020)
+[6/30/20 22:33:54:481 UTC] 000000a3 SystemErr     R 	at com.ibm.ws.logging.WsLogger.createLogRecord(WsLogger.java:461)	at 
+[6/30/20 22:33:54:485 UTC] 000000a3 SystemErr     R 	at com.ibm.ws.logging.WsLogger.logp(WsLogger.java:615)
+[6/30/20 22:33:54:485 UTC] 000000a3 SystemErr     R 	at com.ibm.ffdc.impl.Ffdc.setFailsafeProvider(Ffdc.java:	at sun.util.locale.provider.TimeZoneNameUtility.retrieveDisplayNames(TimeZoneNameUtility.java:119)	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:421)
+[6/30/20 22:33:54:518 UTC] 00000027 SystemErr     R 	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:412)
+[6/30/20 22:33:54:519 UTC] 00000027 SystemErr     R 	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.loadClass(DefaultClassLoader.java:107)
+[6/30/20 22:33:54:522 UTC] 00000027 SystemErr     R 	at java.lang.ClassLoader.loadClassHelper(ClassLoader.java:933)
+[6/30/20 22:33:54:523 UTC] 00000027 SystemErr     R 	at java.lang.ClassLoader.com.ibm.ws.util.BoundedBufferloadClass.(waitGet_(BoundedBuffer.java:455ClassLoader.java:)8
+[6/30/20 22:33:54:526 UTC] 00000027 SystemErr     R 8	at com.ibm.ffdc.impl.Ffdc.setFailsafeProvider(Ffdc.java:140)140)
+[6/30/20 22:33:54:530 UTC] 000000a3 SystemErr     R 	at 	at com.ibm.ffdc.impl.Ffdccom.ibm.ws.util.BoundedBuffer.log.(takeFfdc.java:(
+[6/30/20 22:33:54:533 UTC] 00000043 SystemErr     R 
+[6/30/20 22:33:54:533 UTC] 00000043 SystemErr     R 	at com.ibm.ffdc.impl.Ffdc.log(Ffdc.java:227)
+[6/30/20 22:33:54:535 UTC] 00000043 SystemErr     R 	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1914)
+[6/30/20 22:33:54:537 UTC] 00000027 SystemErr     R 9)243	at java.util.TimeZone.getDisplayName(BoundedBuffer.java
+[6/30/20 22:33:54:540 UTC] 00000106 SystemErr     R :)85TimeZone.java:411)
+[6/30/20 22:33:54:541 UTC] 000000a3 SystemErr     R 	at 
+[6/30/20 22:33:54:541 UTC] 000000a3 SystemErr     R com.ibm.ws.util.ThreadPool.	at getTask(com.ibm.ws.bootstrap.ExtClassLoaderThreadPool.java.:loadClass1(ExtClassLoader.java:08183)5)
+[6/30/20 22:33:54:548 UTC] 00000027 SystemErr     R 	at java.lang.ClassLoader.loadClass(ClassLoader.java:873	at )java.text.SimpleDateFormat.subFormat(SimpleDateFormat.java:1282)
+[6/30/20 22:33:54:550 UTC] 00000045 SystemErr     R 
+[6/30/20 22:33:54:705 UTC] 000000a3 SystemErr     R 
+[6/30/20 22:33:54:706 UTC] 000000a3 SystemErr     R 	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1933)2)
+[6/30/20 22:33:54:706 UTC] 00000027 SystemErr     R 	at java.util.ResourceBundle$Control.newBundle(ResourceBundle.java:2682)
+[6/30/20 22:33:54:710 UTC] 00000106 SystemErr     R 	at com.ibm.ws.util.ThreadPool.getTask(ThreadPool.java:1069)	at java.text.SimpleDateFormat.format
+[6/30/20 22:33:54:712 UTC] 00000045 SystemErr     R (SimpleDateFormat.java:	... 1 more977)
+[6/30/20 22:33:54:716 UTC] 00000045 SystemErr     R 	at java.text.SimpleDateFormat.format(SimpleDateFormat.java:947
+[6/30/20 22:33:54:719 UTC] 00000045 SystemErr     R )
+[6/30/20 22:33:54:723 UTC] 00000045 SystemErr     R 	at com.ibm.ejs.ras.StreamEvent6.formatTimeAndThread(StreamEvent6.java:442)
+[6/30/20 22:33:54:734 UTC] 00000045 SystemErr     R 	at com.ibm.ejs.ras.StreamEvent6.formatHeaderBasic(StreamEvent6.java:326)
+[6/30/20 22:33:54:734 UTC] 00000045 SystemErr     R 	at com.ibm.ejs.ras.StreamEvent6.writeSelfToStream(StreamEvent6.java:141)
+[6/30/20 22:33:54:737 UTC] 00000027 SystemErr     R 	at 
+[6/30/20 22:33:54:737 UTC] 00000045 SystemErr     R 	at java.util.ResourceBundle.loadBundle(ResourceBundle.java:com.ibm.ejs.ras.SystemStream.1doPrint(SystemStream.java:765)5
+[6/30/20 22:33:54:737 UTC] 00000027 SystemErr     R 43)	at com.ibm.ejs.ras.SystemStream.print(SystemStream.java:
+[6/30/20 22:33:54:739 UTC] 00000027 SystemErr     R 	at java.util.ResourceBundle.findBundle(ResourceBundle.java:1507515))
+[6/30/20 22:33:54:745 UTC] 00000045 SystemErr     R 	at com.ibm.ejs.ras.SystemErrStream.print(SystemErrStream.java:66)
+[6/30/20 22:33:54:748 UTC] 00000045 SystemErr     R 
+[6/30/20 22:33:54:748 UTC] 00000027 SystemErr     R 	at java.util.ResourceBundle.findBundle(ResourceBundle.java	at java.io.PrintStream.append(PrintStream.java:1461):
+[6/30/20 22:33:54:752 UTC] 00000045 SystemErr     R 1089)
+[6/30/20 22:33:54:755 UTC] 00000045 SystemErr     R 	at 	at java.util.ResourceBundle.findBundlejava.io.PrintStream.append(PrintStream.java:7(ResourceBundle.java:14610)
+[6/30/20 22:33:54:756 UTC] 00000045 SystemErr     R 	at com.ibm.oti.util.Util.appendTo(Util.java:225))
+[6/30/20 22:33:54:901 UTC] 00000027 SystemErr     R 	at java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1389)
+[6/30/20 22:33:54:902 UTC] 00000027 SystemErr     R 	at java.util.ResourceBundle.getBundle(ResourceBundle.java:1102)
+[6/30/20 22:33:54:935 UTC] 00000027 SystemErr     R 	at com.ibm.ejs.ras.TraceNLS.getResourceBundle(TraceNLS.java:787)
+[6/30/20 22:33:54:940 UTC] 00000045 SystemErr     R 	at com.ibm.oti.util.Util.appendTo(Util.java:263)
+[6/30/20 22:33:54:940 UTC] 00000045 SystemErr     R 	at java.lang.Throwable.printStackTrace(Throwable.java:586)
+[6/30/20 22:33:54:944 UTC] 00000045 SystemErr     R 	at java.lang.Throwable.printStackTraceHelper(Throwable.java:338)
+[6/30/20 22:33:54:944 UTC] 00000045 SystemErr     R 	at java.lang.Throwable.printStackTrace(Throwable.java:303)
+[6/30/20 22:33:54:944 UTC] 00000045 SystemErr     R 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:
+[6/30/20 22:33:54:948 UTC] 00000027 SystemErr     R 	at com.ibm.ws.logging.WsLogger.getResourceBundle(873WsLogger.java):1020)
+[6/30/20 22:33:54:949 UTC] 00000045 SystemErr     R 	at java.lang.ThreadGroup.uncaughtException
+[6/30/20 22:33:54:949 UTC] 00000045 SystemErr     R (ThreadGroup.java:866)	at com.ibm.ws.logging.WsLogger.createLogRecord
+[6/30/20 22:33:54:952 UTC] 00000045 SystemErr     R 	at java.lang.Thread.uncaughtException(Thread.java:1334)
+[6/30/20 22:33:54:952 UTC] 00000027 SystemErr     R (WsLogger.java:461)
+[6/30/20 22:33:54:955 UTC] 00000027 SystemErr     R 	at com.ibm.ws.logging.WsLogger.logp(WsLogger.java:615)
+[6/30/20 22:33:54:957 UTC] 00000027 SystemErr     R 	at com.ibm.ffdc.impl.Ffdc.setFailsafeProvider(Ffdc.java:140)
+[6/30/20 22:33:54:958 UTC] 00000027 SystemErr     R 	at com.ibm.ffdc.impl.Ffdc.log(Ffdc.java:227)
+[6/30/20 22:33:54:960 UTC] 00000027 SystemErr     R 	at com.ibm.ejs.util.am.AlarmThreadMonitor$AlarmThreadCheckDetector.run(AlarmThreadMonitor.java:433)
+[6/30/20 22:33:54:960 UTC] 00000027 SystemErr     R 	at java.lang.Thread.run(Thread.java:820)

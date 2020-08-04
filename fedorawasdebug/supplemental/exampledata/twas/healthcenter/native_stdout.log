@@ -1,0 +1,16 @@
+[6/30/20 22:36:56:757 UTC] 00000001 ManagerAdmin  A   TRAS0007I: Logging to the service log is disabled
+[6/30/20 22:36:56:947 UTC] 00000001 ProviderTrack I com.ibm.ffdc.osgi.ProviderTracker AddingService FFDC1007I: FFDC Provider Installed: com.ibm.ffdc.util.provider.FfdcOnDirProvider@543e8949
+************ Start Display Current Environment ************
+WebSphere Platform 9.0.5.3 [BASE 9.0.5.3 f5032008.04] [JAVA8 8.0.6.10 pxa6480sr6fp10-20200408_01] running with process name DefaultCell01\DefaultNode01\server1 and process id 5035
+Full server name is DefaultCell01\DefaultNode01\server1-5035
+Host Operating System is Linux, version 4.19.76-linuxkit
+Java version = 1.8.0_251, Java Runtime Version = 8.0.6.10 - pxa6480sr6fp10-20200408_01(SR6 FP10), Java Compiler = j9jit29, Java VM name = IBM J9 VM
+was.install.root = /opt/IBM/WebSphere/AppServer
+user.install.root = /opt/IBM/WebSphere/AppServer/profiles/AppSrv01
+Java Home = /opt/IBM/WebSphere/AppServer/java/8.0/jre
+ws.ext.dirs = /opt/IBM/WebSphere/AppServer/java/8.0/lib:/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/classes:/opt/IBM/WebSphere/AppServer/classes:/opt/IBM/WebSphere/AppServer/lib:/opt/IBM/WebSphere/AppServer/installedChannels:/opt/IBM/WebSphere/AppServer/lib/ext:/opt/IBM/WebSphere/AppServer/web/help:/opt/IBM/WebSphere/AppServer/deploytool/itp/plugins/com.ibm.etools.ejbdeploy/runtime
+Classpath = /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/properties:/opt/IBM/WebSphere/AppServer/properties:/opt/IBM/WebSphere/AppServer/lib/startup.jar:/opt/IBM/WebSphere/AppServer/lib/bootstrap.jar:/opt/IBM/WebSphere/AppServer/lib/lmproxy.jar:/opt/IBM/WebSphere/AppServer/lib/urlprotocols.jar:/opt/IBM/WebSphere/AppServer/deploytool/itp/batchboot.jar:/opt/IBM/WebSphere/AppServer/deploytool/itp/batch2.jar:/opt/IBM/WebSphere/AppServer/java/8.0/lib/tools.jar
+Java Library path = /opt/IBM/WebSphere/AppServer/lib/native/linux/x86_64/:/opt/IBM/WebSphere/AppServer/java/8.0/jre/lib/amd64/compressedrefs:/opt/IBM/WebSphere/AppServer/java/8.0/jre/lib/amd64:/opt/IBM/WebSphere/AppServer/bin:/opt/IBM/WebSphere/AppServer/nulldllsdir:/usr/lib64:/usr/lib:
+Orb Version = IBM Java ORB build orbdev-userlvl-20200106.1711
+Max file descriptor count = 1048576
+************* End Display Current Environment *************

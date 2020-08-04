@@ -1,7 +1,7 @@
 # WebSphere Application Server Troubleshooting and Performance Lab on Docker
 
 - Author: [Kevin Grigorenko](mailto:kevin.grigorenko@us.ibm.com)
-- Version: V11 (December 16, 2019)
+- Version: V12 (July 1, 2020)
 - Source: [https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug](https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug)
 
 # Table of Contents
@@ -56,6 +56,8 @@
     -   [Diagnostic Plans](#diagnostic-plans)
 -   [IBM HTTP Server](#ibm-http-server)
 -   [Appendix](#appendix)
+    -   [Windows Remote Desktop Client](#windows-remote-desktop-client)
+    -   [Manually accessing/testing Liberty and tWAS](#manually-accessingtesting-liberty-and-twas)
 
 # Introduction
 
@@ -142,7 +144,7 @@ Problem determination and performance tuning are best done with all layers of th
     1.  Click **Apply**\
         \
         macOS:\
-        ![](./media/image7.png)\
+        ![](./media/image140.png)\
         \
         Windows:\
         \
@@ -153,7 +155,7 @@ Problem determination and performance tuning are best done with all layers of th
     1.  Increase the **Disk image size** to at least **100GB** and click **Apply**:\
         \
         macOS:\
-        ![](./media/image9.png)\
+        ![](./media/image140.png)\
         \
         Windows:\
         ![](./media/image10.png)
@@ -260,15 +262,15 @@ Problem determination and performance tuning are best done with all layers of th
 
 1.  You may stop a JMeter test by clicking the STOP button:
 
-![](./media/image18.png)
+    ![](./media/image18.png)
 
 2.  You may click the broom button to clear the results in preparation for the next test:
 
-![](./media/image19.png)
+    ![](./media/image19.png)
 
 3.  If it asks what to do with the JMeter log files from the previous test, you may just click **Overwrite existing file**:
 
-> ![](./media/image20.png)
+    ![](./media/image20.png)
 
 # Basics
 
@@ -820,23 +822,23 @@ Next, let's simulate a memory issue.
 
 1.  [Stop JMeter](#stop-jmeter) if it is started.
 
-2.  If learning Liberty:
+1.  If learning Liberty:
 
     1.  Stop Liberty:
 
         `/opt/ibm/wlp/bin/server stop defaultServer`
 
-    2.  Edit **/opt/ibm/wlp/usr/servers/defaultServer/jvm.options**, add an explicit maximum heap size of 256MB on a new line and save the file:
+    1.  Edit **/opt/ibm/wlp/usr/servers/defaultServer/jvm.options**, add an explicit maximum heap size of 256MB on a new line and save the file:
 
         `-Xmx256m`
 
         ![](./media/image61.png)
 
-    3.  Start Liberty
+    1.  Start Liberty
 
         `/opt/ibm/wlp/bin/server start defaultServer`
 
-3.  If learning Traditional WAS:
+1.  If learning Traditional WAS:
 
     1.  Open the Administrative Console at <https://localhost:9043/ibm/console>
 
@@ -871,75 +873,85 @@ Next, let's simulate a memory issue.
 
         `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1`
 
-4.  [Start JMeter](#start-jmeter)
+1.  [Start JMeter](#start-jmeter)
 
-5.  Let the JMeter test run for about 5 minutes.
+1.  Let the JMeter test run for about 5 minutes.
 
-6.  Do not stop the JMeter test but leave it running as you continue to the next step.
+1.  Do not stop the JMeter test but leave it running as you continue to the next step.
 
-7.  Open your browser to the following page:
+1.  Open your browser to the following page:
 
     1.  If learning Liberty: <http://localhost:9080/swat/AllocateObject?size=1048576&iterations=300&waittime=1000&retainData=true>
 
-    2.  If learning Traditional WAS: <http://localhost:9081/swat/AllocateObject?size=1048576&iterations=300&waittime=1000&retainData=true>
+    1.  If learning Traditional WAS: <http://localhost:9081/swat/AllocateObject?size=1048576&iterations=300&waittime=1000&retainData=true>
 
-    3.  This will allocate three hundred 1MB objects with a delay of 1 second between each allocation, and hold on to all of them to simulate a leak.
+    1.  This will allocate three hundred 1MB objects with a delay of 1 second between each allocation, and hold on to all of them to simulate a leak.
 
-    4.  This will take about 5 minutes to run and you can watch your browser output for progress.
+    1.  This will take about 5 minutes to run and you can watch your browser output for progress.
 
-    5.  You can run **top -H** while this is running. As memory pressure builds, you'll start to see **GC Slave** threads consuming most of the CPUs instead of application threads (garbage collection also happens on the thread where the allocation failure occurs, so you may also see a single application thread consuming a similar amount of CPU as the GC Slave threads):
+    1.  You can run **top -H** while this is running. As memory pressure builds, you'll start to see **GC Slave** threads consuming most of the CPUs instead of application threads (garbage collection also happens on the thread where the allocation failure occurs, so you may also see a single application thread consuming a similar amount of CPU as the GC Slave threads):
 
         `top -H -p $(pgrep -f defaultServer) -d 5`
 
         ![](./media/image68.png)
 
-    6.  At some point, browser output will stop because the JVM has thrown an OutOfMemoryError.
+    1.  At some point, browser output will stop because the JVM has thrown an OutOfMemoryError.
 
-8.  [Stop JMeter](#stop-jmeter)
+1.  [Stop JMeter](#stop-jmeter)
 
-9.  Close and re-open the **verbosegc\*log** file in GCMV:\
+1.  Forcefully kill the JVM because an OutOfMemoryError does not stop the JVM; it will continue garbage collection thrashing and consume all of your CPU.
+
+    1.  If learning Liberty:
+
+            pkill -9 -f defaultServer
+
+    1.  If learning Traditional WAS:
+
+            pkill -9 -f "DefaultNode01 server1"
+
+1.  Close and re-open the **verbosegc\*log** file in GCMV:\
     \
-    ![](./media/image69.png)
+    ![](./media/image141.png)
 
     1.  We can quickly see how the heap usage reaches 256MB and the pause time magnitude and durations increase significantly.
 
-10. Click on the **Report** tab and review the **Proportion of time spent in garbage collection pauses (%)**:\
+1. Click on the **Report** tab and review the **Proportion of time spent in garbage collection pauses (%)**:\
     \
-    ![](./media/image70.png)
+    ![](./media/image143.png)
 
-11. At first, 11% might not seem too bad and doesn't line up with what we know about what happened. This is because, by default, the GCMV Report tab shows statistics for the entire duration of the verbosegc log file. Since we had run the JMeter test for 5 minutes and it was healthy, the average proportion of time in GC is lower for the whole duration.
+1. 24% seems pretty bad but not terrible and doesn't line up with what we know about what happened. This is because, by default, the GCMV Report tab shows statistics for the entire duration of the verbosegc log file. Since we had run the JMeter test for 5 minutes and it was healthy, the average proportion of time in GC is lower for the whole duration.
 
-12. Click on the **Line plot** tab and zoom in to the area of high pause times by using your mouse button to draw a box around those times:\
+1. Click on the **Line plot** tab and zoom in to the area of high pause times by using your mouse button to draw a box around those times:\
     \
-    ![](./media/image71.png)
+    ![](./media/image144.png)
 
-13. This will zoom the view to that bounding box:\
+1. This will zoom the view to that bounding box:\
     \
-    ![](./media/image72.png)
+    ![](./media/image145.png)
 
-14. However, zooming in is just a visual aid. To change the report statistics, we need to match the X-axis to the period of interest.
+1. However, zooming in is just a visual aid. To change the report statistics, we need to match the X-axis to the period of interest.
 
-15. Hover your mouse over the approximate start and end points of the section of concern (frequent pause time spikes) and note the times of those points (in terms of your selected X Axis type):\
+1. Hover your mouse over the approximate start and end points of the section of concern (frequent pause time spikes) and note the times of those points (in terms of your selected X Axis type):\
     \
-    ![](./media/image73.png)
+    ![](./media/image142.png)
 
-16. Enter each of the values in the minimum and maximum input boxes and press **Enter** on your keyboard in each one to apply the value. The tool will show vertical lines with triangles showing the area of the graph that you\'ve cropped to.\
+1. Enter each of the values in the minimum and maximum input boxes and press **Enter** on your keyboard in each one to apply the value. The tool will show vertical lines with triangles showing the area of the graph that you\'ve cropped to.\
     \
-    ![](./media/image74.png)
+    ![](./media/image146.png)
 
-17. Click on the **Report** tab at the bottom and observe the proportion of time spent in garbage collection for this period is very high (in this example, \~50%).\
+1. Click on the **Report** tab at the bottom and observe the proportion of time spent in garbage collection for this period is very high (in this example, \~87%).\
     \
-    ![](./media/image75.png)
+    ![](./media/image147.png)
 
-18. This means that the application is doing very little work and is very unhealthy. In general, there are a few, non-exclusive ways to resolve this problem:
+1. This means that the application is doing very little work and is very unhealthy. In general, there are a few, non-exclusive ways to resolve this problem:
 
     1.  Increase the maximum heap size.
 
-    2.  Decrease the object allocation rate of the application.
+    1.  Decrease the object allocation rate of the application.
 
-    3.  Resolve memory leaks through heapdump analysis.
+    1.  Resolve memory leaks through heapdump analysis.
 
-    4.  Decrease the maximum thread pool size.
+    1.  Decrease the maximum thread pool size.
 
 # Other Topics
 
@@ -1834,16 +1846,20 @@ For the following Liberty exercises, we will use the open source [Liberty Bikes 
 
         cd ~/liberty-bikes/
 
-2.  Start the four Liberty servers:
+1.  Your terminal might have LOG_DIR set due to Docker configuration. If so, this will cause all four JVMs to write to the same log and cause errors, so make sure that's not set:
+
+        export LOG_DIR=""
+
+1.  Start the four Liberty servers:
 
         ./gradlew start -DsingleParty=true
 
-3.  This will take a few minutes to start. When the servers are ready, you will see the end display similar to:
+1.  This will take a few minutes to start. When the servers are ready, you will see the end display similar to:
 
         Application externally available at: http://...:12000
         BUILD SUCCESSFUL in 1m 18s
 
-4.  Open http://localhost:12000/
+1.  Open http://localhost:12000/
 
 There are four Liberty servers that comprise the liberty-bikes application: frontendServer, auth-service, player-service, and game-service:
 
@@ -2496,29 +2512,38 @@ Any currently running Java programs will need to be restarted if you want them t
 
 ##  Version History
 
--   V11 (December 16, 2019): Add Performance Tuning Toolkit and required 32-bit libraries and XULRunner. Fix intermittent issue where screen lock gets wrong timeout value. Upgrade Request Metrics Analyzer.
+* V12 (August 3, 2020): Refresh software:
+    * Upgrade to Fedora 32
+    * Upgrade to Liberty 20.0.0.6
+    * Upgrade to tWAS 9.0.5.3
+    * Upgrade to Eclipse 2020-03
+    * Add OpenJDK 14
+    * Upgrade to PTT V1.0.20200728
+    * Upgrade Apache Ant
+    * Upgrade Apache JMeter
+    * Upgrade Gradle
+    * Upgrade Eclipse MAT
+    * Upgrade to TMDA 4.6.7
+    * Increase HealthCenter -Xmx
+    * Upgrade Eclipse SWT
+    * Add libertymon
+    * Upgrade Request Analyzer Next
+    * Upgrade WebSphere Application Server Configuration Comparison Tool
+    * Add PostgreSQL
+    * Add -Xnoloa to tWAS as temporary workaround for crash issue
+* V11 (December 16, 2019): Add Performance Tuning Toolkit and required 32-bit libraries and XULRunner. Fix intermittent issue where screen lock gets wrong timeout value. Upgrade Request Metrics Analyzer.
+* V10 (November 27, 2019): Add tWAS SIBExplorer and SIBPerf tools. Disable Xfce desktop tooltips. Resolve rare VNC deadlock issue. Upgrade TMDA. Add IBM Channel Framework Analyzer. Add IBM Web Server Plug-in Analyzer for WebSphere Application Server (WSPA). Add Connection and Configuration Verification Tool for SSL/TLS. Add WebSphere Application Server Configuration Visualizer. Add Problem Diagnostics Lab Toolkit. Add Eclipse SWT.
+* V9 (November 12, 2019): Fix being unable to unlock screensaver after idling 10 minutes. Change screensaver lock time to 30 minutes. Add Totem video player and VP9/webm codec.
+* V8 (November 6, 2019): Fix errors re-launching Eclipse. Add example lab data.
+* V7 (November 6, 2019): Minor fix for the crash lab test if the server is restarted in an unexpected way.
+* V6 (November 5, 2019): Enable tWAS and Liberty Application Security for DayTrader to use local OpenLDAP. Increase recommended Docker disk space to \>100GB. Enable OpenLDAP logging. Change DayTrader7 to runtimeMode=1 to avoid WebSocket security issues calling EJBs with application security enabled. Remove OpenJDK12. Upgrade to Fedora 31. Send tWAS traffic through IHS.
+* V5 (October 23, 2019): Add OpenLDAP and integrate it into tWAS. Update the lab instructions to include tWAS. Add VS Code. Add JDKs to alternatives. Update Eclipse to 2019-06. Add OpenJ9 source. Add IHS connected to tWAS.
+* V4 (August 14, 2019): Add tWAS DayTrader7.
+* V3 (July 2, 2019): Updates based on customer feedback.
+* V2 (May 20, 2019): Convert to Docker and modernize.
+* V1 (December 14, 2016): First version on VMWare.
 
--   V10 (November 27, 2019): Add tWAS SIBExplorer and SIBPerf tools. Disable Xfce desktop tooltips. Resolve rare VNC deadlock issue. Upgrade TMDA. Add IBM Channel Framework Analyzer. Add IBM Web Server Plug-in Analyzer for WebSphere Application Server (WSPA). Add Connection and Configuration Verification Tool for SSL/TLS. Add WebSphere Application Server Configuration Visualizer. Add Problem Diagnostics Lab Toolkit. Add Eclipse SWT.
-
--   V9 (November 12, 2019): Fix being unable to unlock screensaver after idling 10 minutes. Change screensaver lock time to 30 minutes. Add Totem video player and VP9/webm codec.
-
--   V8 (November 6, 2019): Fix errors re-launching Eclipse. Add example lab data.
-
--   V7 (November 6, 2019): Minor fix for the crash lab test if the server is restarted in an unexpected way.
-
--   V6 (November 5, 2019): Enable tWAS and Liberty Application Security for DayTrader to use local OpenLDAP. Increase recommended Docker disk space to \>100GB. Enable OpenLDAP logging. Change DayTrader7 to runtimeMode=1 to avoid WebSocket security issues calling EJBs with application security enabled. Remove OpenJDK12. Upgrade to Fedora 31. Send tWAS traffic through IHS.
-
--   V5 (October 23, 2019): Add OpenLDAP and integrate it into tWAS. Update the lab instructions to include tWAS. Add VS Code. Add JDKs to alternatives. Update Eclipse to 2019-06. Add OpenJ9 source. Add IHS connected to tWAS.
-
--   V4 (August 14, 2019): Add tWAS DayTrader7.
-
--   V3 (July 2, 2019): Updates based on customer feedback.
-
--   V2 (May 20, 2019): Convert to Docker and modernize.
-
--   V1 (December 14, 2016): First version on VMWare.
-
-Tip: to compare between tags; for example: [https://github.com/kgibm/dockerdebug/compare/V4...V5](https://github.com/kgibm/dockerdebug/compare/V4...V5)
+Tip: to compare between tags; for example: [https://github.com/kgibm/dockerdebug/compare/V11...V12](https://github.com/kgibm/dockerdebug/compare/V11...V12)
 
 ##  Acknowledgments
 

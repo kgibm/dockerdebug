@@ -69,13 +69,15 @@ RUN echo "# https://fedoraproject.org/wiki/Alternatives_system" && \
     echo "# Eclipse Memory Analyzer Tool (MAT)" && \
     echo "# https://www.eclipse.org/mat/" && \
     sudo mkdir /opt/mat/ && \
-    sudo wget -q -O /opt/MemoryAnalyzer.zip $(curl -s https://www.eclipse.org/mat/downloads.php | grep "Linux (x86_64/GTK+) RCP" | sed 's/.*href="//g' | sed 's/".*//g' | sed 's/^http:/https:/g' | sed 's/$/\&r=1/g') && \
+    sudo wget -q -O /opt/MemoryAnalyzer.zip "$(curl -s https://www.eclipse.org/mat/downloads.php | grep "Linux (x86_64/GTK+) RCP" | sed 's/.*href="//g' | sed 's/".*//g' | sed 's/^http:/https:/g' | sed 's/$/\&r=1/g')" && \
     ( \
       cd /opt/ && \
       sudo unzip -q MemoryAnalyzer.zip && \
       sudo rm -f /opt/MemoryAnalyzer.zip && \
       cd /opt/mat && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=/opt/mat/MemoryAnalyzer\nPath=~/\nTerminal=false\n' >> mat.desktop && \
+      sudo mkdir /home/was/mat/ && \
+      sudo chown -R was:root /home/was/mat/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=/opt/mat/MemoryAnalyzer\nPath=mat/\nTerminal=false\n' >> mat.desktop && \
       sudo chmod a+x mat.desktop && \
       sudo ln -s /opt/mat/mat.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/mat.desktop /home/was/Desktop/ \
@@ -125,8 +127,10 @@ hide_welcome_screen=true\n\
     ( \
       sudo mkdir /opt/tmda/ && \
       cd /opt/tmda/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca464.jar && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca464.jar\nPath=~/\nTerminal=false\n' >> tmda.desktop && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca467.jar && \
+      sudo mkdir /home/was/tmda/ && \
+      sudo chown -R was:root /home/was/tmda/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca467.jar\nPath=tmda/\nTerminal=false\n' >> tmda.desktop && \
       sudo chmod a+x tmda.desktop && \
       sudo ln -s /opt/tmda/tmda.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/tmda.desktop /home/was/Desktop/ \
@@ -137,7 +141,9 @@ hide_welcome_screen=true\n\
       sudo mkdir /opt/classloaderanalyzer/ && \
       cd /opt/classloaderanalyzer/ && \
       sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ica/ica107.jar && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=Classloader Analyzer\nExec=java -jar /opt/classloaderanalyzer/ica107.jar\nPath=~/\nTerminal=false\n' >> cla.desktop && \
+      sudo mkdir /home/was/cla/ && \
+      sudo chown -R was:root /home/was/cla/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=Classloader Analyzer\nExec=java -jar /opt/classloaderanalyzer/ica107.jar\nPath=cla/\nTerminal=false\n' >> cla.desktop && \
       sudo chmod a+x cla.desktop && \
       sudo ln -s /opt/classloaderanalyzer/cla.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/cla.desktop /home/was/Desktop/ \
@@ -148,7 +154,9 @@ hide_welcome_screen=true\n\
       sudo mkdir /opt/heapanalyzer/ && \
       cd /opt/heapanalyzer/ && \
       sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha457.jar && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=Heap Analyzer\nExec=java -jar /opt/heapanalyzer/ha457.jar\nPath=~/\nTerminal=false\n' >> ha.desktop && \
+      sudo mkdir /home/was/ha/ && \
+      sudo chown -R was:root /home/was/ha/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=Heap Analyzer\nExec=java -jar /opt/heapanalyzer/ha457.jar\nPath=ha/\nTerminal=false\n' >> ha.desktop && \
       sudo chmod a+x ha.desktop && \
       sudo ln -s /opt/heapanalyzer/ha.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/ha.desktop /home/was/Desktop/ \
@@ -159,7 +167,9 @@ hide_welcome_screen=true\n\
       sudo mkdir /opt/pmat/ && \
       cd /opt/pmat/ && \
       sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/pmat/ga458.jar && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=PMAT\nExec=java -jar /opt/pmat/ga458.jar\nPath=~/\nTerminal=false\n' >> pmat.desktop && \
+      sudo mkdir /home/was/pmat/ && \
+      sudo chown -R was:root /home/was/pmat/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=PMAT\nExec=java -jar /opt/pmat/ga458.jar\nPath=pmat/\nTerminal=false\n' >> pmat.desktop && \
       sudo chmod a+x pmat.desktop && \
       sudo ln -s /opt/pmat/pmat.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/pmat.desktop /home/was/Desktop/ \
@@ -177,6 +187,7 @@ hide_welcome_screen=true\n\
       sudo rm -f /opt/eclipse_old.tar.gz && \
       sudo mv /opt/eclipse /opt/eclipse_old \
     ) && \
+    sudo sed -i 's/-Xmx512m/-Xmx2048m/g' /opt/eclipse_old/eclipse.ini && \
     echo "# IBM Monitoring and Diagnostic Tools - Health Center" && \
     echo "# https://www.ibm.com/support/knowledgecenter/en/SS3KLZ/com.ibm.java.diagnostics.healthcenter.doc/homepage/plugin-homepage-hc.html" && \
     echo "# https://developer.ibm.com/javasdk/tools/" && \
@@ -184,7 +195,9 @@ hide_welcome_screen=true\n\
                                   -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/healthcenter/ \
                                   -installIU com.ibm.java.diagnostics.healthcenter.core.feature.feature.group \
                                   -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group && \
-    sudo printf '[Desktop Entry]\nType=Application\nName=Health Center\nExec=/opt/eclipse_old/eclipse -data workspace_hc -perspective com.ibm.java.diagnostics.healthcenter.gui.perspective.status\nPath=~/\nTerminal=false\n' >> /opt/eclipse_old/hc.desktop && \
+    sudo mkdir /home/was/hc/ && \
+    sudo chown -R was:root /home/was/hc/ && \
+    sudo printf '[Desktop Entry]\nType=Application\nName=Health Center\nExec=/opt/eclipse_old/eclipse -data workspace_hc -perspective com.ibm.java.diagnostics.healthcenter.gui.perspective.status\nPath=hc/\nTerminal=false\n' >> /opt/eclipse_old/hc.desktop && \
     sudo chmod a+x /opt/eclipse_old/hc.desktop && \
     sudo ln -s /opt/eclipse_old/hc.desktop /opt/programs/ && \
     sudo ln -s /opt/programs/hc.desktop /home/was/Desktop/ && \
@@ -193,16 +206,18 @@ hide_welcome_screen=true\n\
     echo "#########################" && \
     echo "# Install GCMV and IDDE #" && \
     echo "#########################" && \
-    echo "# Eclipse 2019-06" && \
-    echo "# https://www.eclipse.org/downloads/packages/release/2019-06/r/eclipse-ide-enterprise-java-developers" && \
-    echo "# https://help.eclipse.org/2019-06/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fruntime-options.html" && \
-    sudo wget -q -O /opt/eclipse-jee-2019-06-R-linux-gtk-x86_64.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2019-06/R/eclipse-jee-2019-06-R-linux-gtk-x86_64.tar.gz&r=1" && \
+    echo "# Eclipse 2020-03" && \
+    echo "# https://www.eclipse.org/downloads/packages/release/2020-03/r/eclipse-ide-enterprise-java-developers" && \
+    echo "# https://help.eclipse.org/2020-03/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fruntime-options.html" && \
+    sudo wget -q -O /opt/eclipse-jee-2020-03-R-incubation-linux-gtk-x86_64.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2020-03/R/eclipse-jee-2020-03-R-incubation-linux-gtk-x86_64.tar.gz&r=1" && \
     ( \
       cd /opt/ && \
-      sudo tar xzf eclipse-jee-2019-06-R-linux-gtk-x86_64.tar.gz && \
-      sudo rm -f /opt/eclipse-jee-2019-06-R-linux-gtk-x86_64.tar.gz && \
+      sudo tar xzf eclipse-jee-2020-03-R-incubation-linux-gtk-x86_64.tar.gz && \
+      sudo rm -f /opt/eclipse-jee-2020-03-R-incubation-linux-gtk-x86_64.tar.gz && \
       cd /opt/eclipse && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=Eclipse\nExec=/opt/eclipse/eclipse -data workspace\nPath=~/\nTerminal=false\n' >> eclipse.desktop && \
+      sudo mkdir /home/was/eclipse/ && \
+      sudo chown -R was:root /home/was/eclipse/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=Eclipse\nExec=/opt/eclipse/eclipse -data workspace\nPath=eclipse/\nTerminal=false\n' >> eclipse.desktop && \
       sudo chmod a+x eclipse.desktop && \
       sudo ln -s /opt/eclipse/eclipse.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/eclipse.desktop /home/was/Desktop/ \
@@ -213,7 +228,9 @@ hide_welcome_screen=true\n\
     sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
                               -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/gcmv/ \
                               -installIU com.ibm.java.diagnostics.visualizer.feature.feature.group && \
-    sudo printf '[Desktop Entry]\nType=Application\nName=GCMV\nExec=/opt/eclipse/eclipse -data workspace_gcmv -perspective com.ibm.java.diagnostics.visualizer.gui.perspective\nPath=~/\nTerminal=false\n' >> /opt/eclipse/gcmv.desktop && \
+    sudo mkdir /home/was/gcmv/ && \
+    sudo chown -R was:root /home/was/gcmv/ && \
+    sudo printf '[Desktop Entry]\nType=Application\nName=GCMV\nExec=/opt/eclipse/eclipse -data workspace_gcmv -perspective com.ibm.java.diagnostics.visualizer.gui.perspective\nPath=gcmv/\nTerminal=false\n' >> /opt/eclipse/gcmv.desktop && \
     sudo chmod a+x /opt/eclipse/gcmv.desktop && \
     sudo ln -s /opt/eclipse/gcmv.desktop /opt/programs/ && \
     sudo ln -s /opt/programs/gcmv.desktop /home/was/Desktop/ && \
@@ -224,7 +241,9 @@ hide_welcome_screen=true\n\
                               -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/idde/ \
                               -installIU com.ibm.java.diagnostics.idde.feature.feature.group \
                               -installIU com.ibm.java.diagnostics.idde.extensions.feature.feature.group && \
-    sudo printf '[Desktop Entry]\nType=Application\nName=IDDE\nExec=/opt/eclipse/eclipse -data workspace_idde -perspective com.ibm.java.diagnostics.idde.perspective\nPath=~/\nTerminal=false\n' >> /opt/eclipse/idde.desktop && \
+    sudo mkdir /home/was/idde/ && \
+    sudo chown -R was:root /home/was/idde/ && \
+    sudo printf '[Desktop Entry]\nType=Application\nName=IDDE\nExec=/opt/eclipse/eclipse -data workspace_idde -perspective com.ibm.java.diagnostics.idde.perspective\nPath=idde/\nTerminal=false\n' >> /opt/eclipse/idde.desktop && \
     sudo chmod a+x /opt/eclipse/idde.desktop && \
     sudo ln -s /opt/eclipse/idde.desktop /opt/programs/ && \
     sudo ln -s /opt/programs/idde.desktop /home/was/Desktop/ && \
@@ -261,7 +280,7 @@ RUN echo "############################" && \
     echo "# OpenJDK + HotSpot/OpenJ9 #" && \
     echo "############################" && \
     echo "# https://adoptopenjdk.net/" && \
-    for v in 8 11 13; do \
+    for v in 8 11 14; do \
         for j in openj9 hotspot; do \
           ( \
             sudo mkdir /opt/openjdk${v}_${j}/ && \

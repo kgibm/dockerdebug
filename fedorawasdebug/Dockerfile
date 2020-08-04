@@ -38,7 +38,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 # The following Liberty version is used in the liberty-bikes builds. Find the latest version here:
 # https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
-ARG MAVEN_LIBERTY_VERSION="19.0.0.12"
+ARG MAVEN_LIBERTY_VERSION="20.0.0.6"
 
 ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
@@ -54,7 +54,8 @@ ENV LOG_DIR=/logs \
     ADMIN_USER_NAME=wsadmin \
     EXTRACT_PORT_FROM_HOST_HEADER=true \
     ENABLE_BASIC_LOGGING=true \
-    TLS=true
+    TLS=true \
+    WLP_LOGGING_CONSOLE_FORMAT=simple
 
 USER was
 
@@ -64,23 +65,23 @@ USER was
 
 # WebSphere Liberty:
 #   https://hub.docker.com/_/websphere-liberty
-#   https://github.com/WASdev/ci.docker/blob/master/ga/latest/kernel/Dockerfile.centos
-#   https://github.com/WASdev/ci.docker/blob/master/ga/latest/javaee8/Dockerfile
+#   https://github.com/WASdev/ci.docker/blob/master/ga/latest/kernel/Dockerfile.ubi.ibmjava8
 # OpenLiberty:
 #   https://hub.docker.com/_/open-liberty
-#   https://github.com/OpenLiberty/ci.docker/blob/master/official/latest/javaee8/java8/ibmjava/Dockerfile
+#   https://github.com/OpenLiberty/ci.docker/blob/master/releases/latest/kernel/Dockerfile.ubi.ibmjava8
 
-COPY --from=websphere-liberty:javaee7 --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
-COPY --from=websphere-liberty:javaee7 --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
-COPY --from=websphere-liberty:javaee7 --chown=was:root /logs /logs
-COPY --from=websphere-liberty:javaee7 --chown=was:root /licenses /licenses
-COPY --from=websphere-liberty:javaee7 --chown=was:root /etc/wlp /etc/wlp
+COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/helpers /opt/ibm/helpers
+COPY --from=websphere-liberty:latest --chown=was:root /opt/ibm/wlp /opt/ibm/wlp
+COPY --from=websphere-liberty:latest --chown=was:root /logs /logs
+COPY --from=websphere-liberty:latest --chown=was:root /licenses /licenses
+COPY --from=websphere-liberty:latest --chown=was:root /etc/wlp /etc/wlp
 
 #############################
 # "Install" Traditional WAS #
 #############################
 
 # https://hub.docker.com/r/ibmcom/websphere-traditional
+# https://github.com/WASdev/ci.docker.websphere-traditional/blob/master/docker-build/9.0.5.x/Dockerfile-ubi8
 
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /work /work
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /licenses/
@@ -99,6 +100,7 @@ COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Plugins /
 COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Toolbox /opt/IBM/WebSphere/Toolbox
 
 RUN --mount=type=secret,id=remotepassword \
+    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     sudo ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     sudo chown was:root /output && \
     sudo ln -s /opt/ibm/wlp/usr/servers/defaultServer /config && \
@@ -135,7 +137,9 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
       sudo mkdir /opt/tracerequestanalyzer/ && \
       cd /opt/tracerequestanalyzer/ && \
       sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/tra/tra303.jar && \
-      printf '[Desktop Entry]\nType=Application\nName=Trace and Request Analyzer\nExec=java -jar /opt/tracerequestanalyzer/tra303.jar\nPath=~/\nTerminal=false\n' | sudo tee tra.desktop && \
+      sudo mkdir /home/was/tra/ && \
+      sudo chown -R was:root /home/was/tra/ && \
+      printf '[Desktop Entry]\nType=Application\nName=Trace and Request Analyzer\nExec=java -jar /opt/tracerequestanalyzer/tra303.jar\nPath=tra/\nTerminal=false\n' | sudo tee tra.desktop && \
       sudo chmod a+x tra.desktop && \
       sudo ln -s /opt/tracerequestanalyzer/tra.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/tra.desktop /home/was/Desktop/ \
@@ -146,7 +150,9 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
       sudo mkdir /opt/channelframeworkanalyzer/ && \
       cd /opt/channelframeworkanalyzer/ && \
       sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/cfa/cfa108.jar && \
-      printf '[Desktop Entry]\nType=Application\nName=Channel Framework Analyzer\nExec=java -jar /opt/channelframeworkanalyzer/cfa108.jar\nPath=~/\nTerminal=false\n' | sudo tee cfa.desktop && \
+      sudo mkdir /home/was/cfa/ && \
+      sudo chown -R was:root /home/was/cfa/ && \
+      printf '[Desktop Entry]\nType=Application\nName=Channel Framework Analyzer\nExec=java -jar /opt/channelframeworkanalyzer/cfa108.jar\nPath=cfa/\nTerminal=false\n' | sudo tee cfa.desktop && \
       sudo chmod a+x cfa.desktop && \
       sudo ln -s /opt/channelframeworkanalyzer/cfa.desktop /opt/programs/ \
     ) && \
@@ -158,7 +164,9 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
       sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/wspa/wspa35.zip && \
       sudo unzip -q *.zip && \
       sudo rm *.zip && \
-      printf '[Desktop Entry]\nType=Application\nName=Web Server Plug-in Analyzer\nExec=java -jar /opt/webserverpluginanalyzer/wspa35.jar\nPath=~/\nTerminal=false\n' | sudo tee wspa.desktop && \
+      sudo mkdir /home/was/wspa/ && \
+      sudo chown -R was:root /home/was/wspa/ && \
+      printf '[Desktop Entry]\nType=Application\nName=Web Server Plug-in Analyzer\nExec=java -jar /opt/webserverpluginanalyzer/wspa35.jar\nPath=wspa/\nTerminal=false\n' | sudo tee wspa.desktop && \
       sudo chmod a+x wspa.desktop && \
       sudo ln -s /opt/webserverpluginanalyzer/wspa.desktop /opt/programs/ \
     ) && \
@@ -170,7 +178,9 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
       sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/cvt/cvt102.zip && \
       sudo unzip -q *.zip && \
       sudo rm *.zip && \
-      printf '[Desktop Entry]\nType=Application\nName=SSL/TLS Connection and Configuration Verification Tool\nExec=java -jar /opt/tlsverificationtool/cvt102.jar\nPath=~/\nTerminal=false\n' | sudo tee cvt.desktop && \
+      sudo mkdir /home/was/cvt/ && \
+      sudo chown -R was:root /home/was/cvt/ && \
+      printf '[Desktop Entry]\nType=Application\nName=SSL/TLS Connection and Configuration Verification Tool\nExec=java -jar /opt/tlsverificationtool/cvt102.jar\nPath=cvt/\nTerminal=false\n' | sudo tee cvt.desktop && \
       sudo chmod a+x cvt.desktop && \
       sudo ln -s /opt/tlsverificationtool/cvt.desktop /opt/programs/ \
     ) && \
@@ -198,7 +208,7 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
     ( \
       sudo mkdir /opt/swt/ && \
       cd /opt/swt/ && \
-      sudo wget -O swt.zip -q "https://www.eclipse.org/downloads/download.php?file=/eclipse/downloads/drops4/R-4.13-201909161045/swt-4.13-gtk-linux-x86_64.zip&r=1" && \
+      sudo wget -O swt.zip -q "https://www.eclipse.org/downloads/download.php?file=/eclipse/downloads/drops4/R-4.16-202006040540/swt-4.16-gtk-linux-x86_64.zip&r=1" && \
       sudo unzip -q *.zip && \
       sudo rm *.zip \
     ) && \
@@ -220,7 +230,7 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
       sudo unzip -q *.zip && \
       sudo rm *.zip \
     ) && \
-    echo "# https://www-01.ibm.com/support/docview.wss?uid=swg21644180" && \
+    echo "# https://www.ibm.com/support/pages/node/227907" && \
     ( \
       sudo mkdir /opt/trapit/ && \
       cd /opt/trapit/ && \
@@ -238,25 +248,32 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/problemdetermination \
     ) && \
+    echo "# https://github.com/kgibm/libertymon" && \
+    ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/kgibm/libertymon \
+    ) && \
     echo "# https://github.com/kgibm/request-metrics-analyzer-next" && \
     ( \
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/request-metrics-analyzer-next && \
       cd /opt/request-metrics-analyzer-next && \
       sudo mvn -q clean install && \
-      printf '[Desktop Entry]\nType=Application\nName=Request Metrics Analyzer\nExec=java -jar /opt/request-metrics-analyzer-next/target/analyzer-next-0.0.1-SNAPSHOT-jar-with-dependencies.jar\nPath=~/\nTerminal=false\n' | sudo tee rma.desktop && \
+      sudo mkdir /home/was/rma/ && \
+      sudo chown -R was:root /home/was/rma/ && \
+      printf '[Desktop Entry]\nType=Application\nName=Request Metrics Analyzer\nExec=java -jar /opt/request-metrics-analyzer-next/target/request-metrics-analyzer-next-1.0.20200409-jar-with-dependencies.jar\nPath=rma/\nTerminal=false\n' | sudo tee rma.desktop && \
       sudo chmod a+x rma.desktop && \
       sudo ln -s /opt/request-metrics-analyzer-next/rma.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/rma.desktop /home/was/Desktop/ \
     ) && \
-    echo "# https://www-01.ibm.com/support/docview.wss?uid=swg22010928" && \
+    echo "# https://www.ibm.com/support/pages/node/711615" && \
     ( \
       sudo mkdir /opt/wasconfigcomparison/ && \
-      sudo wget -q -O /opt/wasconfigcomparison/cct.tar.gz "https://www.ibm.com/support/pages/sites/default/files/inline-files/%24FILE/cct-20190822.tar.gz" && \
+      sudo wget -q -O /opt/wasconfigcomparison/cct.tar.gz "https://github.com/IBM/websphere-cct/releases/download/WCCT-20200217/cct-20200217.tar.gz" && \
       cd /opt/wasconfigcomparison/ && \
       sudo tar xzf cct.tar.gz \
     ) && \
-    echo "# https://www-01.ibm.com/support/docview.wss?uid=swg21442487" && \
+    echo "# https://www.ibm.com/support/pages/node/141227" && \
     ( \
       sudo mkdir /opt/manageprofilesinteractive/ && \
       sudo wget -q -O /opt/manageprofilesinteractive/manageprofilesInteractive.zip "https://www.ibm.com/support/pages/sites/default/files/support/swg/swgtech.nsf/0/d6ca5180f6619c868525776f0069b7b7/%24FILE/ATTQDXZT.zip/manageprofilesInteractive.zip" && \
@@ -337,7 +354,6 @@ environment=\n\
     USER="was",\n\
 \n' | sudo tee /etc/supervisord.d/twas.supervisord.conf && \
     echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh && \
-    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     sudo mkdir /tmp/wlp-cache/ && \
     sudo chmod 777 /tmp/wlp-cache/ && \
     echo "# https://github.com/WASdev/sample.daytrader7" && \
@@ -356,6 +372,7 @@ environment=\n\
     sudo mkdir /opt/cookbook && \
     sudo wget -q -O /opt/cookbook/WAS_Performance_Cookbook.pdf https://publib.boulder.ibm.com/httpserv/cookbook/WAS_Performance_Cookbook.pdf && \
     sudo ln -s /opt/cookbook/WAS_Performance_Cookbook.pdf /home/was/Desktop/ && \
+    sudo dnf install -y postgresql-server postgresql-contrib postgresql-jdbc && \
     sudo dnf install -y mariadb-server mariadb-java-client && \
     sudo mysql_install_db --skip-test-db --user=mysql && \
     printf '\n\
@@ -380,7 +397,10 @@ stopsignal=KILL\n\
 environment=\n\
     HOME="/var/lib/mysql",\n\
     USER="mysql",\n\
-\n' | sudo tee /etc/supervisord.d/mysqld.supervisord.conf && \
+\n' | sudo tee /etc/supervisord.d/mysqld.supervisord.conf
+
+RUN --mount=type=secret,id=remotepassword \
+    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     echo "# https://github.com/WASdev/sample.daytrader7/blob/master/daytrader-ee7-wlpcfg/servers/daytrader7Sample/server.xml" && \
     printf '\n\
 <server>\n\
@@ -479,7 +499,11 @@ environment=\n\
 <server>\n\
     <logging traceSpecification="*=info" maxFileSize="250" maxFiles="4" hideMessage="CNTR0333W,CNTR0019E,CWWJP9991W" />\n\
 </server>\n' > /config/configDropins/overrides/daytrader7logging.xml && \
+    sed -i '/.*microProfile-3.0.*/d' /config/server.xml && \
+    sed -i '/.*javaee-8.0.*/d' /config/server.xml && \
     /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer && \
+    /opt/ibm/wlp/bin/server start defaultServer --clean && \
+    /opt/ibm/wlp/bin/server stop defaultServer && \
     echo "# https://mariadb.com/kb/en/library/identifier-case-sensitivity/" && \
     sudo sed -i 's/\[mysqld\]/[mysqld]\nlower_case_table_names=1/g' /etc/my.cnf.d/mariadb-server.cnf && \
     echo "# https://db.apache.org/derby/" && \
@@ -568,7 +592,10 @@ command=/usr/local/bin/finished.sh\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
-\n' | sudo tee /etc/supervisord.d/finished.supervisord.conf && \
+\n' | sudo tee /etc/supervisord.d/finished.supervisord.conf
+
+RUN --mount=type=secret,id=remotepassword \
+    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     echo "# Configure DayTrader7 on tWAS" && \
     sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
     sudo sed -i 's/THREADS,50/THREADS,4/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
@@ -603,7 +630,7 @@ redirect_stderr=true\n\
     printf '\n\
 server = AdminConfig.getid("/Cell:DefaultCell01/Node:DefaultNode01/Server:server1/")\n\
 jvm = AdminConfig.list("JavaVirtualMachine", server)\n\
-AdminConfig.modify(jvm, [["genericJvmArguments", "-Duser.country=US -Duser.language=en"]])\n\
+AdminConfig.modify(jvm, [["genericJvmArguments", "-Duser.country=US -Duser.language=en -Xnoloa"]])\n\
 \n\
 log = AdminConfig.showAttribute(server, "outputStreamRedirect")\n\
 AdminConfig.modify(log, [["rolloverSize", 100]])\n\
@@ -635,8 +662,13 @@ AdminConfig.save()\n\
     ( \
       cd /opt/daytrader7/scripts/ && \
       /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+      echo "# Running twas.jy" && \
       /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+      /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+      /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
+      echo "# Running daytrader_SILENT_singleServer." && \
       /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f daytrader_SILENT_singleServer.py -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
+      echo "# Running twas_daytrader_finalize.jy" && \
       /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_daytrader_finalize.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
       /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
       /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
@@ -679,7 +711,10 @@ autostart=true\n\
 environment=\n\
     HOME="/root",\n\
     USER="root",\n\
-\n' | sudo tee /etc/supervisord.d/ihs.supervisord.conf && \
+\n' | sudo tee /etc/supervisord.d/ihs.supervisord.conf
+
+RUN --mount=type=secret,id=remotepassword \
+    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     echo "Configure global security" && \
     printf 'dn: cn=wsadminldap,ou=Users,dc=example,dc=com\n\
 cn: wsadminldap\n\
@@ -722,7 +757,6 @@ AdminConfig.save()\n\
     sudo sed -i "s/en-us/Basic $(echo -n "Admin1:$(echo -n "$(sudo head -n 1 /root/password.txt)")" | base64)/g" /opt/daytrader7/jmeter_files/daytrader7_twas.jmx && \
     sudo sed -i 's/Accept-Language/Authorization/g' /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx && \
     sudo sed -i "s/en-us/Basic $(echo -n "Admin1:$(echo -n "$(sudo head -n 1 /root/password.txt)")" | base64)/g" /opt/daytrader7/jmeter_files/daytrader7_liberty.jmx && \
-    /opt/ibm/wlp/bin/installUtility install --acceptLicense webProfile-8.0 && \
     printf '\n\
 LOG_DIR=/opt/ibm/wlp/usr/servers/test/logs/\n\
 WLP_OUTPUT_DIR=/opt/ibm/wlp/usr/servers/\n\
@@ -806,6 +840,40 @@ SHELL_X=0\n\
       sudo rm -f *.zip *.exe \
     ) && \
     sudo chmod -R a+w /usr/local/src/open-liberty && \
+    ( \
+      echo "# PerformanceTuningToolkit: https://www.ibm.com/support/pages/websphere-application-server-performance-tuning-toolkit" && \
+      echo "# SOAP Port: 8880" && \
+      sudo mkdir /opt/ptt/ && \
+      cd /opt/ptt/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/com.ibm.ptt-linux.gtk.x86_64_V1.0.20200728.tar.gz && \
+      sudo tar xzf *.tar.gz && \
+      sudo rm -f *.tar.gz && \
+      sudo sed -i 's/-Dcom.ibm.ssl.evaluateHost=true/-Dcom.ibm.ssl.evaluateHost=false/g' /opt/ptt/ptt.ini && \
+      printf '#!/bin/sh\n\
+        /opt/ptt/ptt -debug -consoleLog\n\
+      ' | sudo tee /opt/ptt/ptt.sh && \
+      sudo chmod a+x /opt/ptt/ptt.sh && \
+      sudo mkdir /home/was/ptt/ && \
+      sudo chown -R was:root /home/was/ptt/ && \
+      printf '[Desktop Entry]\nType=Application\nName=Performance Tuning Toolkit\nExec=/opt/ptt/ptt.sh\nPath=ptt/\nTerminal=false\n' | sudo tee /opt/ptt/ptt.desktop && \
+      sudo chmod a+x /opt/ptt/ptt.desktop && \
+      sudo ln -s /opt/ptt/ptt.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/ptt.desktop /home/was/Desktop/ \
+    ) && \
+    /opt/ibm/wlp/bin/server start defaultServer --clean && \
+    /opt/ibm/wlp/bin/server stop defaultServer
+
+RUN echo "# Backup and clear Liberty and tWAS logs" && \
+    sudo mkdir /backup/ && \
+    sudo mkdir /backup/liberty/ && \
+    sudo mkdir /backup/twas/ && \
+    sudo mkdir /backup/twas/ffdc/ && \
+    sudo mv /logs/* /backup/liberty/ && \
+    sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/* /backup/twas/ && \
+    sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
+    sudo chown -R was:root /backup/
+
+RUN echo "Example data V20200616" && \
     echo "https://github.com/kgibm/dockerdebug/" && \
     sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
     sudo chown -R was:root /opt/dockerdebug/ && \
@@ -817,55 +885,14 @@ SHELL_X=0\n\
       ./unpack.sh && \
       cd /opt/dockerdebug/fedorawasdebug/supplemental/exampledata/liberty/nativememoryleak/ && \
       ./unpack.sh \
-    ) && \
-    ( \
-      echo "# PerformanceTuningToolkit: https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/" && \
-      echo "# SOAP Port: 8880" && \
-      XULVERSION=3.6.28 && \
-      sudo mkdir -p /opt/xulrunner/${XULVERSION} && \
-      cd /opt/xulrunner/${XULVERSION} && \
-      sudo wget -q https://ftp.mozilla.org/pub/xulrunner/releases/${XULVERSION}/runtimes/xulrunner-${XULVERSION}.en-US.linux-i686.tar.bz2 && \
-      sudo bunzip2 xulrunner-${XULVERSION}.en-US.linux-i686.tar.bz2 && \
-      sudo tar xf xulrunner-${XULVERSION}.en-US.linux-i686.tar && \
-      sudo mkdir /opt/ptt/ && \
-      cd /opt/ptt/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/PerformanceTuningToolkit2_linux32.zip && \
-      sudo unzip -q *.zip && \
-      sudo rm -f *.zip && \
-      sudo mv PerformanceTuningToolkit*/* . && \
-      sudo chmod a+x /opt/ptt/PerfTuningToolkit && \
-      sudo rmdir PerformanceTuningToolkit* && \
-      sudo chmod a+x /opt/ptt/jre/bin/java && \
-      printf -- '-Dorg.eclipse.swt.browser.XULRunnerPath=/opt/xulrunner/%s/xulrunner/\n' "${XULVERSION}" | sudo tee -a /opt/ptt/PerfTuningToolkit.ini && \
-      printf '#!/bin/sh\n\
-        export LC_ALL=en_US\n\
-        export LANG=en_US\n\
-        export LANGUAGE=en_US\n\
-        export MOZILLA_FIVE_HOME=/opt/xulrunner/%s/xulrunner/\n\
-        /opt/ptt/PerfTuningToolkit -debug -consoleLog\n\
-      ' "${XULVERSION}" | sudo tee /opt/ptt/ptt.sh && \
-      sudo chmod a+x /opt/ptt/ptt.sh && \
-      printf '[Desktop Entry]\nType=Application\nName=Performance Tuning Toolkit\nExec=/opt/ptt/ptt.sh\nPath=~/\nTerminal=false\n' | sudo tee /opt/ptt/ptt.desktop && \
-      sudo chmod a+x /opt/ptt/ptt.desktop && \
-      sudo ln -s /opt/ptt/ptt.desktop /opt/programs/ && \
-      sudo ln -s /opt/programs/ptt.desktop /home/was/Desktop/ \
-    ) && \
-    echo "# Backup and clear Liberty and tWAS logs" && \
-    sudo mkdir /backup/ && \
-    sudo mkdir /backup/liberty/ && \
-    sudo mkdir /backup/twas/ && \
-    sudo mkdir /backup/twas/ffdc/ && \
-    sudo mv /logs/* /backup/liberty/ && \
-    sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/* /backup/twas/ && \
-    sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
-    sudo sudo chown -R was:root /backup/
+    )
 
 # Update lab document by updating the date in the echo and rebuild:
 RUN ( \
-      echo "Version 20191217" && \
+      echo "Lab Document V20200701" && \
       cd /opt/dockerdebug/fedorawasdebug && \
       sudo git pull && \
-      sudo pandoc -s -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
+      sudo pandoc -s -o WAS_Troubleshooting_Perf_Lab.html --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" WAS_Troubleshooting_Perf_Lab.md && \
       ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
     )
 

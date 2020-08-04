@@ -1,31 +1,51 @@
-Launching defaultServer (WebSphere Application Server 19.0.0.10/wlp-1.0.33.cl191020191002-0300) on IBM J9 VM, version 8.0.5.41 - pxa6480sr5fp41-20190919_01(SR5 FP41) (c.u_US)
-[AUDIT   ] CWWKE0001I: The server defaultServer has been launched.
-[AUDIT   ] CWWKE0100I: This product is licensed for development, and limited production use. The full license terms can be viewed here: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/license/base_ilan/ilan/19.0.0.10/lafiles/en.html
-[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/defaults/keystore.xml
-[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/daytrader.xml
-[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/daytrader7logging.xml
-[AUDIT   ] CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/tls.xml
-[AUDIT   ] CWWKZ0058I: Monitoring dropins for applications.
-[AUDIT   ] CWWKI0001I: The CORBA name server is now available at corbaloc:iiop:localhost:2809/NameService.
-[AUDIT   ] CWWKT0016I: Web application available (default_host): http://6f64358ffbcd:9080/swat/
-[AUDIT   ] CWWKZ0001I: Application swat started in 0.547 seconds.
-[EL Info]: server: 2019-11-06 19:44:36.561--Detected server platform: org.eclipse.persistence.platform.server.was.WebSphere_Liberty_Platform.
-[AUDIT   ] CWWKT0016I: Web application available (default_host): http://6f64358ffbcd:9080/daytrader/
-[AUDIT   ] CWWKZ0001I: Application daytrader started in 2.176 seconds.
-[AUDIT   ] CWWKF0012I: The server installed the following features: [appClientSupport-1.0, appSecurity-2.0, batch-1.0, beanValidation-1.1, cdi-1.2, concurrent-1.0, distributedMap-1.0, ejb-3.2, ejbHome-3.2, ejbLite-3.2, ejbPersistentTimer-3.2, ejbRemote-3.2, el-3.0, federatedRegistry-1.0, j2eeManagement-1.1, jacc-1.5, jaspic-1.1, javaMail-1.5, javaee-7.0, jaxb-2.2, jaxrs-2.0, jaxrsClient-2.0, jaxws-2.2, jca-1.7, jcaInboundSecurity-1.0, jdbc-4.1, jms-2.0, jndi-1.0, jpa-2.1, jpaContainer-2.1, jsf-2.2, json-1.0, jsonp-1.0, jsp-2.3, ldapRegistry-3.0, localConnector-1.0, managedBeans-1.0, mdb-3.2, servlet-3.1, ssl-1.0, transportSecurity-1.0, wasJmsClient-2.0, wasJmsSecurity-1.0, wasJmsServer-1.0, webProfile-7.0, websocket-1.1].
-[AUDIT   ] CWWKF0011I: The defaultServer server is ready to run a smarter planet. The defaultServer server started in 5.360 seconds.
-Settings from daytrader.properties: {marketSummaryInterval=20, orderProcessingMode=0, trace=false, cacheSize=100000, percentSentToWebsocket=10, runtimeMode=1, webInterface=0, maxQuotes=10000, longRun=true, useRemoteEJBInterface=false, actionTrace=false, primIterations=1, maxUsers=15000, displayOrderAlerts=true, publishQuotePriceChange=true, cachingType=1}
-swat.ear: Invoking com.ibm.AllocateObject by anonymous (172.17.0.1)... [retainData=true&size=1048576&waittime=1000&iterations=300]
-JVMDUMP039I Processing dump event "systhrow", detail "java/lang/OutOfMemoryError" at 2019/11/06 19:51:08 - please wait.
-JVMDUMP032I JVM requested System dump using '/opt/ibm/wlp/output/defaultServer/core.20191106.195108.1845.0001.dmp' in response to an event
-JVMDUMP010I System dump written to /opt/ibm/wlp/output/defaultServer/core.20191106.195108.1845.0001.dmp
-JVMDUMP032I JVM requested Heap dump using '/opt/ibm/wlp/output/defaultServer/heapdump.20191106.195108.1845.0002.phd' in response to an event
-JVMDUMP010I Heap dump written to /opt/ibm/wlp/output/defaultServer/heapdump.20191106.195108.1845.0002.phd
-JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20191106.195108.1845.0003.txt' in response to an event
-JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20191106.195108.1845.0003.txt
-JVMDUMP032I JVM requested Snap dump using '/opt/ibm/wlp/output/defaultServer/Snap.20191106.195108.1845.0004.trc' in response to an event
-JVMDUMP010I Snap dump written to /opt/ibm/wlp/output/defaultServer/Snap.20191106.195108.1845.0004.trc
+Launching defaultServer (WebSphere Application Server 20.0.0.8/wlp-1.0.43.cl200820200721-1900) on IBM J9 VM, version 8.0.6.11 - pxa6480sr6fp11-20200602_01(SR6 FP11) (c.u_US)
+[8/4/20 2:50:07:030 UTC] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0001I: The server defaultServer has been launched.
+[8/4/20 2:50:07:048 UTC] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0100I: This product is licensed for development, and limited production use. The full license terms can be viewed here: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/license/base_ilan/ilan/20.0.0.8/lafiles/en.html
+[8/4/20 2:50:07:579 UTC] 00000020 com.ibm.ws.config.xml.internal.ServerXMLConfiguration        A CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/defaults/keystore.xml
+[8/4/20 2:50:07:623 UTC] 00000020 com.ibm.ws.config.xml.internal.ServerXMLConfiguration        A CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/daytrader.xml
+[8/4/20 2:50:07:629 UTC] 00000020 com.ibm.ws.config.xml.internal.ServerXMLConfiguration        A CWWKG0093A: Processing configuration drop-ins resource: /opt/ibm/wlp/usr/servers/defaultServer/configDropins/overrides/daytrader7logging.xml
+[8/4/20 2:50:08:174 UTC] 00000021 com.ibm.ws.app.manager.internal.monitor.DropinMonitor        A CWWKZ0058I: Monitoring dropins for applications.
+[8/4/20 2:50:09:820 UTC] 00000023 com.ibm.ws.transport.iiop.internal.ORBWrapperInternal        A CWWKI0001I: The CORBA name server is now available at corbaloc:iiop:localhost:2809/NameService.
+[8/4/20 2:50:10:572 UTC] 0000002e com.ibm.ws.http.internal.VirtualHostImpl                     A CWWKT0016I: Web application available (default_host): http://ab1cb7db26f3:9080/swat/
+[8/4/20 2:50:10:916 UTC] 0000004b SystemOut                                                    O [EL Info]: server: 2020-08-04 02:50:10.903--Detected server platform: org.eclipse.persistence.platform.server.was.WebSphere_Liberty_Platform.
+[8/4/20 2:50:10:995 UTC] 00000039 com.ibm.ws.app.manager.AppMessageHelper                      A CWWKZ0001I: Application swat started in 0.936 seconds.
+[8/4/20 2:50:12:224 UTC] 0000004b com.ibm.ws.http.internal.VirtualHostImpl                     A CWWKT0016I: Web application available (default_host): http://ab1cb7db26f3:9080/daytrader/
+[8/4/20 2:50:12:886 UTC] 00000038 SystemOut                                                    O Settings from daytrader.properties: {marketSummaryInterval=20, orderProcessingMode=0, trace=false, cacheSize=100000, percentSentToWebsocket=10, runtimeMode=1, webInterface=0, maxQuotes=10000, longRun=true, useRemoteEJBInterface=false, actionTrace=false, primIterations=1, maxUsers=15000, displayOrderAlerts=true, publishQuotePriceChange=true, cachingType=1}
+[8/4/20 2:50:12:932 UTC] 00000038 com.ibm.ws.app.manager.AppMessageHelper                      A CWWKZ0001I: Application daytrader started in 2.873 seconds.
+[8/4/20 2:50:13:040 UTC] 0000002b com.ibm.ws.kernel.feature.internal.FeatureManager            A CWWKF0012I: The server installed the following features: [appSecurity-2.0, beanValidation-1.1, cdi-1.2, concurrent-1.0, distributedMap-1.0, ejb-3.2, ejbHome-3.2, ejbLite-3.2, ejbPersistentTimer-3.2, ejbRemote-3.2, el-3.0, federatedRegistry-1.0, jca-1.7, jdbc-4.1, jndi-1.0, jpa-2.1, jpaContainer-2.1, jsf-2.2, jsonp-1.0, jsp-2.3, ldapRegistry-3.0, localConnector-1.0, mdb-3.2, servlet-3.1, ssl-1.0, transportSecurity-1.0, wasJmsClient-2.0, wasJmsServer-1.0, websocket-1.1].
+[8/4/20 2:50:13:041 UTC] 0000002b com.ibm.ws.kernel.feature.internal.FeatureManager            A CWWKF0011I: The defaultServer server is ready to run a smarter planet. The defaultServer server started in 6.237 seconds.
+[8/4/20 2:55:58:032 UTC] 000000b1 SystemOut                                                    O swat.ear: Invoking com.ibm.AllocateObject by anonymous (172.17.0.1)... [retainData=true&size=1048576&waittime=1000&iterations=300]
+JVMDUMP039I Processing dump event "systhrow", detail "java/lang/OutOfMemoryError" at 2020/08/04 02:59:42 - please wait.
+JVMDUMP032I JVM requested System dump using '/opt/ibm/wlp/output/defaultServer/core.20200804.025942.3576.0001.dmp' in response to an event
+JVMDUMP010I System dump written to /opt/ibm/wlp/output/defaultServer/core.20200804.025942.3576.0001.dmp
+JVMDUMP039I Processing dump event "systhrow", detail "java/lang/OutOfMemoryError" at 2020/08/04 02:59:44 - please wait.
+JVMDUMP032I JVM requested Heap dump using '/opt/ibm/wlp/output/defaultServer/heapdump.20200804.025944.3576.0002.phd' in response to an event
+JVMDUMP010I Heap dump written to /opt/ibm/wlp/output/defaultServer/heapdump.20200804.025944.3576.0002.phd
+JVMDUMP032I JVM requested Heap dump using '/opt/ibm/wlp/output/defaultServer/heapdump.20200804.025942.3576.0003.phd' in response to an event
+JVMDUMP010I Heap dump written to /opt/ibm/wlp/output/defaultServer/heapdump.20200804.025942.3576.0003.phd
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20200804.025944.3576.0004.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20200804.025944.3576.0004.txt
+JVMDUMP032I JVM requested Snap dump using '/opt/ibm/wlp/output/defaultServer/Snap.20200804.025944.3576.0006.trc' in response to an event
+JVMDUMP010I Snap dump written to /opt/ibm/wlp/output/defaultServer/Snap.20200804.025944.3576.0006.trc
 JVMDUMP013I Processed dump event "systhrow", detail "java/lang/OutOfMemoryError".
-[err] java.lang.OutOfMemoryError
-[err] : 
-[err] Java heap space
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20200804.025942.3576.0005.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20200804.025942.3576.0005.txt
+JVMDUMP032I JVM requested Snap dump using '/opt/ibm/wlp/output/defaultServer/Snap.20200804.025942.3576.0007.trc' in response to an event
+JVMDUMP010I Snap dump written to /opt/ibm/wlp/output/defaultServer/Snap.20200804.025942.3576.0007.trc
+JVMDUMP013I Processed dump event "systhrow", detail "java/lang/OutOfMemoryError".
+JVMDUMP039I Processing dump event "systhrow", detail "java/lang/OutOfMemoryError" at 2020/08/04 02:59:47 - please wait.
+JVMDUMP032I JVM requested Heap dump using '/opt/ibm/wlp/output/defaultServer/heapdump.20200804.025947.3576.0008.phd' in response to an event
+JVMDUMP010I Heap dump written to /opt/ibm/wlp/output/defaultServer/heapdump.20200804.025947.3576.0008.phd
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20200804.025947.3576.0009.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20200804.025947.3576.0009.txt
+JVMDUMP032I JVM requested Snap dump using '/opt/ibm/wlp/output/defaultServer/Snap.20200804.025947.3576.0010.trc' in response to an event
+JVMDUMP010I Snap dump written to /opt/ibm/wlp/output/defaultServer/Snap.20200804.025947.3576.0010.trc
+JVMDUMP013I Processed dump event "systhrow", detail "java/lang/OutOfMemoryError".
+JVMDUMP039I Processing dump event "systhrow", detail "java/lang/OutOfMemoryError" at 2020/08/04 02:59:50 - please wait.
+JVMDUMP032I JVM requested Heap dump using '/opt/ibm/wlp/output/defaultServer/heapdump.20200804.025950.3576.0011.phd' in response to an event
+JVMDUMP010I Heap dump written to /opt/ibm/wlp/output/defaultServer/heapdump.20200804.025950.3576.0011.phd
+JVMDUMP032I JVM requested Java dump using '/opt/ibm/wlp/output/defaultServer/javacore.20200804.025950.3576.0012.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/ibm/wlp/output/defaultServer/javacore.20200804.025950.3576.0012.txt
+JVMDUMP032I JVM requested Snap dump using '/opt/ibm/wlp/output/defaultServer/Snap.20200804.025950.3576.0013.trc' in response to an event
+JVMDUMP010I Snap dump written to /opt/ibm/wlp/output/defaultServer/Snap.20200804.025950.3576.0013.trc
+JVMDUMP013I Processed dump event "systhrow", detail "java/lang/OutOfMemoryError".

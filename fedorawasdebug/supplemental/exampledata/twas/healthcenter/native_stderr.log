@@ -1,0 +1,9 @@
+[Tue Jun 30 22:36:54 2020] com.ibm.diagnostics.healthcenter.headless INFO: 4.0.1
+[Tue Jun 30 22:36:54 2020] com.ibm.diagnostics.healthcenter.headless INFO: Headless data collection has started
+[Tue Jun 30 22:36:54 2020] com.ibm.diagnostics.healthcenter.headless INFO: Agent will keep last 5 hcd files
+[Tue Jun 30 22:36:54 2020] com.ibm.diagnostics.healthcenter.headless INFO: Headless collection output directory is /opt/IBM/WebSphere/AppServer/profiles/AppSrv01
+************ Start Display Current Environment ************
+Log file started at: [6/30/20 22:36:56:963 UTC]
+************* End Display Current Environment *************
+[Tue Jun 30 22:40:33 2020] com.ibm.diagnostics.healthcenter.headless INFO: Creating hcd import file /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/healthcenter300620_223654_5035_1.hcd
+[Tue Jun 30 22:40:35 2020] com.ibm.diagnostics.healthcenter.headless INFO: hcd import file /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/healthcenter300620_223654_5035_1.hcd created

@@ -1,0 +1,376 @@
+************ Start Display Current Environment ************
+Log file started at: [6/30/20 22:12:58:178 UTC]
+************* End Display Current Environment *************
+JVMDUMP039I Processing dump event "user", detail "" at 2020/06/30 22:16:54 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221654.1487.0001.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221654.1487.0001.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2020/06/30 22:17:24 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221724.1487.0002.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221724.1487.0002.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2020/06/30 22:17:54 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221754.1487.0003.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221754.1487.0003.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2020/06/30 22:18:24 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221824.1487.0004.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221824.1487.0004.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2020/06/30 22:18:55 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221855.1487.0005.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221855.1487.0005.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2020/06/30 22:19:25 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221925.1487.0006.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221925.1487.0006.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2020/06/30 22:19:55 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221955.1487.0007.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.221955.1487.0007.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2020/06/30 22:20:25 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.222025.1487.0008.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.222025.1487.0008.txt
+JVMDUMP013I Processed dump event "user", detail "".
+JVMDUMP039I Processing dump event "user", detail "" at 2020/06/30 22:20:56 - please wait.
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.222056.1487.0009.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.222056.1487.0009.txt
+JVMDUMP013I Processed dump event "user", detail "".
+************ Start Display Current Environment ************
+Log file started at: [6/30/20 22:25:03:283 UTC]
+************* End Display Current Environment *************
+JVMDUMP039I Processing dump event "systhrow", detail "java/lang/OutOfMemoryError" at 2020/06/30 22:32:19 - please wait.
+JVMDUMP032I JVM requested System dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/core.20200630.223219.3967.0001.dmp' in response to an event
+JVMDUMP010I System dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/core.20200630.223219.3967.0001.dmp
+JVMDUMP032I JVM requested Heap dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/heapdump.20200630.223219.3967.0002.phd' in response to an event
+JVMDUMP010I Heap dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/heapdump.20200630.223219.3967.0002.phd
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.223219.3967.0003.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.223219.3967.0003.txt
+JVMDUMP032I JVM requested Snap dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/Snap.20200630.223219.3967.0004.trc' in response to an event
+JVMDUMP010I Snap dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/Snap.20200630.223219.3967.0004.trc
+JVMDUMP013I Processed dump event "systhrow", detail "java/lang/OutOfMemoryError".
+JVMDUMP039I Processing dump event "systhrow", detail "java/lang/OutOfMemoryError" at 2020/06/30 22:33:02 - please wait.
+JVMDUMP032I JVM requested Heap dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/heapdump.20200630.223302.3967.0005.phd' in response to an event
+JVMDUMP010I Heap dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/heapdump.20200630.223302.3967.0005.phd
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.223302.3967.0006.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.223302.3967.0006.txt
+JVMDUMP032I JVM requested Snap dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/Snap.20200630.223302.3967.0007.trc' in response to an event
+JVMDUMP010I Snap dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/Snap.20200630.223302.3967.0007.trc
+JVMDUMP013I Processed dump event "systhrow", detail "java/lang/OutOfMemoryError".
+JVMDUMP039I Processing dump event "systhrow", detail "java/lang/OutOfMemoryError" at 2020/06/30 22:33:04 - please wait.
+JVMDUMP032I JVM requested Heap dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/heapdump.20200630.223304.3967.0008.phd' in response to an event
+JVMDUMP010I Heap dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/heapdump.20200630.223304.3967.0008.phd
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.223304.3967.0009.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.223304.3967.0009.txt
+JVMDUMP032I JVM requested Snap dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/Snap.20200630.223304.3967.0010.trc' in response to an event
+JVMDUMP010I Snap dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/Snap.20200630.223304.3967.0010.trc
+JVMDUMP013I Processed dump event "systhrow", detail "java/lang/OutOfMemoryError".
+JVMDUMP039I Processing dump event "systhrow", detail "java/lang/OutOfMemoryError" at 2020/06/30 22:33:05 - please wait.
+JVMDUMP032I JVM requested Heap dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/heapdump.20200630.223305.3967.0011.phd' in response to an event
+JVMDUMP010I Heap dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/heapdump.20200630.223305.3967.0011.phd
+JVMDUMP032I JVM requested Java dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.223305.3967.0012.txt' in response to an event
+JVMDUMP010I Java dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.20200630.223305.3967.0012.txt
+JVMDUMP032I JVM requested Snap dump using '/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/Snap.20200630.223305.3967.0013.trc' in response to an event
+JVMDUMP010I Snap dump written to /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/Snap.20200630.223305.3967.0013.trc
+JVMDUMP013I Processed dump event "systhrow", detail "java/lang/OutOfMemoryError".
+Exception in thread "KC File Change Monitor" java/lang/OutOfMemoryError: Java heap space
+	at org/apache/logging/log4j/message/ParameterizedMessageFactory.newMessage (ParameterizedMessageFactory.java:79)
+	at org/apache/logging/log4j/spi/AbstractLogger.logMessage (AbstractLogger.java:2010)
+	at org/apache/logging/log4j/spi/AbstractLogger.logIfEnabled (AbstractLogger.java:1884)
+	at org/apache/logging/slf4j/Log4jLogger.error (Log4jLogger.java:309)
+	at com/ibm/kc/config/KCConfig$2$1.uncaughtException (KCConfig.java:134)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+Exception in thread "WsSessionInvalidatorThread 153" Exception in thread "NotificationServiceDispatcher : 2" java/lang/OutOfMemoryError: Java heap space
+	at java/nio/HeapByteBuffer.<init> (HeapByteBuffer.java:57)
+	at java/nio/ByteBuffer.allocate (ByteBuffer.java:335)
+	at sun/nio/cs/StreamEncoder.<init> (StreamEncoder.java:207)
+	at sun/nio/cs/StreamEncoder.<init> (StreamEncoder.java:187)
+	at sun/nio/cs/StreamEncoder.forOutputStreamWriter (StreamEncoder.java:71)
+	at java/io/OutputStreamWriter.<init> (OutputStreamWriter.java:129)
+	at java/io/PrintStream.<init> (PrintStream.java:128)
+	at java/io/PrintStream.<init> (PrintStream.java:175)
+	at java/io/PrintStream.<init> (PrintStream.java:159)
+	at com/ibm/ejs/ras/StreamEvent6.writeSelfToStream (StreamEvent6.java:137)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:765)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+Exception in thread "WebContainer : 9" java/lang/OutOfMemoryError: Java heap space
+	at java/nio/HeapByteBuffer.<init> (HeapByteBuffer.java:57)
+	at java/nio/ByteBuffer.allocate (ByteBuffer.java:335)
+	at sun/nio/cs/StreamEncoder.<init> (StreamEncoder.java:207)
+	at sun/nio/cs/StreamEncoder.<init> (StreamEncoder.java:187)
+	at sun/nio/cs/StreamEncoder.forOutputStreamWriter (StreamEncoder.java:71)
+	at java/io/OutputStreamWriter.<init> (OutputStreamWriter.java:129)
+	at java/io/PrintStream.<init> (PrintStream.java:128)
+	at java/io/PrintStream.<init> (PrintStream.java:175)
+	at java/io/PrintStream.<init> (PrintStream.java:159)
+	at com/ibm/ejs/ras/StreamEvent6.writeSelfToStream (StreamEvent6.java:137)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:765)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+Exception in thread "WsSessionInvalidatorThread 144" Exception in thread "WebSphere_EJB_Timer_Service_WorkManager.Alarm Pool : 0" Exception in thread "SoapConnectorThreadPool : 2" java/lang/OutOfMemoryError: Java heap space
+Exception in thread "WebContainer : 2" Exception in thread "SIBJMSRAThreadPool : 0" 	at java/io/BufferedWriter.<init> (BufferedWriter.java:116)
+	at java/io/BufferedWriter.<init> (BufferedWriter.java:99)
+	at java/io/PrintStream.<init> (PrintStream.java:129)
+	at java/io/PrintStream.<init> (PrintStream.java:175)
+	at java/io/PrintStream.<init> (PrintStream.java:159)
+	at com/ibm/ejs/ras/StreamEvent6.writeSelfToStream (StreamEvent6.java:137)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:765)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+java/lang/OutOfMemoryError: Java heap space
+	at com/ibm/ejs/ras/SystemErrStream.createEvent (SystemErrStream.java:252)
+	at com/ibm/ejs/ras/SystemStream.cacheTraceData (SystemStream.java:838)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:749)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+Exception in thread "WebContainer : 5" Exception in thread "WebContainer : 8" Exception in thread "Non-Deferred Alarm Manager" java/lang/OutOfMemoryError: Java heap space
+java/lang/OutOfMemoryError: Java heap space
+	at java/text/FieldPosition.getFieldDelegate (FieldPosition.java:225)
+	at java/text/SimpleDateFormat.format (SimpleDateFormat.java:947)
+java/lang/OutOfMemoryError: Java heap space
+	at com/ibm/ejs/ras/StreamEvent6.formatTimeAndThread (StreamEvent6.java:442)
+	at com/ibm/ejs/ras/StreamEvent6.formatHeaderBasic (StreamEvent6.java:326)
+	at com/ibm/ejs/ras/StreamEvent6.writeSelfToStream (StreamEvent6.java:141)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:765)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.createEvent (SystemErrStream.java:252)
+	at com/ibm/ejs/ras/SystemStream.cacheTraceData (SystemStream.java:838)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:749)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+	at com/ibm/ejs/ras/SystemErrStream.createEvent (SystemErrStream.java:252)
+	at com/ibm/ejs/ras/SystemStream.cacheTraceData (SystemStream.java:838)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:749)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+java/lang/OutOfMemoryError: Java heap space
+	at java/util/HashMap.resize (HashMap.java:715)
+	at java/util/HashMap.putVal (HashMap.java:640)
+	at java/util/HashMap.put (HashMap.java:623)
+	at sun/util/resources/OpenListResourceBundle.loadLookup (OpenListResourceBundle.java:170)
+	at sun/util/resources/OpenListResourceBundle.loadLookupTablesIfNecessary (OpenListResourceBundle.java:143)
+	at sun/util/resources/OpenListResourceBundle.handleKeySet (OpenListResourceBundle.java:111)
+	at java/util/ResourceBundle.containsKey (ResourceBundle.java:1849)
+	at sun/util/locale/provider/LocaleResources.getTimeZoneNames (LocaleResources.java:275)
+	at sun/util/locale/provider/TimeZoneNameProviderImpl.getDisplayNameArray (TimeZoneNameProviderImpl.java:136)
+	at sun/util/locale/provider/TimeZoneNameProviderImpl.getDisplayName (TimeZoneNameProviderImpl.java:111)
+	at sun/util/locale/provider/TimeZoneNameUtility$TimeZoneNameGetter.getName (TimeZoneNameUtility.java:252)
+	at sun/util/locale/provider/TimeZoneNameUtility$TimeZoneNameGetter.getObject (TimeZoneNameUtility.java:210)
+	at sun/util/locale/provider/TimeZoneNameUtility$TimeZoneNameGetter.getObject (TimeZoneNameUtility.java:196)
+	at sun/util/locale/provider/LocaleServiceProviderPool.getLocalizedObjectImpl (LocaleServiceProviderPool.java:293)
+	at sun/util/locale/provider/LocaleServiceProviderPool.getLocalizedObject (LocaleServiceProviderPool.java:277)
+	at sun/util/locale/provider/TimeZoneNameUtility.retrieveDisplayNamesImpl (TimeZoneNameUtility.java:178)
+	at sun/util/locale/provider/TimeZoneNameUtility.retrieveDisplayNames (TimeZoneNameUtility.java:119)
+	at java/util/TimeZone.getDisplayName (TimeZone.java:411)
+	at java/text/SimpleDateFormat.subFormat (SimpleDateFormat.java:1282)
+	at java/text/SimpleDateFormat.format (SimpleDateFormat.java:977)
+	at java/text/SimpleDateFormat.format (SimpleDateFormat.java:947)
+	at com/ibm/ejs/ras/StreamEvent6.formatTimeAndThread (StreamEvent6.java:442)
+	at com/ibm/ejs/ras/StreamEvent6.formatHeaderBasic (StreamEvent6.java:326)
+	at com/ibm/ejs/ras/StreamEvent6.writeSelfToStream (StreamEvent6.java:141)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:765)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+Exception in thread "SIBJMSRAThreadPool : 1" Exception in thread "server.startup : 2" Exception in thread "WebContainer : 0" Exception in thread "Deferred Alarm Manager" java/lang/OutOfMemoryError: Java heap space
+Exception in thread "Deferrable Alarm : 2" java/lang/OutOfMemoryError: Java heap space
+	at com/ibm/ejs/ras/SystemErrStream.createEvent (SystemErrStream.java:252)
+	at com/ibm/ejs/ras/SystemErrStream.createEvent (SystemErrStream.java:252)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:764)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:764)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+Exception in thread "LocalNotificationServiceDispatcher : 0" java/lang/OutOfMemoryError: Java heap space
+Exception in thread "SoapConnectorThreadPool : 5" Exception in thread "WebContainer : 4" java/lang/OutOfMemoryError: Java heap space
+Exception in thread "WebContainer : 6" java/lang/OutOfMemoryError: Java heap space
+Exception in thread "WebContainer : 7" java/lang/OutOfMemoryError: Java heap space
+	at com/ibm/ejs/ras/SystemErrStream.createEvent (SystemErrStream.java:252)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:764)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+	at java/io/BufferedWriter.<init> (BufferedWriter.java:116)
+	at java/io/BufferedWriter.<init> (BufferedWriter.java:99)
+	at java/io/PrintStream.<init> (PrintStream.java:129)
+	at java/io/PrintStream.<init> (PrintStream.java:175)
+	at java/io/PrintStream.<init> (PrintStream.java:159)
+	at com/ibm/ejs/ras/StreamEvent6.writeSelfToStream (StreamEvent6.java:137)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:765)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at java/io/BufferedWriter.<init> (BufferedWriter.java:116)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/io/BufferedWriter.<init> (BufferedWriter.java:99)
+	at java/io/PrintStream.append (PrintStream.java:1089)
+	at java/io/PrintStream.append (PrintStream.java:70)
+	at com/ibm/oti/util/Util.appendTo (Util.java:225)
+	at com/ibm/oti/util/Util.printStackTraceElement (Util.java:288)
+	at java/lang/Throwable.printStackTrace (Throwable.java:587)
+	at java/lang/Throwable.printStackTraceHelper (Throwable.java:338)
+	at java/lang/Throwable.printStackTrace (Throwable.java:303)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:873)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/io/PrintStream.<init> (PrintStream.java:129)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+	at java/io/PrintStream.<init> (PrintStream.java:175)
+	at java/io/PrintStream.<init> (PrintStream.java:159)
+	at com/ibm/ejs/ras/StreamEvent6.writeSelfToStream (StreamEvent6.java:137)
+	at com/ibm/ejs/ras/SystemStream.println (SystemStream.java:563)
+	at com/ibm/ejs/ras/SystemErrStream.println (SystemErrStream.java:66)
+	at com/ibm/oti/util/Util.appendLnTo (Util.java:272)
+	at java/lang/Throwable.printStackTrace (Throwable.java:563)
+	at java/lang/Throwable.printStackTraceHelper (Throwable.java:334)
+	at java/lang/Throwable.printStackTrace (Throwable.java:303)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:873)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+	at com/ibm/ejs/ras/SystemStream.cacheTraceData (SystemStream.java:841)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:749)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/io/PrintStream.append (PrintStream.java:1089)
+	at java/io/PrintStream.append (PrintStream.java:70)
+	at com/ibm/oti/util/Util.appendTo (Util.java:225)
+	at com/ibm/oti/util/Util.appendTo (Util.java:263)
+	at java/lang/Throwable.printStackTrace (Throwable.java:586)
+	at java/lang/Throwable.printStackTraceHelper (Throwable.java:334)
+	at java/lang/Throwable.printStackTrace (Throwable.java:303)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:873)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+java/lang/OutOfMemoryError: Java heap space
+	at com/ibm/ejs/ras/SystemErrStream.createEvent (SystemErrStream.java:252)
+	at com/ibm/ejs/ras/SystemStream.cacheTraceData (SystemStream.java:838)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:749)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/io/PrintStream.append (PrintStream.java:1089)
+	at java/io/PrintStream.append (PrintStream.java:70)
+	at com/ibm/oti/util/Util.appendTo (Util.java:225)
+	at com/ibm/oti/util/Util.printStackTraceElement (Util.java:288)
+	at java/lang/Throwable.printStackTrace (Throwable.java:587)
+	at java/lang/Throwable.printStackTraceHelper (Throwable.java:334)
+	at java/lang/Throwable.printStackTrace (Throwable.java:303)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:873)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+java/lang/OutOfMemoryError: Java heap space
+	at sun/util/resources/TimeZoneNames.getContents (TimeZoneNames.java:303)
+	at sun/util/resources/OpenListResourceBundle.loadLookup (OpenListResourceBundle.java:152)
+	at sun/util/resources/OpenListResourceBundle.loadLookupTablesIfNecessary (OpenListResourceBundle.java:143)
+	at sun/util/resources/OpenListResourceBundle.handleKeySet (OpenListResourceBundle.java:111)
+	at java/util/ResourceBundle.containsKey (ResourceBundle.java:1849)
+	at sun/util/locale/provider/LocaleResources.getTimeZoneNames (LocaleResources.java:275)
+	at sun/util/locale/provider/TimeZoneNameProviderImpl.getDisplayNameArray (TimeZoneNameProviderImpl.java:136)
+	at sun/util/locale/provider/TimeZoneNameProviderImpl.getDisplayName (TimeZoneNameProviderImpl.java:111)
+	at sun/util/locale/provider/TimeZoneNameUtility$TimeZoneNameGetter.getName (TimeZoneNameUtility.java:252)
+	at sun/util/locale/provider/TimeZoneNameUtility$TimeZoneNameGetter.getObject (TimeZoneNameUtility.java:210)
+	at sun/util/locale/provider/TimeZoneNameUtility$TimeZoneNameGetter.getObject (TimeZoneNameUtility.java:196)
+	at sun/util/locale/provider/LocaleServiceProviderPool.getLocalizedObjectImpl (LocaleServiceProviderPool.java:293)
+	at sun/util/locale/provider/LocaleServiceProviderPool.getLocalizedObject (LocaleServiceProviderPool.java:277)
+	at sun/util/locale/provider/TimeZoneNameUtility.retrieveDisplayNamesImpl (TimeZoneNameUtility.java:178)
+	at sun/util/locale/provider/TimeZoneNameUtility.retrieveDisplayNames (TimeZoneNameUtility.java:119)
+	at java/util/TimeZone.getDisplayName (TimeZone.java:411)
+	at java/text/SimpleDateFormat.subFormat (SimpleDateFormat.java:1282)
+	at java/text/SimpleDateFormat.format (SimpleDateFormat.java:977)
+	at java/text/SimpleDateFormat.format (SimpleDateFormat.java:947)
+	at com/ibm/ejs/ras/StreamEvent6.formatTimeAndThread (StreamEvent6.java:442)
+	at com/ibm/ejs/ras/StreamEvent6.formatHeaderBasic (StreamEvent6.java:326)
+	at com/ibm/ejs/ras/StreamEvent6.writeSelfToStream (StreamEvent6.java:141)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:765)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/io/PrintStream.append (PrintStream.java:1089)
+	at java/io/PrintStream.append (PrintStream.java:70)
+	at com/ibm/oti/util/Util.appendTo (Util.java:225)
+	at com/ibm/oti/util/Util.appendTo (Util.java:263)
+	at java/lang/Throwable.printStackTrace (Throwable.java:586)
+	at java/lang/Throwable.printStackTraceHelper (Throwable.java:334)
+	at java/lang/Throwable.printStackTrace (Throwable.java:303)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:873)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+java/lang/OutOfMemoryError: Java heap space
+	at java/io/BufferedWriter.<init> (BufferedWriter.java:116)
+	at java/io/BufferedWriter.<init> (BufferedWriter.java:99)
+	at java/io/PrintStream.<init> (PrintStream.java:129)
+	at java/io/PrintStream.<init> (PrintStream.java:175)
+	at java/io/PrintStream.<init> (PrintStream.java:159)
+	at com/ibm/ejs/ras/StreamEvent6.writeSelfToStream (StreamEvent6.java:137)
+	at com/ibm/ejs/ras/SystemStream.println (SystemStream.java:563)
+	at com/ibm/ejs/ras/SystemErrStream.println (SystemErrStream.java:66)
+	at com/ibm/oti/util/Util.appendLnTo (Util.java:272)
+	at java/lang/Throwable.printStackTrace (Throwable.java:589)
+	at java/lang/Throwable.printStackTraceHelper (Throwable.java:338)
+	at java/lang/Throwable.printStackTrace (Throwable.java:303)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:873)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+Exception in thread "HungThreadDetectorForDeferrable Alarm" java/lang/OutOfMemoryError: Java heap space
+	at com/ibm/ejs/ras/SystemErrStream.createEvent (SystemErrStream.java:252)
+	at com/ibm/ejs/ras/SystemStream.cacheTraceData (SystemStream.java:838)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:749)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+Exception in thread "Deferrable Alarm : 1" Exception in thread "HAManager.thread.pool : 1" Exception in thread "WLMMonitorSleeper : 1" java/lang/OutOfMemoryError: Java heap space
+Exception in thread "HAManager.thread.pool : 0" java/lang/OutOfMemoryError: Java heap space
+Exception in thread "WebContainer : 1" 	at com/ibm/ejs/ras/SystemStream.cacheTraceData (SystemStream.java:841)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:749)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:872)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)
+	at com/ibm/ejs/ras/SystemErrStream.createEvent (SystemErrStream.java:252)
+	at com/ibm/ejs/ras/SystemStream.cacheTraceData (SystemStream.java:838)
+	at com/ibm/ejs/ras/SystemStream.doPrint (SystemStream.java:749)
+	at com/ibm/ejs/ras/SystemStream.print (SystemStream.java:515)
+	at com/ibm/ejs/ras/SystemErrStream.print (SystemErrStream.java:66)
+	at java/io/PrintStream.append (PrintStream.java:1089)
+	at java/io/PrintStream.append (PrintStream.java:70)
+	at com/ibm/oti/util/Util.appendTo (Util.java:225)
+	at com/ibm/oti/util/Util.appendTo (Util.java:263)
+	at java/lang/Throwable.printStackTrace (Throwable.java:586)
+	at java/lang/Throwable.printStackTraceHelper (Throwable.java:334)
+	at java/lang/Throwable.printStackTrace (Throwable.java:303)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:873)
+	at java/lang/ThreadGroup.uncaughtException (ThreadGroup.java:866)
+	at java/lang/Thread.uncaughtException (Thread.java:1334)

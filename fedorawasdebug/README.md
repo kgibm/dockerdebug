@@ -21,6 +21,7 @@ Note: You'll need more than 40GB of disk space and configure Docker with 4GB or 
     1. Linux: `vncviewer localhost:5902`
     1. Mac: `open vnc://localhost:5902`
     1. Windows: Remote desktop (see lab instructions), or use a free VNC client.
+1. Perform the lab: <https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#websphere-application-server-troubleshooting-and-performance-lab-on-docker>
 
 Tip: To share files with your host machine, add the following to the `docker run` command above (before `-it kgibm/fedorawasdebug`): Linux/macOS: `-v /:/host/` or Windows: `-v //c/:/host/`
 
@@ -54,9 +55,9 @@ Tip: To share files with your host machine, add the following to the `docker run
 
 ## Installation Highlights
 
-* [Fedora 31 x64](https://hub.docker.com/_/fedora/)
+* [Fedora 32 x64](https://hub.docker.com/_/fedora/)
 * [WAS Liberty 19.0.0.10](https://hub.docker.com/_/websphere-liberty)
-* [Traditional WAS Base 9.0.5.1](https://hub.docker.com/r/ibmcom/websphere-traditional)
+* [Traditional WAS Base 9.0.5.3](https://hub.docker.com/r/ibmcom/websphere-traditional)
 * [IBM Java 8](https://hub.docker.com/_/ibmjava)
 * [IBM HTTP Server 9.0.5.0](https://hub.docker.com/r/ibmcom/ibm-http-server)
 * [OpenLDAP](https://www.openldap.org/)
@@ -75,14 +76,14 @@ Tip: To share files with your host machine, add the following to the `docker run
 * [IBM Pattern Modeling and Analysis Tool for Java Garbage Collector (PMAT)](https://www.ibm.com/support/pages/ibm-pattern-modeling-and-analysis-tool-java-garbage-collector-pmat)
 * [IBM Trace and Request Analyzer for WAS (TRA)](https://www.ibm.com/support/pages/ibm-trace-and-request-analyzer-websphere-application-server)
 * [IBM ClassLoader Analyzer](https://www.ibm.com/support/pages/ibm-classloader-analyzer)
-* [Eclipse 2019-06](https://www.eclipse.org/downloads/)
+* [Eclipse 2020-03](https://www.eclipse.org/downloads/)
   * [IBM Liberty Developer Tools](https://marketplace.eclipse.org/content/ibm-liberty-developer-tools)
 * [Firefox](https://www.mozilla.org/en-US/firefox/)
 * [LibreOffice](https://www.libreoffice.org/)
 * [Wireshark](https://www.wireshark.org/)
 * [Apache JMeter](https://jmeter.apache.org/)
 * [OpenJDK 8](https://openjdk.java.net/)
-* [AdoptOpenJDK OpenJ9 and HotSpot (V8, V11, V13)](https://adoptopenjdk.net/)
+* [AdoptOpenJDK OpenJ9 and HotSpot (V8, V11, V14)](https://adoptopenjdk.net/)
 * [Liberty Bikes](https://github.com/OpenLiberty/liberty-bikes)
 * [TrapIt.ear](https://www.ibm.com/support/pages/websphere-application-server-log-watcher-using-trapitear-watch-websphere-application-server-events)
 * [swat.ear](https://github.com/kgibm/problemdetermination)
@@ -98,7 +99,7 @@ Tip: To share files with your host machine, add the following to the `docker run
 * [Connection and Configuration Verification Tool for SSL/TLS](https://www.ibm.com/support/pages/connection-and-configuration-verification-tool-ssltls)
 * [WebSphere Application Server Configuration Visualizer](https://www.ibm.com/support/pages/websphere-application-server-configuration-visualizer)
 * [Problem Diagnostics Lab Toolkit](https://www.ibm.com/support/pages/problem-diagnostics-lab-toolkit)
-* [Performance Tuning Toolkit](https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/)
+* [Performance Tuning Toolkit](https://www.ibm.com/support/pages/websphere-application-server-performance-tuning-toolkit)
 * [SIB Explorer](https://www.ibm.com/support/pages/service-integration-bus-explorer)
 * [SIB Performance](https://www.ibm.com/support/pages/service-integration-bus-performance)
 * [IBM Database Connection Pool Analyzer for IBM WebSphere Application Server](https://www.ibm.com/support/pages/ibm-database-connection-pool-analyzer-ibm-websphere-application-server)
