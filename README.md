@@ -18,6 +18,7 @@
 1. `DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedorawasdebug .`
 1. `DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedorawasdebugejb -f Dockerfile.ejb .`
 1. Run and test the image.
+1. Generate lab PDF: `pandoc --pdf-engine=xelatex -V geometry:margin=1in -s -o WAS_Troubleshooting_Perf_Lab.pdf --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" WAS_Troubleshooting_Perf_Lab.md`
 1. `git commit -am "VXX: New version with ..."`
 1. `git push`
 1. `docker login`
