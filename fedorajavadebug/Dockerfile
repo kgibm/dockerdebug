@@ -99,10 +99,6 @@ RUN echo "# https://fedoraproject.org/wiki/Alternatives_system" && \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.was.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wesb.feature.feature.group \
                                  -installIU com.ibm.java.diagnostics.memory.analyzer.wps.feature.feature.group && \
-    echo "# IBM Java >= 8.0.5.35 and < 8.0.6.0 creates dumps that the public MAT DTFJ can't read, so override it in MAT with a recent JDK's DTFJ." && \
-    echo "# https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/" && \
-    sudo cp -f /opt/ibm/java/jre/lib/ddr/j9ddr.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/j9ddr.jar && \
-    sudo cp -f /opt/ibm/java/jre/lib/ext/dtfj.jar /opt/mat/configuration/org.eclipse.osgi/*/data/*/plugins/com.ibm.dtfj.j9_*/lib/dtfj.jar && \
     sudo mkdir -p /home/was/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
     sudo chown -R was /home/was/workspace/ && \
     sudo mkdir -p /root/workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \

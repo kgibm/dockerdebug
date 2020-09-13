@@ -49,6 +49,7 @@ RUN sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf && \
 # * Firefox crashes switching tabs with SIGBUS errors unless we use docker run --shm-size=...
 #    https://bugzilla.mozilla.org/show_bug.cgi?id=1338771
 RUN dnf install -y \
+      arpwatch \
       at \
       atop \
       autoconf \
@@ -56,14 +57,17 @@ RUN dnf install -y \
       bcc-tools \
       bind-utils \
       bindfs \
+      binwalk \
       bison \
       bison-devel \
       bless \
+      bonnie++ \
       cmake \
       collectl \
       dbus-glib.i686 \
       dconf-editor \
       dia \
+      dstat \
       e2fsprogs \
       emacs \
       fatrace \
@@ -76,6 +80,7 @@ RUN dnf install -y \
       gcc-c++ \
       gdb \
       git \
+      glances \
       gnome-calculator \
       gnupg \
       gnuplot \
@@ -87,8 +92,10 @@ RUN dnf install -y \
       httpd \
       iftop \
       ImageMagick \
+      ioping \
       iotop \
       iperf \
+      iperf3 \
       iptraf-ng \
       iputils \
       java-1.8.0-openjdk \
@@ -104,6 +111,7 @@ RUN dnf install -y \
       libnsl.i686 \
       libreoffice \
       llvm \
+      lshw \
       lsof \
       ltrace \
       lzo \
@@ -118,12 +126,14 @@ RUN dnf install -y \
       mousepad \
       mtr \
       multitail \
+      ncdu \
       ncompress \
       ncurses \
       ncurses-devel \
       net-tools \
       nethogs \
       nfs-utils \
+      nmap \
       nmap-ncat \
       nmon \
       npm \
@@ -141,6 +151,8 @@ RUN dnf install -y \
       perf \
       perl \
       php \
+      powertop \
+      psmisc \
       python3 \
       python3-devel \
       python3-matplotlib \
@@ -162,13 +174,16 @@ RUN dnf install -y \
       rust \
       scala \
       sendmail \
+      sos \
       speedtest-cli \
+      ssldump \
       supervisor \
       sysstat \
       strace \
       sudo \
       systemtap \
       tc \
+      tcping \
       tcpdump \
       telnet \
       tigervnc \
@@ -194,7 +209,8 @@ RUN dnf install -y \
       xfce4-screensaver \
       xfce4-systemload-plugin \
       xrdp \
-      xreader
+      xreader \
+      xz
 
 RUN echo "# Install VS Code: https://code.visualstudio.com/docs/setup/linux" && \
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
