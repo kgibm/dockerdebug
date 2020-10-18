@@ -1230,17 +1230,7 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
 1.  [Stop JMeter](#stop-jmeter) if it is started.
 
-2.  Stop the Liberty server:
-
-    1.  If learning Liberty:
-
-        `/opt/ibm/wlp/bin/server stop defaultServer`
-
-    2.  If learning Traditional WAS:
-
-        `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1 -username wsadmin -password websphere`
-
-3.  Add Health Center arguments to the JVM:
+2.  Add Health Center arguments to the JVM:
 
     1.  If learning Liberty, add the following line to **/opt/ibm/wlp/usr/servers/defaultServer/jvm.options**:
 
@@ -1250,6 +1240,16 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
         ![](./media/image106.png)
 
         1.  Then click OK and Save.
+
+3.  Stop the server:
+
+    1.  If learning Liberty:
+
+        `/opt/ibm/wlp/bin/server stop defaultServer`
+
+    2.  If learning Traditional WAS:
+
+        `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1 -username wsadmin -password websphere`
 
 4.  Start the server
 
