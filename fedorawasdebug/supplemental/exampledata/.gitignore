@@ -1,1 +1,6 @@
 heapdump*_*.zip
+liberty/verbosegc_and_oom/core.*.dmp
+liberty/verbosegc_and_oom/core.*_*.zip
+twas/verbosegc_and_oom/core.*.dmp
+twas/verbosegc_and_oom/core.*_*.zip
+
