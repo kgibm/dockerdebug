@@ -269,7 +269,7 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
     echo "# https://www.ibm.com/support/pages/node/711615" && \
     ( \
       sudo mkdir /opt/wasconfigcomparison/ && \
-      sudo wget -q -O /opt/wasconfigcomparison/cct.tar.gz "https://github.com/IBM/websphere-cct/releases/download/WCCT-20200217/cct-20200217.tar.gz" && \
+      sudo wget -q -O /opt/wasconfigcomparison/cct.tar.gz "https://github.com/IBM/websphere-cct/releases/download/WCCT-20200914/cct-20200914.tar.gz" && \
       cd /opt/wasconfigcomparison/ && \
       sudo tar xzf cct.tar.gz \
     ) && \
