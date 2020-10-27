@@ -27,7 +27,7 @@ Tip: To share files with your host machine, add the following to the `docker run
 
 * Linux: `-v /:/host/`
 * Windows: `-v //c/:/host/`
-* macOS: `-v /tmp:/hosttmp/`
+* macOS: `-v /tmp/:/hosttmp/`
     * Enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences)
 
 ## Screenshots
