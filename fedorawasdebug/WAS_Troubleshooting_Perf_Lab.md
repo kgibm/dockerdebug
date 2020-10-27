@@ -73,7 +73,7 @@ Both Traditional WAS and WAS Liberty come in different flavors including *Base* 
 
 <img src="./media/image2.png" width="1024" height="788" />
 
-![](./media/image3.png)
+<img src="./media/image3.png" width="1024" height="788" />
 
 ## Lab
 
@@ -119,17 +119,17 @@ The IBM Java virtual machine (named J9) has become largely open sourced into the
 
 Problem determination and performance tuning are best done with all layers of the stack in mind. This lab will focus on the layers in bold below:
 
-![](./media/image4.png)
+<img src="./media/image4.png" width="530" height="493" />
 
 # Docker Basics
 
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
     \
     macOS:\
-    ![](./media/image5.png)
+    <img src="./media/image5.png" width="319" height="455" />
 
 2.  Windows:\
-    ![](./media/image6.png)
+    <img src="./media/image6.png" width="568" height="444" />
 
 3.  Ensure that Docker receives sufficient resources, particularly memory:
 
@@ -142,29 +142,29 @@ Problem determination and performance tuning are best done with all layers of th
     1.  Click **Apply**\
         \
         macOS:\
-        ![](./media/image140.png)\
+        <img src="./media/image140.png" width="1037" height="656" />\
         \
         Windows:\
         \
-        ![](./media/image10.png)
+        <img src="./media/image10.png" width="600" height="419" />
 
     1.  Select the **Disk** tab.
 
     1.  Increase the **Disk image size** to at least **100GB** and click **Apply**:\
         \
         macOS:\
-        ![](./media/image140.png)\
+        <img src="./media/image140.png" width="1037" height="656" />\
         \
         Windows:\
-        ![](./media/image10.png)
+        <img src="./media/image10.png" width="600" height="419" />
 
 4.  Open a terminal or command prompt:\
     \
     macOS:\
-    ![](./media/image11.png)\
+    <img src="./media/image11.png" width="588" height="108" />\
     \
     Windows:\
-    ![](./media/image12.png)
+    <img src="./media/image12.png" width="463" height="393" />
 
 5.  Download the images:
 
@@ -218,7 +218,7 @@ Problem determination and performance tuning are best done with all layers of th
 
 9.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
     \
-    ![](./media/image13.png)
+    <img src="./media/image13.png" width="1160" height="615" />
 
 ## Apache Jmeter
 
@@ -228,7 +228,7 @@ Problem determination and performance tuning are best done with all layers of th
 
 1.  Double click on JMeter on the desktop:\
     \
-    ![](./media/image14.png)
+    <img src="./media/image14.png" width="1021" height="791" />
 
 2.  Click **File** → **Open** and select:
 
@@ -238,17 +238,17 @@ Problem determination and performance tuning are best done with all layers of th
 
 3.  By default, the script will execute 4 concurrent users. You may change this if you want (e.g. based on the number of CPUs available):\
     \
-    ![](./media/image15.png)
+    <img src="./media/image15.png" width="677" height="228" />
 
 4.  Click the green run button to start the stress test and click the **Aggregate Report** item to see the real-time results.\
     \
-    ![](./media/image16.png)
+    <img src="./media/image16.png" width="757" height="252" />
 
 5.  It will take some time for the responses to start coming back and for all of the pages to be exercised.
 
 6.  Ensure that the **Error %** value for the **TOTAL** row at the bottom is always 0%.\
     \
-    ![](./media/image17.png)
+    <img src="./media/image17.png" width="1008" height="375" />
 
     1.  If there are any errors, review the WAS logs:
 
@@ -260,15 +260,15 @@ Problem determination and performance tuning are best done with all layers of th
 
 1.  You may stop a JMeter test by clicking the STOP button:
 
-    ![](./media/image18.png)
+    <img src="./media/image18.png" width="1021" height="278" />
 
 2.  You may click the broom button to clear the results in preparation for the next test:
 
-    ![](./media/image19.png)
+    <img src="./media/image19.png" width="1021" height="278" />
 
 3.  If it asks what to do with the JMeter log files from the previous test, you may just click **Overwrite existing file**:
 
-    ![](./media/image20.png)
+    <img src="./media/image20.png" width="716" height="140" />
 
 # Basics
 
@@ -390,11 +390,11 @@ Now, let's run the script:
 
 If you would like to open text files in the Linux container using a GUI tool, you may use a program such as **mousepad**:
 
-![](./media/image21.png)
+<img src="./media/image21.png" width="323" height="442" />
 
 Then click **File** \> **Open**, and find the file where you ran **linperf.sh** such as in the Home directory:
 
-![](./media/image22.png)
+<img src="./media/image22.png" width="732" height="533" />
 
 There will be multiple sections of output, each prefixed with a timestamp which represents the previous interval (**linperf.sh** uses a default interval of 60 seconds). In the following example, the data represents CPU usage between 19:28:27 - 19:29:27. Review all intervals to understand CPU usage over time. For example, here is one interval:
 
@@ -460,9 +460,9 @@ The two columns in bold are the important values:
 
 The **top** command may be run in interactive mode by simply running the **top** command. This is a useful place to start when you begin investigating a system. The command will dynamically update every few seconds (this interval may be specified with the **-d S** options where **S** is in fractional seconds). Press **q** to quit top.
 
-![](./media/image23.png)
+<img src="./media/image23.png" width="822" height="100" />
 
-![](./media/image24.png)
+<img src="./media/image24.png" width="822" height="517" />
 
 ### Linux top -H
 
@@ -514,9 +514,9 @@ In the above example, the top threads are mostly **Default Executor** threads, e
 
 As in the case of top, the **top -H** command may be run in interactive mode and could be considered an even better place to start when you begin investigating a system; however, note that **top -H** is much more expensive than top (especially if you don't provide a particular PID with **-p**) because it must traverse the data for all PIDs and all TIDs. Therefore, if you want to use **top -H** in interactive mode, consider using a large interval such as 10 seconds or more:
 
-![](./media/image25.png)
+<img src="./media/image25.png" width="822" height="100" />
 
-![](./media/image26.png)
+<img src="./media/image26.png" width="822" height="516" />
 
 # IBM Java and OpenJ9 Thread Dumps
 
@@ -554,24 +554,24 @@ We will review the thread dumps gathered by linperf.sh above:
 
 3.  Click Open Thread Dumps and select all of the **javacore\*.txt** files using the Shift key. These may be in your home directory (**/home/was**) if you moved them in the previous exercise; otherwise, they're in the default working directory (Liberty: **/opt/ibm/wlp/output/defaultServer** ; Traditional WAS: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**):\
     \
-    ![](./media/image27.png)\
+    <img src="./media/image27.png" width="183" height="95" />\
     \
-    ![](./media/image28.png)\
-    ![](./media/image29.png)
+    <img src="./media/image28.png" width="513" height="339" />\
+    <img src="./media/image29.png" width="475" height="335" />
 
 4.  Select a thread dump and click the **Thread Detail** button:\
     \
-    ![](./media/image30.png)
+    <img src="./media/image30.png" width="723" height="178" />
 
 5.  Click on the **Stack Depth** column to sort by thread stack depth in ascending order.
 
 6.  Click on the **Stack Depth** column again to sort again in descending order:\
     \
-    ![](./media/image31.png)
+    <img src="./media/image31.png" width="375" height="178" />
 
 7.  Generally, the threads of interest are those with stack depths greater than \~20. Select any such rows and review the stack on the right (if you don't see any, then close this thread dump and select another from the list):\
     \
-    ![](./media/image32.png)
+    <img src="./media/image32.png" width="1018" height="529" />
 
     1.  Generally, to understand which code is driving the thread, skip any non-application stack frames. In the above example, the first application stack frame is TradeAction.getQuote.
 
@@ -579,7 +579,7 @@ We will review the thread dumps gathered by linperf.sh above:
 
 8.  In some cases, you may see that one thread is blocked on another thread. For example:\
     \
-    ![](./media/image33.png)
+    <img src="./media/image33.png" width="1018" height="584" />
 
     1.  The **Monitor** line shows which monitor this thread is waiting for, and the stack shows the path to the request for the monitor. In this example, the application is trying to commit a database transaction. This lab uses the Apache Derby database engine which is not a very scalable database. In this example, optimizing this bottleneck may not be easy and may require deep Apache Derby expertise.
 
@@ -589,17 +589,17 @@ We will review the thread dumps gathered by linperf.sh above:
 
 9.  An alternative way to review lock contention is by selecting a thread dump and clicking **Monitor Detail**:\
     \
-    ![](./media/image34.png)\
+    <img src="./media/image34.png" width="720" height="177" />\
     \
-    ![](./media/image35.png)
+    <img src="./media/image35.png" width="1014" height="223" />
 
     1.  This shows a tree view of the monitor contention which makes it easier to explore the relationships and number of threads contending on monitors. In the above example, **Default Executor-thread-153** owns the monitor and **Default Executor-thread-202** is waiting for the monitor.
 
 10. You may also select multiple thread dumps and click the **Compare Threads** button to see thread movement over time:\
     \
-    ![](./media/image36.png)\
+    <img src="./media/image36.png" width="719" height="177" />\
     \
-    ![](./media/image37.png)
+    <img src="./media/image37.png" width="1018" height="585" />
 
     1.  Each column is a thread dump and shows the state of each thread (if it exists in that thread dump) over time. Generally, you're interested in threads that are runnable (Green Arrow) or blocked or otherwise in the same concerning top stack frame. Click on each cell in that row and review the thread dump on the right. If the thread dump is always in the same stack, this is a potential issue. If the thread stack is changing a lot, then this is usually normal behavior.
 
@@ -617,7 +617,7 @@ Next, let's simulate a hung thread situation and analyze the problem with thread
 
 2.  Scroll down and click on Deadlocker:\
     \
-    ![](./media/image38.png)
+    <img src="./media/image38.png" width="1373" height="96" />
 
 3.  Wait until the continuous browser output stops writing new lines of \"Socrates \[\...\]\" which signifies that the threads have become deadlocked and then gather a thread dump of the WAS process by sending it the **SIGQUIT** **(3)** signal. Although the name of the signal includes the word "QUIT", the signal is captured by the JVM, the JVM pauses for a few hundred milliseconds to produce the thread dump, and then the JVM continues. This same command is performed by **linperf.sh**. It is a quick and cheap way to quickly understand what your JVM is doing:\
     \
@@ -643,25 +643,25 @@ Next, let's simulate a hung thread situation and analyze the problem with thread
 
 4.  In the TMDA tool, clear the previous list of thread dumps:\
     \
-    ![](./media/image39.png)
+    <img src="./media/image39.png" width="718" height="181" />
 
 5.  Click **File** \> **Open Thread Dumps** and navigate to (Liberty: **/opt/ibm/wlp/output/defaultServer** ; Traditional WAS: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**) and select both new thread dumps and click **Open**:\
     \
-    ![](./media/image40.png)
+    <img src="./media/image40.png" width="511" height="338" />
 
 6.  When you select the first thread dump, TMDA will warn you that a deadlock has been detected:\
     \
-    ![](./media/image41.png)
+    <img src="./media/image41.png" width="718" height="226" />
 
     1.  Deadlocks are not common and mean that there is a bug in the application or product.
 
 7.  Use the same procedure as above to review the **Monitor Details** and **Compare Threads** to find the thread that is stuck. In this example, the **DefaultExecutor** application thread actually spawns threads and waits for them to finish, so the application thread is just in a Thread.join:\
     \
-    ![](./media/image42.png)
+    <img src="./media/image42.png" width="1009" height="182" />
 
 8.  The actual spawned threads are named differently and show the blocking:\
     \
-    ![](./media/image43.png)
+    <img src="./media/image43.png" width="413" height="152" />
 
 Next, let's combine what we've learned about the **top -H** command and thread dumps to simulate a thread that is using a lot of CPU:
 
@@ -675,13 +675,13 @@ Next, let's combine what we've learned about the **top -H** command and thread d
 
 2.  Scroll down and click on InfiniteLoop:\
     \
-    ![](./media/image44.png)
+    <img src="./media/image44.png" width="1372" height="87" />
 
 3.  Go to the container terminal and start **top -H** with a 10 second interval:
 
         top -H -d 10
 
-    ![](./media/image45.png)
+    <img src="./media/image45.png" width="818" height="193" />
 
 4.  Notice that a single thread is consistently consuming \~100% of a single CPU thread.
 
@@ -689,19 +689,19 @@ Next, let's combine what we've learned about the **top -H** command and thread d
 
     1.  In the container, open Galculator:\
         \
-        ![](./media/image46.png)
+        <img src="./media/image46.png" width="325" height="316" />
 
     1.  Click View \> Scientific Mode:\
         \
-        ![](./media/image47.png)
+        <img src="./media/image47.png" width="334" height="374" />
 
     1.  Enter the decimal number (in this example, **22129**), and then click on **HEX**:\
         \
-        ![](./media/image48.png)
+        <img src="./media/image48.png" width="720" height="347" />
 
     1.  The result is **0x5671**:
 
-        ![](./media/image49.png)
+        <img src="./media/image49.png" width="720" height="347" />
 
 6.  Take a thread dump of the parent process:\
     \
@@ -715,11 +715,11 @@ Next, let's combine what we've learned about the **top -H** command and thread d
 
 7.  Open the most recent thread dump from **/opt/ibm/wlp/output/defaultServer/** in a text editor such as **mousepad**:\
     \
-    ![](./media/image50.png)
+    <img src="./media/image50.png" width="589" height="392" />
 
 8.  Search for the native thread ID in hex (in this example, 0x5671) to find the stack trace consuming the CPU (if captured during the thread dump):\
     \
-    ![](./media/image51.png)
+    <img src="./media/image51.png" width="1023" height="191" />
 
 9.  Finally, kill the server destructively (**kill -9**) because trying to stop it gracefully will not work due to the infinitely looping request:
 
@@ -765,7 +765,7 @@ Add the verbosegc option to the jvm.options file:
 
     1.  Save the file to **/opt/ibm/wlp/usr/servers/defaultServer/jvm.options**\
         \
-        ![](./media/image52.png)
+        <img src="./media/image52.png" width="643" height="398" />
 
     1.  Start the Liberty server
 
@@ -783,34 +783,34 @@ Add the verbosegc option to the jvm.options file:
 
 5.  Click **File** \> **Load File\...** and select the **verbosegc.001.log** file. For example:\
     \
-    ![](./media/image53.png)
+    <img src="./media/image53.png" width="243" height="105" />
 
 6.  Select **/opt/ibm/wlp/output/defaultServer/logs/verbosegc.001.log**\
     \
-    ![](./media/image54.png)
+    <img src="./media/image54.png" width="645" height="476" />
 
 7.  Once the file is loaded, you will see the default line plot view. It is common to change the **X-axis** to **date** to see absolute timestamps:\
     \
-    ![](./media/image55.png)
+    <img src="./media/image55.png" width="156" height="93" />
 
 8.  Click the **Data Selector** tab in the top left, choose **VGC Pause** and check **Total pause time** to add the total garbage collection pause time plot to the graph:\
     \
-    ![](./media/image56.png)
+    <img src="./media/image56.png" width="260" height="473" />
 
 9.  Do the same as above using **VGC Heap** and check **Used heap (after global collection)**:\
-    ![](./media/image57.png)\
+    <img src="./media/image57.png" width="255" height="105" />\
     \
-    ![](./media/image58.png)
+    <img src="./media/image58.png" width="255" height="243" />
 
 10. Observe the heap usage and pause time magnitude and frequency over time. For example:\
     \
-    ![](./media/image59.png)
+    <img src="./media/image59.png" width="704" height="543" />
 
     1.  This shows that the heap size reaches 145MB and the heap usage (after global collection) reached \~80MB.
 
 11. More importantly, we want to know the proportion of time spent in GC. Click the **Report** tab and review the **Proportion of time spent in garbage collection pauses (%)**:\
     \
-    ![](./media/image60.png)
+    <img src="./media/image60.png" width="654" height="592" />
 
     1.  If this number is less than 1%, then this is very healthy. If it's less than 5% then it's okay. If it's less than 10%, then there is significant room for improvement. If it's greater than 10%, then this is concerning.
 
@@ -830,7 +830,7 @@ Next, let's simulate a memory issue.
 
         `-Xmx256m`
 
-        ![](./media/image61.png)
+        <img src="./media/image61.png" width="697" height="103" />
 
     1.  Start Liberty
 
@@ -844,24 +844,24 @@ Next, let's simulate a memory issue.
 
     1.  Click **Servers** \> **Server Types** \> **WebSphere application server** \> **server1**\
         \
-        ![](./media/image62.png)
+        <img src="./media/image62.png" width="681" height="293" />
 
     1.  Click **Java and Process Management** \> **Process Definition**:\
         \
-        ![](./media/image63.png)
+        <img src="./media/image63.png" width="786" height="655" />
 
     1.  Click **Java Virtual Machine**:\
         \
-        ![](./media/image64.png)
+        <img src="./media/image64.png" width="786" height="315" />
 
     1.  Set **-Xmx** to **256MB**:\
-        ![](./media/image65.png)
+        <img src="./media/image65.png" width="455" height="593" />
 
     1.  Scroll down and click OK:\
-        ![](./media/image66.png)
+        <img src="./media/image66.png" width="213" height="40" />
 
     1.  Click Save:\
-        ![](./media/image67.png)
+        <img src="./media/image67.png" width="788" height="232" />
 
     1.  Stop the server.
 
@@ -891,7 +891,7 @@ Next, let's simulate a memory issue.
 
         `top -H -p $(pgrep -f defaultServer) -d 5`
 
-        ![](./media/image68.png)
+        <img src="./media/image68.png" width="847" height="320" />
 
     1.  At some point, browser output will stop because the JVM has thrown an OutOfMemoryError.
 
@@ -909,37 +909,37 @@ Next, let's simulate a memory issue.
 
 1.  Close and re-open the **verbosegc\*log** file in GCMV:\
     \
-    ![](./media/image141.png)
+    <img src="./media/image141.png" width="555" height="539" />
 
     1.  We can quickly see how the heap usage reaches 256MB and the pause time magnitude and durations increase significantly.
 
 1. Click on the **Report** tab and review the **Proportion of time spent in garbage collection pauses (%)**:\
     \
-    ![](./media/image143.png)
+    <img src="./media/image143.png" width="474" height="43" />
 
 1. 24% seems pretty bad but not terrible and doesn't line up with what we know about what happened. This is because, by default, the GCMV Report tab shows statistics for the entire duration of the verbosegc log file. Since we had run the JMeter test for 5 minutes and it was healthy, the average proportion of time in GC is lower for the whole duration.
 
 1. Click on the **Line plot** tab and zoom in to the area of high pause times by using your mouse button to draw a box around those times:\
     \
-    ![](./media/image144.png)
+    <img src="./media/image144.png" width="564" height="543" />
 
 1. This will zoom the view to that bounding box:\
     \
-    ![](./media/image145.png)
+    <img src="./media/image145.png" width="550" height="536" />
 
 1. However, zooming in is just a visual aid. To change the report statistics, we need to match the X-axis to the period of interest.
 
 1. Hover your mouse over the approximate start and end points of the section of concern (frequent pause time spikes) and note the times of those points (in terms of your selected X Axis type):\
     \
-    ![](./media/image142.png)
+    <img src="./media/image142.png" width="555" height="536" />
 
 1. Enter each of the values in the minimum and maximum input boxes and press **Enter** on your keyboard in each one to apply the value. The tool will show vertical lines with triangles showing the area of the graph that you\'ve cropped to.\
     \
-    ![](./media/image146.png)
+    <img src="./media/image146.png" width="800" height="559" />
 
 1. Click on the **Report** tab at the bottom and observe the proportion of time spent in garbage collection for this period is very high (in this example, \~87%).\
     \
-    ![](./media/image147.png)
+    <img src="./media/image147.png" width="473" height="49" />
 
 1. This means that the application is doing very little work and is very unhealthy. In general, there are a few, non-exclusive ways to resolve this problem:
 
@@ -1057,11 +1057,11 @@ A few key definitions:
 
 -   The [retained set](https://help.eclipse.org/2019-03/topic/org.eclipse.mat.ui.help/concepts/shallowretainedheap.html?cp=62_2_1) of X is the set of objects which would be removed by the garbage collector when X is garbage collected.\
     \
-    ![](./media/image76.png)
+    <img src="./media/image76.png" width="464" height="249" />
 
 -   The [dominator tree](https://help.eclipse.org/2019-03/topic/org.eclipse.mat.ui.help/concepts/dominatortree.html?cp=62_2_2) is a transformation of the graph which creates a spanning tree, removes cycles, and models the keep-alive dependencies.\
     \
-    ![](./media/image77.png)
+    <img src="./media/image77.png" width="442" height="291" />
 
 Do not confuse system dumps which are usually named **core\*.dmp** with thread dumps/java dumps which are usually named **javacore\*.txt**. Also note that a system dump sounds like it is a dump of the entire system but actually it is just a dump of a single process (a dump of an entire system is usually called a kernel dump).
 
@@ -1074,110 +1074,110 @@ Do not confuse system dumps which are usually named **core\*.dmp** with thread d
 2.  Open **/opt/programs/** in the file browser and double click on **MAT**.
 
 1.  Click **File** \> **Open Heap Dump\...**\
-    ![](./media/image78.png)
+    <img src="./media/image78.png" width="271" height="244" />
 
 2.  Select the **core.\*.dmp** file produced in the previous garbage collection lab (if learning Liberty: **/opt/ibm/wlp/output/defaultServer/core\*dmp** ; if learning Traditional WAS: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/core\*dmp**):\
-    ![](./media/image79.png)
+    <img src="./media/image79.png" width="647" height="476" />
 
 3.  Click on the progress icon in the bottom right corner to get a detailed view of the progress:\
     \
-    ![](./media/image80.png)
+    <img src="./media/image80.png" width="879" height="667" />
 
 4.  Now the **Progress** view is opened:\
-    ![](./media/image81.png)
+    <img src="./media/image81.png" width="879" height="667" />
 
 5.  After the dump finishes loading, a pop-up will appear with suggested actions such as running the leak suspect report. Just click **Cancel**:\
     \
-    ![](./media/image82.png)
+    <img src="./media/image82.png" width="653" height="401" />
 
 6.  The first thing to check is to see whether there were any errors processing the dump. Click **Window** \> **Error Log**:\
     \
-    ![](./media/image83.png)
+    <img src="./media/image83.png" width="530" height="304" />
 
 7.  Review the list and check for any warnings or errors:\
-    ![](./media/image84.png)
+    <img src="./media/image84.png" width="938" height="215" />
 
     1.  It is possible to have a few warnings without too many problems. If you believe the warnings are limiting your analysis, consider opening an IBM Support case to investigate the issue with the IBM Java support team.
 
 8.  The overview tab shows the total live Java heap usage and the number of live classes, classloaders, and objects:\
     \
-    ![](./media/image85.png)
+    <img src="./media/image85.png" width="680" height="531" />
 
     1.  By default, MAT performs a full "garbage collection" when it loads the dump so everything you see is only pertaining to live Java objects. You can click on the **Unreachable Objects Histogram** link to see a histogram of any objects that are trash.
 
 9.  The pie chart on the **Overview** tab shows the largest dominator objects so it's a subset of the **Dominator Tree** button:\
     \
-    ![](./media/image86.png)
+    <img src="./media/image86.png" width="680" height="531" />
 
 10. You may left click on a pie slice and select **List objects** \> **with outgoing references** to review the object graph of the large dominator:\
     \
-    ![](./media/image87.png)
+    <img src="./media/image87.png" width="754" height="538" />
 
 11. Expand the outgoing references tree and walk down the path with the largest **Retained Heap** values; in this example, there is an ArrayList that retains 194MB. Continue walking down the tree and you will find an Object array with hundreds of elements, each of about 1MB, which matches what we executed to create the OutOfMemoryError:\
     \
-    ![](./media/image88.png)
+    <img src="./media/image88.png" width="754" height="538" />
 
 12. In this case, we want to find out what references this ArrayList, so right click on it and select **List objects** \> **with incoming references**:\
     \
-    ![](./media/image89.png)
+    <img src="./media/image89.png" width="754" height="538" />
 
 13. This results in the following view:\
     \
-    ![](./media/image90.png)
+    <img src="./media/image90.png" width="754" height="250" />
 
     1.  In this example, there are two references to the ArrayList. The first is that the class com.ibm.AllocateObject has a static field called holder which references the ArrayList. We know it is static because of the word **class** in front of the class name. The second is the thread **Default Executor-thread-169**.
 
 14. From the above analysis, we know there is what appears to be a leak into a static ArrayList and there is a thread that has a reference to it, so naturally we want to see what that thread is doing. Open the **Thread Overview** query:\
-    ![](./media/image91.png)
+    <img src="./media/image91.png" width="680" height="531" />
 
 15. This will list every thread, the thread name, the retained heap of the thread, other thread details, and the stack frame along with stack frame locals:\
-    ![](./media/image92.png)
+    <img src="./media/image92.png" width="754" height="520" />
 
 16. We know from above that the thread that references the ArrayList is named **Default Executor-thread-169**. In your case, the thread may be named differently. You may enter this thread name into the **Name** column's **\<Regex\>** input:\
     \
-    ![](./media/image93.png)
+    <img src="./media/image93.png" width="754" height="239" />
 
 17. Press Enter to filter the results, expand the thread stack and find the servlet that caused the leak:\
-    ![](./media/image94.png)
+    <img src="./media/image94.png" width="805" height="425" />
 
     1.  Note that you can see the actual objects on each stack frame. In this case, we can clearly see the servlet has a reference to the AllocateObject class and the ArrayList which is retaining most of the heap. This stack usually makes it much easier for the application developer to understand what happened. Right click on the thread and select **Thread Details** to get a full thread stack that may be copy-and-pasted:\
-        ![](./media/image95.png)
+        <img src="./media/image95.png" width="805" height="425" />
 
     2.  Scroll down to see the full stack:\
         \
-        ![](./media/image96.png)
+        <img src="./media/image96.png" width="609" height="425" />
 
 18. Another common view to explore is the **Histogram**:\
-    ![](./media/image97.png)
+    <img src="./media/image97.png" width="680" height="531" />
 
 19. Click on the calculator button and select **Calculate Minimum Retained Size (quick approx.)** to populate the **Retained Heap** column for each class:\
     \
-    ![](./media/image98.png)
+    <img src="./media/image98.png" width="812" height="289" />
 
 20. This fills in the retained heap column which then you can click to sort descending:\
-    ![](./media/image99.png)
+    <img src="./media/image99.png" width="812" height="524" />
 
 21. You may click on a row with a large retained heap size, right click and select outgoing references. For example:\
-    ![](./media/image100.png)
+    <img src="./media/image100.png" width="812" height="524" />
 
 22. Then sort by **Retained Heap** and again you will find the large object:\
-    ![](./media/image101.png)
+    <img src="./media/image101.png" width="812" height="524" />
 
 23. The next common view to explore is the **Leak Suspects** view. On the **Overview** tab, scroll down and click on **Leak Suspects**:\
-    ![](./media/image102.png)
+    <img src="./media/image102.png" width="812" height="359" />
 
 24. The report will list leak suspects in the order of their size. The following example shows the same leaking **Object\[\]** inside the **ArrayList**:\
-    > ![](./media/image103.png)
+     <img src="./media/image103.png" width="812" height="435" />
 
 The [IBM Extensions for Memory Analyzer (IEMA)](https://publib.boulder.ibm.com/httpserv/cookbook/Major_Tools-IBM_Memory_Analyzer_Tool.html#Major_Tools-IBM_Memory_Analyzer_Tool_MAT-Installation) provide additional extensions on top of MAT with WAS, Java, and other related queries.
 
 1.  As one example, you can see a list of all HTTP sessions and their attributes with: **Open Query Browser \> IBM Extensions \> WebSphere Application Server \> HTTP Sessions \> HTTP Sessions List**:\
     \
-    ![](./media/image104.png)
+    <img src="./media/image104.png" width="1022" height="508" />
 
 2.  Each HTTP session is listed, as well as how much Java heap it retains, which application it\'s associated with, and other details, including all of the attribute names and values:\
     \
-    ![](./media/image105.png)
+    <img src="./media/image105.png" width="876" height="426" />
 
 3.  You may explore the other extensions under IBM Extensions. Some only apply to Traditional WAS, some only to Liberty, and some to both. Unlike MAT, IEMA is not officially supported but we try to fix and enhance it as time permits.
 
@@ -1235,7 +1235,7 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
         `-Xhealthcenter:level=headless`
 
     2.  If learning Traditional WAS, go to the same place where you entered the maximum heap size and add a space and **-Xhealthcenter:level=headless** to **Generic JVM arguments**:\
-        ![](./media/image106.png)
+        <img src="./media/image106.png" width="491" height="110" />
 
         1.  Then click OK and Save.
 
@@ -1269,55 +1269,55 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
 9.  Click **File \> Load Data\...** (note that it\'s towards the bottom of the **File** menu; **Open File** does not work):\
     \
-    ![](./media/image107.png)
+    <img src="./media/image107.png" width="643" height="656" />
 
 10. Select the **healthcenter\*.hcd** file from (Liberty: **/opt/ibm/wlp/output/defaultServer** ; Traditional WAS: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**):\
-    ![](./media/image108.png)
+    <img src="./media/image108.png" width="784" height="260" />
 
 11. Wait for the data to complete loading:\
     \
-    ![](./media/image109.png)
+    <img src="./media/image109.png" width="962" height="137" />
 
 12. Click on CPU:\
-    ![](./media/image110.png)
+    <img src="./media/image110.png" width="892" height="382" />
 
 13. Review the overall system and Java application CPU usage:\
-    ![](./media/image111.png)
+    <img src="./media/image111.png" width="694" height="498" />
 
 14. Right click anywhere in the graph and change the **X-axis** to **date** (which changes all other views to **date** as well):\
-    ![](./media/image112.png)
+    <img src="./media/image112.png" width="694" height="498" />
 
     1.  For large Health Center captures, this may take significant time to change and there is no obvious indication when it's complete. The best way to know is when the CPU usage of Health Center drops to a low amount.
 
 15. Click **Data \> Crop data\...**\
     \
-    ![](./media/image113.png)
+    <img src="./media/image113.png" width="495" height="114" />
 
 16. Change the **Start time** and **End time** to match the period of interest. For example, usually you want to exclude the start-up time of the process and only focus on user activity:\
-    ![](./media/image114.png)
+    <img src="./media/image114.png" width="613" height="392" />
 
 17. Click **Window \> Preferences**:\
-    ![](./media/image115.png)
+    <img src="./media/image115.png" width="734" height="599" />
 
 18. Check the **Show package names** box under **Health Center \> Profiling** and press **OK** so that we can see more details in the profiling view:\
-    ![](./media/image116.png)
+    <img src="./media/image116.png" width="648" height="570" />
 
 19. Click on **Method profiling** to review the CPU sampling data:\
-    ![](./media/image117.png)
+    <img src="./media/image117.png" width="309" height="307" />
 
 20. The **Method profiling** view will show CPU samples by method:\
-    ![](./media/image118.png)
+    <img src="./media/image118.png" width="712" height="482" />
 
 21. The **Self (%)** column reports the percent of samples where a method was at the top of the stack. The **Tree (%)** column reports the percent of samples where a method was somewhere else in the stack. Make sure to check that the **Samples** column is at least in the hundreds or thousands; otherwise, the CPU usage is likely not that high or a problem did not occur. The **Self** and **Tree** percentages are a percent of samples, not of total CPU.
 
 22. Any methods over \~1% are worthy of considering how to optimize or to avoid. For example, \~2% of samples were in method 0x2273c68 (for various reasons, some methods may not resolve but you can usually figure things out from the invocation paths). Selecting that row and switching to the **Invocation Paths** view shows the percent of samples leading to those calls:\
-    ![](./media/image119.png)
+    <img src="./media/image119.png" width="712" height="482" />
 
     1.  In the above example, 63.11% of samples (i.e. of 2.9% of total samples) were invoked by org.apache.derby.impl.sql.conn.GenericLanguageConnectionContext.doCommit.
 
 23. If you sort by **Tree %**, skip the framework methods from Java and WAS, and find the first application method. In this example, about 32% of total samples was consumed by com.ibm.websphere.samples.daytrader.web.TradeAppServlet.performTask and all of the methods it called. The **Called Methods** view may be further reviewed to investigate the details of this usage; in this example, doPortfolio drove most of the CPU samples.\
     \
-    ![](./media/image120.png)
+    <img src="./media/image120.png" width="859" height="482" />
 
 # Crashes
 
@@ -1804,15 +1804,15 @@ This lab will leak classloaders which use native memory outside the Java heap an
 
     1.  When you first load the system dump, you'll see that there is no large dominator so there are no large pie pieces:\
         \
-        ![](./media/image121.png)
+        <img src="./media/image121.png" width="443" height="298" />
 
     1.  As in the Java OOM exercise, open the **Histogram**, click on the **Calculator**, select **Calculate minimum retained size (quick approx.)** and sort by **Retained Heap** descending. The top few items show a large number of **URLClassLoaders** retaining about 1GB (of Java heap):\
         \
-        ![](./media/image122.png)
+        <img src="./media/image122.png" width="715" height="210" />
 
     1.  Right click on URLClassLoader and select **Merge Shortest Paths to GC Roots** \> **excluding all phantom/weak/soft etc. references**. Expand the path all the way down until you find the place where the classloaders are leaked. This shows that the **com.ibm.ClassloaderLeak** class has a static **leaked** ArrayList which is leaking the classloaders.\
         \
-        ![](./media/image123.png)
+        <img src="./media/image123.png" width="717" height="461" />
 
 # WAS Liberty
 
@@ -1928,13 +1928,13 @@ The Admin Center is a web-based administration and monitoring tool for Liberty s
 7.  Login with user **wsadmin** and password **wsadmin**
 
 8.  Click on the **Explore** button:\
-    ![](./media/image124.png)
+    <img src="./media/image124.png" width="640" height="308" />
 
 9.  Click on the \"Monitor\" button:\
-    ![](./media/image125.png)
+    <img src="./media/image125.png" width="608" height="417" />
 
 10. You will see graphs of various statistics for this server. As you configure additional monitoring (which we will do in subsequent sections), the edit button in the top right will show additional metrics.\
-    ![](./media/image126.png)
+    <img src="./media/image126.png" width="608" height="598" />
 
 ##  Request Timing
 
@@ -2077,23 +2077,23 @@ The **monitor-1.0** feature must be installed first:
 
 4.  Select the **frontendServer** process and click **Connect**:\
     \
-    ![](./media/image127.png)
+    <img src="./media/image127.png" width="444" height="471" />
 
 5.  Choose **Insecure connection** when the prompt comes up:\
     \
-    ![](./media/image128.png)
+    <img src="./media/image128.png" width="354" height="173" />
 
 6.  The initial view shows basic information about JVM memory usage and number of threads:\
     \
-    ![](./media/image129.png)
+    <img src="./media/image129.png" width="888" height="358" />
 
 7.  We can look at MXbean attributes or execute operations. For example, click on Mbeans, expand **java.lang** \> **Memory** \> **Operations** and click on **gc** which executes **System.gc()**.\
     \
-    ![](./media/image130.png)
+    <img src="./media/image130.png" width="888" height="257" />
 
 8.  The **adminCenter** monitor page will now show additional available metrics:\
     \
-    ![](./media/image131.png)
+    <img src="./media/image131.png" width="1039" height="540" />
 
 JConsole does have some basic capabilities of writing statistics to a CSV, although this is limited to a handful of JVM statistics from the main JConsole tabs and is not available for the MXBean data.
 
@@ -2325,11 +2325,11 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
 
 1.  Open **PowerShell** as Administrator:\
     \
-    ![](./media/image132.png)
+    <img src="./media/image132.png" width="451" height="645" />
 
 2.  Run **ipconfig** and copy the **IPv4** address of the **DockerNAT** adapter. For example:\
     \
-    ![](./media/image133.png)
+    <img src="./media/image133.png" width="562" height="325" />
 
 3.  Run the following command in **PowerShell**:
 
@@ -2341,27 +2341,27 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
 
 5.  Run **Remote Desktop**\
     \
-    ![](./media/image134.png)
+    <img src="./media/image134.png" width="462" height="709" />
 
 6.  Enter the DockerNAT IP address (for example, 10.0.75.1) followed by :3390 as **Computer** and click **Connect**:\
     \
-    ![](./media/image135.png)
+    <img src="./media/image135.png" width="542" height="312" />
 
 7.  You\'ll see a certificate warning because of the name mismatch. Click **Yes** to connect:\
     \
-    ![](./media/image136.png)
+    <img src="./media/image136.png" width="995" height="683" />
 
 8.  Type username = **was** and password = **websphere**\
     \
-    ![](./media/image137.png)
+    <img src="./media/image137.png" width="1015" height="759" />
 
 9.  You should now be remote desktop'ed into the container:\
     \
-    ![](./media/image138.png)
+    <img src="./media/image138.png" width="1015" height="767" />
 
 10. Note: In some cases, only the **Remote Desktop Connection** application worked, and [**not** **Remote Desktop**](https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-app-compare):\
     \
-    ![](./media/image139.png)
+    <img src="./media/image139.png" width="343" height="224" />
 
 11. Also note: Microsoft [requires](https://social.msdn.microsoft.com/Forums/en-US/872129e4-07a5-48c3-86f7-996854e7a920/how-to-connect-via-rdp-to-container?forum=windowscontainers) the above steps and the use of port 3390 instead of directly connecting to 3389.
 
