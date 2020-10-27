@@ -23,7 +23,12 @@ Note: You'll need more than 40GB of disk space and configure Docker with 4GB or 
     1. Windows: Remote desktop (see lab instructions), or use a free VNC client.
 1. Perform the lab: <https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#websphere-application-server-troubleshooting-and-performance-lab-on-docker>
 
-Tip: To share files with your host machine, add the following to the `docker run` command above (before `-it kgibm/fedorawasdebug`): Linux/macOS: `-v /:/host/` or Windows: `-v //c/:/host/`
+Tip: To share files with your host machine, add the following to the `docker run` command above (before `-it kgibm/fedoradebug`):
+
+* Linux: `-v /:/host/`
+* Windows: `-v //c/:/host/`
+* macOS: `-v /tmp:/hosttmp/`
+    * Enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences)
 
 ## Screenshots
 

@@ -2385,17 +2385,18 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
 
 By default, the Docker container does not have access to the host filesystem and vice versa. To share files between the two:
 
-1.  Linux/macOS: Add **-v /:/host/** to the **docker run** command. For example:
-
-    <pre>
-    docker run ... -v <b>/:/host/</b> -it kgibm/fedorawasdebug
-    </pre>
-
-2.  Windows: Add //c/:/host/ to the docker run command. For example:
-
-    <pre>
-    docker run ... -v <b>//c/:/host/</b> -it kgibm/fedorawasdebug
-    </pre>
+* Linux: Add `-v /:/host/` to the `docker run` command. For example:
+  ```
+  docker run ... -v /:/host/ -it kgibm/fedorawasdebug
+  ```
+* Windows: Add `-v //c/:/host/` to the docker run command. For example:
+  ```
+  docker run ... -v //c/:/host/ -it kgibm/fedorawasdebug
+  ```
+* macOS: Add `-v /tmp/:/hosttmp/` to the `docker run` command. Enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences). For example:
+  ```
+  docker run ... -v /tmp/:/hosttmp/ -it kgibm/fedorawasdebug
+  ```
 
 ##  Saving State
 

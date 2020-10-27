@@ -25,8 +25,10 @@
 #   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
 # Tips:
 #   * To access the host filesystem from the container (and vice versa), add the following to docker run:
-#     Linux/macOS: -v /:/host/
+#     Linux: -v /:/host/
 #     Windows: -v //c/:/host/
+#     macOS: -v /tmp/:/hosttmp/
+#       Enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences)
 # Notes:
 #   * Because of a maximum of 125 layers (https://github.com/docker/for-linux/issues/414), minimize the number of RUN
 #     commands when finalizing a new version.
