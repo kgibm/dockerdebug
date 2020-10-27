@@ -13,8 +13,7 @@
 -   [Linux CPU and Memory Usage](#linux-cpu-and-memory-usage)
     -   [linperf Theory](#linperf-theory)
     -   [linperf Lab](#linperf-lab)
--   [IBM Java and OpenJ9 Thread
-    Dumps](#ibm-java-and-openj9-thread-dumps)
+-   [IBM Java and OpenJ9 Thread Dumps](#ibm-java-and-openj9-thread-dumps)
     -   [Thread Dumps Theory](#thread-dumps-theory)
     -   [Thread Dumps Lab](#thread-dumps-lab)
 -   [Garbage Collection](#garbage-collection)
@@ -38,8 +37,7 @@
     -   [Native Memory Leak Lab](#native-memory-leak-lab)
 -   [WAS Liberty](#was-liberty)
     -   [Liberty Bikes](#liberty-bikes)
-    -   [Server Configuration
-        (server.xml)](#server-configuration-serverxml)
+    -   [Server Configuration (server.xml)](#server-configuration-serverxml)
     -   [Java Arguments](#java-arguments)
     -   [Liberty Log Files](#liberty-log-files)
     -   [Admin Center](#admin-center)
@@ -73,7 +71,7 @@ Both Traditional WAS and WAS Liberty come in different flavors including *Base* 
 
 ## Lab Screenshots
 
-![](./media/image2.png)
+<img src="./media/image2.png" width="1024" height="788" />
 
 ![](./media/image3.png)
 
