@@ -3,4 +3,6 @@ liberty/verbosegc_and_oom/core.*.dmp
 liberty/verbosegc_and_oom/core.*_*.zip
 twas/verbosegc_and_oom/core.*.dmp
 twas/verbosegc_and_oom/core.*_*.zip
+liberty/nativememoryleak/javacore.20191106.200057.228.0003.txt
+liberty/verbosegc_and_oom/verbosegc.001.log
 
