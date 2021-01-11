@@ -22,14 +22,14 @@ Tip: To share files with your host machine, add the following to the `docker run
 
 ## Installation Highlights
 
-* Fedora 31 x64
+* Fedora
 * OpenLDAP
 * NMONVisualizer
 * Firefox
 * LibreOffice
 * Wireshark
 * Apache JMeter
-* OpenJDK 8
+* OpenJDK
 
 ## Notes
 

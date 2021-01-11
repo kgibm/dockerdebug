@@ -1,7 +1,7 @@
 # WebSphere Application Server Troubleshooting and Performance Lab on Docker
 
 - Author: [Kevin Grigorenko](mailto:kevin.grigorenko@us.ibm.com)
-- Version: V12 (July 1, 2020)
+- Version: V13 (January 11, 2021)
 - Source: [https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug](https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug)
 
 # Table of Contents
@@ -2310,7 +2310,7 @@ IBM HTTP Server is a reverse proxy HTTP server in this image which proxies to Tr
 
 The `docker run` commands in this lab do not use the `-d` (daemon) flag which means that they run in the foreground. To stop such a container, use one of the following methods:
 
-1. Hold down the `Control (or Ctrl) ⌃` key on your keyboard and press `C` in the terminal window where `docker run` is running.
+1. Hold down the `Control/Ctrl` key on your keyboard and press `C` in the terminal window where `docker run` is running.
 1. In a separate terminal window, find the container ID with `docker ps` and then run `docker stop $ID`.
 
 If you add `-d` to `docker run`, then to view the std logs, find the container ID with `docker ps` and then run `docker logs $ID`. To stop, use `docker stop $ID`.
@@ -2473,8 +2473,8 @@ There are many different versions and types of Java in the image. To list them, 
     /opt/openjdk8_hotspot/jdk/bin/java - family openjdk priority 89999999
     /opt/openjdk11_openj9/jdk/bin/java - family openjdk priority 89999999
     /opt/openjdk11_hotspot/jdk/bin/java - family openjdk priority 89999999
-    /opt/openjdk13_openj9/jdk/bin/java - family openjdk priority 89999999
-    /opt/openjdk13_hotspot/jdk/bin/java - family openjdk priority 89999999
+    /opt/openjdk14_openj9/jdk/bin/java - family openjdk priority 89999999
+    /opt/openjdk14_hotspot/jdk/bin/java - family openjdk priority 89999999
 
 To change the Java that is on the path, run the following command and enter the number of the Java that you wish to change to and press Enter. The directory name tells you the type of Java; for example, OpenJ9 or HotSpot. The directory name also tells you the version of Java (for example, openjdk13 is Java 13).
 
@@ -2490,8 +2490,8 @@ To change the Java that is on the path, run the following command and enter the 
       4           openjdk (/opt/openjdk8_hotspot/jdk/bin/java)
       5           openjdk (/opt/openjdk11_openj9/jdk/bin/java)
       6           openjdk (/opt/openjdk11_hotspot/jdk/bin/java)
-      7           openjdk (/opt/openjdk13_openj9/jdk/bin/java)
-      8           openjdk (/opt/openjdk13_hotspot/jdk/bin/java)
+      7           openjdk (/opt/openjdk14_openj9/jdk/bin/java)
+      8           openjdk (/opt/openjdk14_hotspot/jdk/bin/java)
 
     Enter to keep the current selection[+], or type selection number:
 
@@ -2511,6 +2511,11 @@ Any currently running Java programs will need to be restarted if you want them t
 
 ##  Version History
 
+* V13 (January 11, 2021): Refresh software:
+    * Upgrade to Fedora 33
+    * Upgrade to Liberty 20.0.0.12
+    * Upgrade PTT to V1.0.20200908
+    * Update to TMDA 4.6.8
 * V12 (August 3, 2020): Refresh software:
     * Upgrade to Fedora 32
     * Upgrade to Liberty 20.0.0.8
@@ -2549,9 +2554,6 @@ Tip: to compare between tags; for example: [https://github.com/kgibm/dockerdebug
 Thank you to those that helped build and test this lab:
 
 -   Hiroko Takamiya
-
 -   Andrea Pichler
-
 -   Kazuma Tanabe
-
 -   Shinichi Kako

@@ -7,10 +7,10 @@
 # Step 1: Optionally, create remotepassword.txt in the directory with this Dockerfile and set the contents of the
 #         file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
-#   Without remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --progress=plain -t kgibm/fedorajavadebug .
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedorajavadebug .
+#   Without remotepassword.txt:
+#     DOCKER_BUILDKIT=1 docker build --progress=plain -t kgibm/fedorajavadebug .
 # Step 3: Run the Docker image:
 #   docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedorajavadebug
 # Step 4: Remote into the docker image
@@ -125,10 +125,10 @@ hide_welcome_screen=true\n\
     ( \
       sudo mkdir /opt/tmda/ && \
       cd /opt/tmda/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca467.jar && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca468.jar && \
       sudo mkdir /home/was/tmda/ && \
       sudo chown -R was:root /home/was/tmda/ && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca467.jar\nPath=tmda/\nTerminal=false\n' >> tmda.desktop && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca468.jar\nPath=tmda/\nTerminal=false\n' >> tmda.desktop && \
       sudo chmod a+x tmda.desktop && \
       sudo ln -s /opt/tmda/tmda.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/tmda.desktop /home/was/Desktop/ \

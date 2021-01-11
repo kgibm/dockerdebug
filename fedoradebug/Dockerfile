@@ -7,10 +7,10 @@
 # Step 1: Optionally, create remotepassword.txt in the directory with this Dockerfile and set the contents of the
 #         file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
-#   Without remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --progress=plain -t kgibm/fedoradebug .
 #   With remotepassword.txt:
 #     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedoradebug .
+#   Without remotepassword.txt:
+#     DOCKER_BUILDKIT=1 docker build --progress=plain -t kgibm/fedoradebug .
 # Step 3: Run the Docker image:
 #   docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedoradebug
 # Step 4: Remote into the docker image
@@ -164,7 +164,7 @@ RUN dnf install -y \
       python3-scipy \
       python3-statsmodels \
       python3-xlsxwriter \
-      qt5 \
+      qt \
       R \
       R-devel \
       redhat-lsb.i686 \
@@ -454,7 +454,7 @@ RUN --mount=type=secret,id=remotepassword \
     echo "# https://ant.apache.org/" && \
     ( \
       cd /opt/ && \
-      sudo wget -q https://www.apache.org/dist/ant/binaries/apache-ant-1.10.8-bin.zip && \
+      sudo wget -q https://www.apache.org/dist/ant/binaries/apache-ant-1.10.9-bin.zip && \
       sudo unzip -q apache-ant*.zip && \
       sudo rm -f apache-ant*.zip && \
       sudo mv apache-ant* apache-ant \

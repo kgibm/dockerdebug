@@ -60,11 +60,11 @@ Tip: To share files with your host machine, add the following to the `docker run
 
 ## Installation Highlights
 
-* [Fedora 32 x64](https://hub.docker.com/_/fedora/)
-* [WAS Liberty 20.0.0.8](https://hub.docker.com/_/websphere-liberty)
-* [Traditional WAS Base 9.0.5.3](https://hub.docker.com/r/ibmcom/websphere-traditional)
+* [Fedora x64](https://hub.docker.com/_/fedora/)
+* [WAS Liberty](https://hub.docker.com/_/websphere-liberty)
+* [Traditional WAS Base](https://hub.docker.com/r/ibmcom/websphere-traditional)
 * [IBM Java 8](https://hub.docker.com/_/ibmjava)
-* [IBM HTTP Server 9.0.5.0](https://hub.docker.com/r/ibmcom/ibm-http-server)
+* [IBM HTTP Server](https://hub.docker.com/r/ibmcom/ibm-http-server)
 * [OpenLDAP](https://www.openldap.org/)
 * [DayTrader7 on WAS Liberty connected to OpenLDAP](https://github.com/WASdev/sample.daytrader7)
 * [DayTrader7 on Traditional WAS connected to OpenLDAP](https://github.com/WASdev/sample.daytrader7)
