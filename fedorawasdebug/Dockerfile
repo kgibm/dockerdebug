@@ -136,7 +136,6 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
     sed -i 's/"9402"/"9404"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
     sed -i 's/9080/9081/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
     sed -i 's/9443/9444/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
-    sed -i "s/ps -C .*/pgrep -f 'WsServer ')/g" /work/start_server.sh && \
     echo "# IBM Trace and Request Analyzer for WebSphere Application Server" && \
     echo "# https://www.ibm.com/support/pages/ibm-trace-and-request-analyzer-websphere-application-server" && \
     ( \
@@ -893,8 +892,6 @@ RUN ( \
       sudo pandoc -s -o WAS_Troubleshooting_Perf_Lab.html --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" WAS_Troubleshooting_Perf_Lab.md && \
       ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
     )
-
-RUN sed -i "s/pgrep -f.*/ps -C java -o pid=,cmd= | grep com.ibm.ws.runtime.WsServer | awk '{print \$1}')/g" /work/start_server.sh
 
 EXPOSE 8080 8081 8082 9080 9081 9082 9083 9443 9444 9445 12000 12005
 
