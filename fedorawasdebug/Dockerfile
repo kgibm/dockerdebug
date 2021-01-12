@@ -894,6 +894,8 @@ RUN ( \
       ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
     )
 
+RUN sed -i "s/pgrep -f.*/ps -C java -o pid=,cmd= | grep com.ibm.ws.runtime.WsServer | awk '{print \$1}')/g" /work/start_server.sh
+
 EXPOSE 8080 8081 8082 9080 9081 9082 9083 9443 9444 9445 12000 12005
 
 # Last statement must be switching to root for supervisord

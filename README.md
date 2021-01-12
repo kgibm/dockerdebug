@@ -31,6 +31,7 @@
    ```
    sed 's/<img src="\(.*\)" width.*\/>/![](\1)/g' WAS_Troubleshooting_Perf_Lab.md > WAS_Troubleshooting_Perf_Lab_imagesconverted.md
    pandoc --pdf-engine=xelatex -V geometry:margin=1in -s -o WAS_Troubleshooting_Perf_Lab.pdf --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" WAS_Troubleshooting_Perf_Lab_imagesconverted.md
+   rm WAS_Troubleshooting_Perf_Lab_imagesconverted.md
    ```
 1. `git commit -am "VXX: New version with ..."`
 1. `git push`

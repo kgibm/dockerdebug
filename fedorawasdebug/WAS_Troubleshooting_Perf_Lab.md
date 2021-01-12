@@ -1,7 +1,7 @@
 # WebSphere Application Server Troubleshooting and Performance Lab on Docker
 
 - Author: [Kevin Grigorenko](mailto:kevin.grigorenko@us.ibm.com)
-- Version: V13 (January 11, 2021)
+- Version: V14 (January 12, 2021)
 - Source: [https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug](https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug)
 
 # Table of Contents
@@ -2511,6 +2511,7 @@ Any currently running Java programs will need to be restarted if you want them t
 
 ##  Version History
 
+* V14 (January 12, 2021): Fix issue tailing tWAS logs
 * V13 (January 11, 2021): Refresh software:
     * Upgrade to Fedora 33
     * Upgrade to Liberty 20.0.0.12
