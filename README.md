@@ -24,9 +24,11 @@
 1. `docker pull websphere-liberty`
 1. `docker pull ibmcom/websphere-traditional`
 1. `docker pull ibmcom/ibm-http-server`
+1. If needed, update Liberty build in `MAVEN_LIBERTY_VERSION` in `fedorawasdebug/Dockerfile`
 1. `DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedorawasdebug .`
-1. `DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedorawasdebugejb -f Dockerfile.ejb .`
 1. Run and test the image.
+1. `DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedorawasdebugejb -f Dockerfile.ejb .`
+1. Update version number and date, and revision history in `WAS_Troubleshooting_Perf_Lab.md`
 1. Generate lab PDF:
    ```
    sed 's/<img src="\(.*\)" width.*\/>/![](\1)/g' WAS_Troubleshooting_Perf_Lab.md > WAS_Troubleshooting_Perf_Lab_imagesconverted.md

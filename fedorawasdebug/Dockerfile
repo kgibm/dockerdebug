@@ -44,7 +44,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 # The following Liberty version is used in the liberty-bikes builds. Find the latest version here:
 # https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
-ARG MAVEN_LIBERTY_VERSION="20.0.0.12"
+ARG MAVEN_LIBERTY_VERSION="21.0.0.1"
 
 ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
