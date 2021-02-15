@@ -43,6 +43,6 @@
     1. `docker tag $IMAGEID $NAME:VXX` (Example `$NAME`=`kgibm/fedoradebug`)
     1. `docker push $NAME:VXX`
 1. After all VXX versions are pushed, push the latest tags:
-    1. `docker push $NAME:latest`
+    1. `docker push kgibm/fedoradebug:latest && docker push kgibm/fedorajavadebug:latest && docker push kgibm/fedorawasdebug:latest && docker push kgibm/fedorawasdebugejb:latest`
 1. `git tag VXX`
 1. `git push --tags`
