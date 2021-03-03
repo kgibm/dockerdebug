@@ -1,0 +1,106 @@
+[Wed Mar 03 21:20:23.204013 2021] [was_ap24:notice] [pid 328:tid 140653702871936] ---------------------------------------------------
+[Wed Mar 03 21:20:23.204076 2021] [was_ap24:notice] [pid 328:tid 140653702871936] WebSphere Plugins loaded.
+[Wed Mar 03 21:20:23.204084 2021] [was_ap24:notice] [pid 328:tid 140653702871936] Bld version: 9.0.5
+[Wed Mar 03 21:20:23.204087 2021] [was_ap24:notice] [pid 328:tid 140653702871936] Bld date: May 23 2019, 23:02:05
+[Wed Mar 03 21:20:23.204090 2021] [was_ap24:notice] [pid 328:tid 140653702871936] Webserver: IBM_HTTP_Server/9.0.5.0 (Unix)
+[Wed Mar 03 21:20:23.204093 2021] [was_ap24:notice] [pid 328:tid 140653702871936] ---------------------------------------------------
+[Wed Mar 03 21:20:23.204115 2021] [:notice] [pid 328:tid 140653702871936] Using config file /opt/IBM/HTTPServer/conf/httpd.conf 
+[Wed Mar 03 21:20:23.205911 2021] [mpm_event:notice] [pid 328:tid 140653702871936] CoreDumpDirectory not set; core dumps may not be written for child process crashes
+[Wed Mar 03 21:20:23.206558 2021] [mpm_event:notice] [pid 328:tid 140653702871936] AH00489: IBM_HTTP_Server/9.0.5.0 (Unix) configured -- resuming normal operations
+[Wed Mar 03 21:20:23.206728 2021] [core:notice] [pid 328:tid 140653702871936] AH00094: Command line: '/opt/IBM/HTTPServer/bin/httpd -d /opt/IBM/HTTPServer'
+[Wed Mar 03 21:26:06.593309 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 93 bsy 7 rd 0 wr 7 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:26:06.593348 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 7 in mod_was_ap22_http.c
+[Wed Mar 03 21:26:16.603505 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:26:16.603568 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:26:26.614084 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 93 bsy 7 rd 0 wr 7 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:26:26.614133 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 7 in mod_was_ap22_http.c
+[Wed Mar 03 21:26:36.624556 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 93 bsy 7 rd 0 wr 7 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:26:36.624576 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 7 in mod_was_ap22_http.c
+[Wed Mar 03 21:26:46.635205 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:26:46.635250 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:26:56.645624 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:26:56.645665 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:27:06.657545 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:27:06.657570 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:27:16.668562 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 1 log 0 dns 0 cls 0
+[Wed Mar 03 21:27:16.668645 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:27:26.678711 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:27:26.678746 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:27:36.688743 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:27:36.688775 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:27:46.698783 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:27:46.698837 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:27:56.728719 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 95 bsy 5 rd 0 wr 5 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:27:56.728776 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 5 in mod_was_ap22_http.c
+[Wed Mar 03 21:28:06.740335 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 94 bsy 6 rd 0 wr 6 ka 2 log 0 dns 0 cls 0
+[Wed Mar 03 21:28:06.740426 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 6 in mod_was_ap22_http.c
+[Wed Mar 03 21:28:16.750734 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 1 log 0 dns 0 cls 0
+[Wed Mar 03 21:28:16.750765 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:28:26.760727 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 95 bsy 5 rd 0 wr 5 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:28:26.760750 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 5 in mod_was_ap22_http.c
+[Wed Mar 03 21:28:36.771051 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 1 log 0 dns 0 cls 0
+[Wed Mar 03 21:28:36.771091 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:28:46.781098 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:28:46.781139 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:28:56.792181 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:28:56.792228 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:29:06.802215 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 94 bsy 6 rd 0 wr 6 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:29:06.802253 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 6 in mod_was_ap22_http.c
+[Wed Mar 03 21:29:16.813352 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 7 ka 0 log 1 dns 0 cls 0
+[Wed Mar 03 21:29:16.813408 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 7 in mod_was_ap22_http.c
+[Wed Mar 03 21:29:26.822335 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 1 log 0 dns 0 cls 0
+[Wed Mar 03 21:29:26.822390 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:29:36.833070 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 1 log 0 dns 0 cls 0
+[Wed Mar 03 21:29:36.833107 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:29:46.843128 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 1 log 0 dns 0 cls 0
+[Wed Mar 03 21:29:46.843172 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:29:56.853316 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 1 log 0 dns 0 cls 0
+[Wed Mar 03 21:29:56.853345 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:30:06.862111 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 93 bsy 7 rd 0 wr 7 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:30:06.862158 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 7 in mod_was_ap22_http.c
+[Wed Mar 03 21:30:16.872111 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 96 bsy 4 rd 0 wr 4 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:30:16.872152 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 4 in mod_was_ap22_http.c
+[Wed Mar 03 21:30:26.882169 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 1 log 0 dns 0 cls 0
+[Wed Mar 03 21:30:26.882215 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:30:36.892711 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:30:36.892748 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:30:46.903406 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 92 bsy 8 rd 0 wr 8 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:30:46.903447 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 8 in mod_was_ap22_http.c
+[Wed Mar 03 21:30:56.913000 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 93 bsy 7 rd 0 wr 7 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:30:56.913027 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 7 in mod_was_ap22_http.c
+[Wed Mar 03 21:31:06.923571 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 96 bsy 4 rd 0 wr 4 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:31:06.923652 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 4 in mod_was_ap22_http.c
+[Wed Mar 03 21:31:16.935721 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 96 bsy 4 rd 0 wr 4 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:31:16.935802 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 4 in mod_was_ap22_http.c
+[Wed Mar 03 21:31:26.947515 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 96 bsy 4 rd 0 wr 4 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:31:26.947744 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 4 in mod_was_ap22_http.c
+[Wed Mar 03 21:31:36.961673 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 1
+[Wed Mar 03 21:31:36.961830 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:31:46.975752 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 1
+[Wed Mar 03 21:31:46.975817 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:31:56.989973 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 1
+[Wed Mar 03 21:31:56.990034 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:07.003643 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:32:07.003711 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:07.003720 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats (long-running only): bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:17.017693 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:32:17.017741 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:17.017747 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats (long-running only): bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:27.030947 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:32:27.031001 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:27.031006 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats (long-running only): bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:37.048131 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:32:37.048199 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:37.048208 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats (long-running only): bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:47.066573 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:32:47.066652 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:47.066665 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats (long-running only): bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:57.083402 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:32:57.083490 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:32:57.083503 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats (long-running only): bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:33:07.103437 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:33:07.103480 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:33:07.103485 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats (long-running only): bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:33:17.113575 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: rdy 97 bsy 3 rd 0 wr 3 ka 0 log 0 dns 0 cls 0
+[Wed Mar 03 21:33:17.113671 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats: bsy: 3 in mod_was_ap22_http.c
+[Wed Mar 03 21:33:17.113684 2021] [mpmstats:notice] [pid 393:tid 140653702871936] mpmstats (long-running only): bsy: 3 in mod_was_ap22_http.c

@@ -1,0 +1,31 @@
+[03/Mar/2021:21:20:23.20385] 00000148 7dfefb80 - PLUGIN: Plugins loaded.
+[03/Mar/2021:21:20:23.20391] 00000148 7dfefb80 - PLUGIN: --------------------System Information-----------------------
+[03/Mar/2021:21:20:23.20393] 00000148 7dfefb80 - PLUGIN: Bld version: 9.0.5.0
+[03/Mar/2021:21:20:23.20393] 00000148 7dfefb80 - PLUGIN: Bld date: May 23 2019, 23:02:24
+[03/Mar/2021:21:20:23.20394] 00000148 7dfefb80 - PLUGIN: Webserver: IBM_HTTP_Server/9.0.5.0 (Unix)
+[03/Mar/2021:21:20:23.20395] 00000148 7dfefb80 - PLUGIN: OS : Linux x86_64
+[03/Mar/2021:21:20:23.20396] 00000148 7dfefb80 - PLUGIN: Hostname = 8c3600ba3257
+[03/Mar/2021:21:20:23.20397] 00000148 7dfefb80 - PLUGIN: NOFILES = hard: 1048576, soft: 1048576
+[03/Mar/2021:21:20:23.20397] 00000148 7dfefb80 - PLUGIN: MAX COREFILE SZ = hard: INFINITE, soft: INFINITE
+[03/Mar/2021:21:20:23.20398] 00000148 7dfefb80 - PLUGIN: DATA = hard: INFINITE, soft: INFINITE
+[03/Mar/2021:21:20:23.20399] 00000148 7dfefb80 - PLUGIN: --------------------------------------------------------------
+[03/Mar/2021:21:27:45.85558] 0000018a 679f3640 - ERROR: lib_htresponse: htresponseRead: Response code 200 received. Error occured in reading response 1.
+[03/Mar/2021:21:27:45.85575] 0000018a 679f3640 - ERROR: ws_common: websphereHandleRequest: Failed to execute the transaction to 'DefaultNode01_server1' on host 'localhost:9081'; will try another one
+[03/Mar/2021:21:27:45.85577] 0000018a 679f3640 - ERROR: ws_common: websphereWriteRequestReadResponse: Failed to find an app server to handle this request 
+[03/Mar/2021:21:27:45.85578] 0000018a 679f3640 - ERROR: ws_common: websphereRequestHandler: Failed to find an app server to handle this request
+[03/Mar/2021:21:27:45.85580] 0000018a 679f3640 - ERROR: [127.0.0.1://daytrader/app] ws_common: websphereHandleRequest: Failed to handle request rc=10
+[03/Mar/2021:21:28:17.87103] 0000018a 799a5640 - ERROR: lib_htresponse: htresponseRead: Response code 200 received. Error occured in reading response 1.
+[03/Mar/2021:21:28:17.87118] 0000018a 799a5640 - ERROR: ws_common: websphereHandleRequest: Failed to execute the transaction to 'DefaultNode01_server1' on host 'localhost:9081'; will try another one
+[03/Mar/2021:21:28:17.87121] 0000018a 799a5640 - ERROR: ws_common: websphereWriteRequestReadResponse: Failed to find an app server to handle this request 
+[03/Mar/2021:21:28:17.87122] 0000018a 799a5640 - ERROR: ws_common: websphereRequestHandler: Failed to find an app server to handle this request
+[03/Mar/2021:21:28:17.87126] 0000018a 799a5640 - ERROR: [127.0.0.1://daytrader/app] ws_common: websphereHandleRequest: Failed to handle request rc=10
+[03/Mar/2021:21:30:25.92531] 0000018a 7a9c5640 - ERROR: lib_htresponse: htresponseRead: Response code 101 received. Error occured in reading response 1.
+[03/Mar/2021:21:30:25.92538] 0000018a 7a9c5640 - ERROR: ws_common: websphereHandleRequest: Failed to execute the transaction to 'DefaultNode01_server1' on host 'localhost:9081'; will try another one
+[03/Mar/2021:21:30:25.92539] 0000018a 7a9c5640 - ERROR: ws_common: websphereWriteRequestReadResponse: Failed to find an app server to handle this request 
+[03/Mar/2021:21:30:25.92541] 0000018a 7a9c5640 - ERROR: ws_common: websphereRequestHandler: Failed to find an app server to handle this request
+[03/Mar/2021:21:30:25.92542] 0000018a 7a9c5640 - ERROR: [127.0.0.1://daytrader/app] ws_common: websphereHandleRequest: Failed to handle request rc=10
+[03/Mar/2021:21:30:47.01377] 0000018a 78c8b640 - ERROR: lib_htresponse: htresponseRead: Response code 200 received. Error occured in reading response 1.
+[03/Mar/2021:21:30:47.01386] 0000018a 78c8b640 - ERROR: ws_common: websphereHandleRequest: Failed to execute the transaction to 'DefaultNode01_server1' on host 'localhost:9081'; will try another one
+[03/Mar/2021:21:30:47.01388] 0000018a 78c8b640 - ERROR: ws_common: websphereWriteRequestReadResponse: Failed to find an app server to handle this request 
+[03/Mar/2021:21:30:47.01390] 0000018a 78c8b640 - ERROR: ws_common: websphereRequestHandler: Failed to find an app server to handle this request
+[03/Mar/2021:21:30:47.01391] 0000018a 78c8b640 - ERROR: [127.0.0.1://daytrader/app] ws_common: websphereHandleRequest: Failed to handle request rc=10
