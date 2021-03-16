@@ -1,0 +1,6 @@
+Tue Mar 16 16:40:18 UTC 2021
+dropped privs to root
+tcpdump: listening on lo, link-type EN10MB (Ethernet), capture size 262144 bytes
+Got 0Got 0Got 0Got 0Got 0Got 0Got 0Got 0Got 0Got 2479Got 6408Got 10322Got 14183Got 19189Got 28936Got 34735Got 37038Got 37098Got 37098Got 37098Got 37098Got 37098Got 37098Got 37098Got 37098Got 37098Got 37098Got 37098Got 37098Got 37098Got 37098Got 3709837098 packets captured
+74196 packets received by filter
+0 packets dropped by kernel
