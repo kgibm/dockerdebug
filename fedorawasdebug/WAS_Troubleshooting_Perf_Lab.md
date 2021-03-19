@@ -50,7 +50,7 @@
     -   [Binary Logging](#binary-logging)
     -   [Liberty Timed Operations](#liberty-timed-operations)
     -   [MicroServices](#microservices)
--   [Traditional WAS](#traditional-was)
+-   [WAS traditional](#was-traditional)
     -   [Diagnostic Plans](#diagnostic-plans)
 -   [IBM HTTP Server](#ibm-http-server)
 -   [Appendix](#appendix)
@@ -61,13 +61,13 @@
 
 [WebSphere Application Server](https://www.ibm.com/cloud/websphere-application-platform) (WAS) is a platform for serving Java-based applications. WAS comes in two major product forms:
 
-1.  [Traditional WAS](https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.5/com.ibm.websphere.nd.multiplatform.doc/ae/welcome_ndmp.html) (colloquially: tWAS or WAS Classic): Released in 1998 and still fully supported and used by many.
+1.  [WAS traditional](https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.5/com.ibm.websphere.nd.multiplatform.doc/ae/welcome_ndmp.html) (colloquially: tWAS or WAS Classic): Released in 1998 and still fully supported and used by many.
 
 2.  [WAS Liberty](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/as_ditamaps/was900_welcome_liberty_ndmp.html) (or WebSphere Liberty): Released in 2012 and designed for fast startup, composability, and the cloud. The commercial WAS Liberty product is built on top of the open source [OpenLiberty](https://github.com/OpenLiberty/open-liberty). The colloquial term \'Liberty\' may refer to WAS Liberty, OpenLiberty, or both.
 
-Traditional WAS and Liberty share some source code but [differ in significant ways](http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/documentation/ChoosingTraditionalWASorLiberty-16.0.0.4.pdf).
+WAS traditional and Liberty share some source code but [differ in significant ways](http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/documentation/ChoosingTraditionalWASorLiberty-16.0.0.4.pdf).
 
-Both Traditional WAS and WAS Liberty come in different flavors including *Base* and *Network Deployment (ND)* in which ND layers additional features such as advanced high availability on top of Base, although ND capabilities are generally not used in orchestrated cloud environments like Kubernetes as such capabilities are built-in.
+Both WAS traditional and WAS Liberty come in different flavors including *Base* and *Network Deployment (ND)* in which ND layers additional features such as advanced high availability on top of Base, although ND capabilities are generally not used in orchestrated cloud environments like Kubernetes as such capabilities are built-in.
 
 ## Lab Screenshots
 
@@ -95,11 +95,11 @@ This lab assumes the installation and use of Docker to run the lab. For example,
 
     -   For an example, see <https://docs.docker.com/install/linux/docker-ce/fedora/>
 
-This lab covers the major tools and techniques for troubleshooting and performance tuning for both Traditional WAS and WAS Liberty, in addition to specific tools for each. There is significant overlap because a lot of troubleshooting and tuning occurs at the operating system and Java levels, largely independent of WAS.
+This lab covers the major tools and techniques for troubleshooting and performance tuning for both WAS traditional and WAS Liberty, in addition to specific tools for each. There is significant overlap because a lot of troubleshooting and tuning occurs at the operating system and Java levels, largely independent of WAS.
 
-This lab Docker image come with Traditional WAS and WAS Liberty pre-installed so installation and configuration steps are skipped.
+This lab Docker image come with WAS traditional and WAS Liberty pre-installed so installation and configuration steps are skipped.
 
-The way we are using Docker in these [lab](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/Dockerfile) [Docker](https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile) [images](https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile) is to run multiple services in the same container (e.g. VNC, Remote Desktop, Traditional WAS, WAS Liberty, a full GUI server, etc.) and although this approach is [valid and supported](https://docs.docker.com/config/containers/multi-service_container/), it is not generally recommended for real-world application deployment usage. In this case, Docker is used primarily for easy distribution and building of this lab. For labs that demonstrate how to use WAS in production, see [WebSphere Application Server and Docker Tutorials](https://github.com/WASdev/ci.docker.tutorials).
+The way we are using Docker in these [lab](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/Dockerfile) [Docker](https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile) [images](https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile) is to run multiple services in the same container (e.g. VNC, Remote Desktop, WAS traditional, WAS Liberty, a full GUI server, etc.) and although this approach is [valid and supported](https://docs.docker.com/config/containers/multi-service_container/), it is not generally recommended for real-world application deployment usage. In this case, Docker is used primarily for easy distribution and building of this lab. For labs that demonstrate how to use WAS in production, see [WebSphere Application Server and Docker Tutorials](https://github.com/WASdev/ci.docker.tutorials).
 
 ## Operating System
 
@@ -107,11 +107,11 @@ This lab is built on top of Linux (specifically, Fedora Linux, which is the open
 
 ## Java
 
-Traditional WAS ships with a packaged IBM Java 8 on Linux, AIX, Windows, z/OS, and IBM i.
+WAS traditional ships with a packaged IBM Java 8 on Linux, AIX, Windows, z/OS, and IBM i.
 
 WAS Liberty supports any Java 8 or Java 11 compliant Java (with some [minimum requirements](https://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/rwlp_restrict.html?view=kc#rwlp_restrict__rest13)).
 
-This lab uses IBM Java 8 for both Traditional WAS and WAS Liberty. The concepts and techniques apply generally to other Java runtimes although details of other Java runtimes (e.g. [HotSpot](https://publib.boulder.ibm.com/httpserv/cookbook/Java.html)) vary significantly and are covered elsewhere.
+This lab uses IBM Java 8 for both WAS traditional and WAS Liberty. The concepts and techniques apply generally to other Java runtimes although details of other Java runtimes (e.g. [HotSpot](https://publib.boulder.ibm.com/httpserv/cookbook/Java.html)) vary significantly and are covered elsewhere.
 
 The IBM Java virtual machine (named J9) has become largely open sourced into the [OpenJ9 project](https://github.com/eclipse/openj9). OpenJ9 ships with OpenJDK through the [AdoptOpenJDK project](https://adoptopenjdk.net/). OpenJDK is somewhat different than the JDK that IBM Java uses. WAS Liberty supports running with newer versions of OpenJDK+OpenJ9, although some IBM Java tooling such as HealthCenter is not yet available in OpenJ9, so the focus of this lab continues to be IBM Java 8.
 
@@ -234,7 +234,7 @@ Problem determination and performance tuning are best done with all layers of th
 
     1.  If learning Liberty: **/opt/daytrader7/jmeter\_files/daytrader7\_liberty.jmx**
 
-    2.  If learning Traditional WAS: **/opt/daytrader7/jmeter\_files/daytrader7\_twas.jmx**
+    2.  If learning WAS traditional: **/opt/daytrader7/jmeter\_files/daytrader7\_twas.jmx**
 
 3.  By default, the script will execute 4 concurrent users. You may change this if you want (e.g. based on the number of CPUs available):\
     \
@@ -254,7 +254,7 @@ Problem determination and performance tuning are best done with all layers of th
 
         1.  If learning Liberty: **/logs/messages.log**
 
-        2.  If learning Traditional WAS: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/SystemOut.log**
+        2.  If learning WAS traditional: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/SystemOut.log**
 
 ### Stop JMeter
 
@@ -325,7 +325,7 @@ Now, let's run the script:
         4 S was       <b>1567</b>     1 99  80   0 - 802601 -     19:26 pts/1    00:03:35 java -javaagent:/opt/ibm/wlp/bin/tools/ws-javaagent.jar -Djava.awt.headless=true -Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -jar /opt/ibm/wlp/bin/tools/ws-server.jar defaultServer
         </pre>
         
-        If learning Traditional WAS (the name is server1 and we search for DefaultNode01 as well because there are some tail commands in the background that have **server1** in them):
+        If learning WAS traditional (the name is server1 and we search for DefaultNode01 as well because there are some tail commands in the background that have **server1** in them):
 
         <pre>
         $ ps -elf | grep "DefaultNode01 server1" | grep -v grep
@@ -341,7 +341,7 @@ Now, let's run the script:
         <b>1567</b>
         </pre>
 
-        If learning Traditional WAS:
+        If learning WAS traditional:
 
         <pre>
         $ pgrep -f "DefaultNode01 server1"
@@ -370,7 +370,7 @@ Now, let's run the script:
 
         mv /opt/ibm/wlp/output/defaultServer/javacore.* .
 
-    If learning Traditional WAS:
+    If learning WAS traditional:
 
         mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/javacore.* .
 
@@ -466,7 +466,7 @@ The **top** command may be run in interactive mode by simply running the **top**
 
 ### Linux top -H
 
-**top -H** is similar to top except that the **-H** flag shows the top CPU usage by thread instead of by PID. Open **topdashH\*.out** to review the output. Again, this file shows multiple intervals, so it's important to review all intervals to understand CPU usage over time. Here is an example interval from Liberty (on Traditional WAS, the main difference will be **WebContai+** threads instead of **Default E+**):
+**top -H** is similar to top except that the **-H** flag shows the top CPU usage by thread instead of by PID. Open **topdashH\*.out** to review the output. Again, this file shows multiple intervals, so it's important to review all intervals to understand CPU usage over time. Here is an example interval from Liberty (on WAS traditional, the main difference will be **WebContai+** threads instead of **Default E+**):
 
 <pre>
 Tue Apr 23 19:29:27 UTC 2019
@@ -500,7 +500,7 @@ The three columns in bold are the important values:
 
     1.  **Default Executor** threads are generally application threads processing HTTP and other user work on Liberty,
 
-    1.  **WebContainer** threads are application threads processing HTTP work on Traditional WAS,
+    1.  **WebContainer** threads are application threads processing HTTP work on WAS traditional,
 
     1.  **Inbound...** threads are Liberty threads processing new inbound user requests,
 
@@ -552,7 +552,7 @@ We will review the thread dumps gathered by linperf.sh above:
 
 2.  Open **/opt/programs/** in the file browser and double click on **TMDA**:
 
-3.  Click Open Thread Dumps and select all of the **javacore\*.txt** files using the Shift key. These may be in your home directory (**/home/was**) if you moved them in the previous exercise; otherwise, they're in the default working directory (Liberty: **/opt/ibm/wlp/output/defaultServer** ; Traditional WAS: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**):\
+3.  Click Open Thread Dumps and select all of the **javacore\*.txt** files using the Shift key. These may be in your home directory (**/home/was**) if you moved them in the previous exercise; otherwise, they're in the default working directory (Liberty: **/opt/ibm/wlp/output/defaultServer** ; WAS traditional: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**):\
     \
     <img src="./media/image27.png" width="183" height="95" />\
     \
@@ -613,7 +613,7 @@ Next, let's simulate a hung thread situation and analyze the problem with thread
 
     1.  If learning Liberty: <http://localhost:9080/swat/>
 
-    1.  If learning Traditional WAS: <http://localhost:9081/swat/>
+    1.  If learning WAS traditional: <http://localhost:9081/swat/>
 
 2.  Scroll down and click on Deadlocker:\
     \
@@ -625,7 +625,7 @@ Next, let's simulate a hung thread situation and analyze the problem with thread
 
         kill -3 $(pgrep -f defaultServer)
 
-    If learning Traditional WAS:
+    If learning WAS traditional:
 
         kill -3 $(pgrep -f "DefaultNode01 server1")
 
@@ -637,7 +637,7 @@ Next, let's simulate a hung thread situation and analyze the problem with thread
 
             pkill -3 -f defaultServer
 
-        If learning Traditional WAS:
+        If learning WAS traditional:
 
             pkill -3 -f "DefaultNode01 server1"
 
@@ -645,7 +645,7 @@ Next, let's simulate a hung thread situation and analyze the problem with thread
     \
     <img src="./media/image39.png" width="718" height="181" />
 
-5.  Click **File** \> **Open Thread Dumps** and navigate to (Liberty: **/opt/ibm/wlp/output/defaultServer** ; Traditional WAS: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**) and select both new thread dumps and click **Open**:\
+5.  Click **File** \> **Open Thread Dumps** and navigate to (Liberty: **/opt/ibm/wlp/output/defaultServer** ; WAS traditional: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**) and select both new thread dumps and click **Open**:\
     \
     <img src="./media/image40.png" width="511" height="338" />
 
@@ -671,7 +671,7 @@ Next, let's combine what we've learned about the **top -H** command and thread d
 
     1.  If learning Liberty: <http://localhost:9080/swat/>
 
-    1.  If learning Traditional WAS: <http://localhost:9081/swat/>
+    1.  If learning WAS traditional: <http://localhost:9081/swat/>
 
 2.  Scroll down and click on InfiniteLoop:\
     \
@@ -709,7 +709,7 @@ Next, let's combine what we've learned about the **top -H** command and thread d
 
         pkill -3 -f defaultServer
 
-    If learning Traditional WAS:
+    If learning WAS traditional:
 
         pkill -3 -f "DefaultNode01 server1"
 
@@ -727,7 +727,7 @@ Next, let's combine what we've learned about the **top -H** command and thread d
 
         pkill -9 -f defaultServer
 
-    If learning Traditional WAS:
+    If learning WAS traditional:
 
         pkill -9 -f "DefaultNode01 server1"
 
@@ -771,7 +771,7 @@ Add the verbosegc option to the jvm.options file:
 
             /opt/ibm/wlp/bin/server start defaultServer
 
-3.  If learning Traditional WAS, verbosegc is enabled by default so you don\'t need to do anything.
+3.  If learning WAS traditional, verbosegc is enabled by default so you don\'t need to do anything.
 
 1.  [Start JMeter](#start-jmeter)
 
@@ -836,7 +836,7 @@ Next, let's simulate a memory issue.
 
         `/opt/ibm/wlp/bin/server start defaultServer`
 
-1.  If learning Traditional WAS:
+1.  If learning WAS traditional:
 
     1.  Open the Administrative Console at <https://localhost:9043/ibm/console>
 
@@ -881,7 +881,7 @@ Next, let's simulate a memory issue.
 
     1.  If learning Liberty: <http://localhost:9080/swat/AllocateObject?size=1048576&iterations=300&waittime=1000&retainData=true>
 
-    1.  If learning Traditional WAS: <http://localhost:9081/swat/AllocateObject?size=1048576&iterations=300&waittime=1000&retainData=true>
+    1.  If learning WAS traditional: <http://localhost:9081/swat/AllocateObject?size=1048576&iterations=300&waittime=1000&retainData=true>
 
     1.  This will allocate three hundred 1MB objects with a delay of 1 second between each allocation, and hold on to all of them to simulate a leak.
 
@@ -903,7 +903,7 @@ Next, let's simulate a memory issue.
 
             pkill -9 -f defaultServer
 
-    1.  If learning Traditional WAS:
+    1.  If learning WAS traditional:
 
             pkill -9 -f "DefaultNode01 server1"
 
@@ -1076,7 +1076,7 @@ Do not confuse system dumps which are usually named **core\*.dmp** with thread d
 1.  Click **File** \> **Open Heap Dump\...**\
     <img src="./media/image78.png" width="271" height="244" />
 
-2.  Select the **core.\*.dmp** file produced in the previous garbage collection lab (if learning Liberty: **/opt/ibm/wlp/output/defaultServer/core\*dmp** ; if learning Traditional WAS: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/core\*dmp**):\
+2.  Select the **core.\*.dmp** file produced in the previous garbage collection lab (if learning Liberty: **/opt/ibm/wlp/output/defaultServer/core\*dmp** ; if learning WAS traditional: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/core\*dmp**):\
     <img src="./media/image79.png" width="647" height="476" />
 
 3.  Click on the progress icon in the bottom right corner to get a detailed view of the progress:\
@@ -1179,7 +1179,7 @@ The [IBM Extensions for Memory Analyzer (IEMA)](https://publib.boulder.ibm.com/h
     \
     <img src="./media/image105.png" width="876" height="426" />
 
-3.  You may explore the other extensions under IBM Extensions. Some only apply to Traditional WAS, some only to Liberty, and some to both. Unlike MAT, IEMA is not officially supported but we try to fix and enhance it as time permits.
+3.  You may explore the other extensions under IBM Extensions. Some only apply to WAS traditional, some only to Liberty, and some to both. Unlike MAT, IEMA is not officially supported but we try to fix and enhance it as time permits.
 
 # Health Center
 
@@ -1234,7 +1234,7 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
         `-Xhealthcenter:level=headless`
 
-    2.  If learning Traditional WAS, go to the same place where you entered the maximum heap size and add a space and **-Xhealthcenter:level=headless** to **Generic JVM arguments**:\
+    2.  If learning WAS traditional, go to the same place where you entered the maximum heap size and add a space and **-Xhealthcenter:level=headless** to **Generic JVM arguments**:\
         <img src="./media/image106.png" width="491" height="110" />
 
         1.  Then click OK and Save.
@@ -1245,7 +1245,7 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
         `/opt/ibm/wlp/bin/server stop defaultServer`
 
-    2.  If learning Traditional WAS:
+    2.  If learning WAS traditional:
 
         `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1 -username wsadmin -password websphere`
 
@@ -1255,7 +1255,7 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
         `/opt/ibm/wlp/bin/server start defaultServer`
 
-    2.  If learning Traditional WAS:
+    2.  If learning WAS traditional:
 
         `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1`
 
@@ -1271,7 +1271,7 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
     \
     <img src="./media/image107.png" width="643" height="656" />
 
-10. Select the **healthcenter\*.hcd** file from (Liberty: **/opt/ibm/wlp/output/defaultServer** ; Traditional WAS: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**):\
+10. Select the **healthcenter\*.hcd** file from (Liberty: **/opt/ibm/wlp/output/defaultServer** ; WAS traditional: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**):\
     <img src="./media/image108.png" width="784" height="260" />
 
 11. Wait for the data to complete loading:\
@@ -2101,7 +2101,7 @@ If all MXBeans are enabled, IBM benchmarks show about a 4% overhead. This may be
 
       <monitor filter="ServletStats,ConnectionPool,..." />
 
-Unlike Traditional WAS which has many thread pools, most work in Liberty occurs in a single thread pool named **Default Executor** (apart from application-created threads). All standard JEE services such as Web, EJB, executor, and JCA (with a few rare exceptions) run on a single **Default Executor** thread pool.
+Unlike WAS traditional which has many thread pools, most work in Liberty occurs in a single thread pool named **Default Executor** (apart from application-created threads). All standard JEE services such as Web, EJB, executor, and JCA (with a few rare exceptions) run on a single **Default Executor** thread pool.
 
 The **\<executor /\>** element in server.xml may be used to configure the Default Executor; although, in general, unless there are observed problems with threading, it is not recommended to tune nor even specify this element as it is auto-tuned.
 
@@ -2264,7 +2264,7 @@ The base of MicroProfile are three Java EE technologies: CDI, JAX-RS, and JSON-P
 
 OpenLiberty [publishes example guides](https://openliberty.io/guides/) on how to use each MicroProfile technology.
 
-# Traditional WAS
+# WAS traditional
 
 ## Diagnostic Plans
 
@@ -2302,7 +2302,7 @@ In this lab, we will demonstrate a simple diagnostic plan which watches for the 
 
 # IBM HTTP Server
 
-IBM HTTP Server is a reverse proxy HTTP server in this image which proxies to Traditional WAS. It is installed at **/opt/IBM/HTTPServer** and may be accessed at http://localhost:9083/.
+IBM HTTP Server is a reverse proxy HTTP server in this image which proxies to WAS traditional. It is installed at **/opt/IBM/HTTPServer** and may be accessed at http://localhost:9083/.
 
 # Appendix
 
@@ -2371,11 +2371,15 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
 
     User = wsadmin, Password = websphere
 
-2.  Test Traditional WAS by going to http://localhost:9081/daytrader/ in your host browser or in the remote desktop/VNC browser.
+2.  Test WAS traditional by going to http://localhost:9081/daytrader/ in your host browser or in the remote desktop/VNC browser.
 
     User = wsadmin, Password = websphere
 
-3.  Test the Traditional WAS Administrative Console by going to https://localhost:9043/ibm/console in your client browser or in the remote desktop/VNC browser.
+3.  Test the WAS traditional Administrative Console by going to https://localhost:9043/ibm/console in your client browser or in the remote desktop/VNC browser.
+
+    User = wsadmin, Password = websphere
+
+4.  Test IBM HTTP Server and WAS traditional by going to http://localhost:9083/daytrader/ in your host browser or in the remote desktop/VNC browser.
 
     User = wsadmin, Password = websphere
 
@@ -2507,7 +2511,7 @@ Show the Java version to verify the change (in this case, I chose option 7 and t
     OMR      - 20db4fbc
     JCL      - 74a8738189 based on jdk-13.0.1+9)
 
-Any currently running Java programs will need to be restarted if you want them to use the different version of Java (Traditional WAS is an exception because it uses a bundled version of Java).
+Any currently running Java programs will need to be restarted if you want them to use the different version of Java (WAS traditional is an exception because it uses a bundled version of Java).
 
 ##  Version History
 

@@ -1,6 +1,6 @@
 # WebSphere Application Server Troubleshooting and Performance Lab on Docker
 
-A lab on Troubleshooting and Performance Tuning WAS Liberty and Traditional WAS covering various topics like CPU usage, thread dumps, garbage collection, memory analysis, profiling, and more. The Docker container provides a full Linux VM with GUI (see screenshots below) which runs on Windows, Mac, and Linux hosts.
+A lab on Troubleshooting and Performance Tuning WAS Liberty and WAS traditional covering various topics like CPU usage, thread dumps, garbage collection, memory analysis, profiling, and more. The Docker container provides a full Linux VM with GUI (see screenshots below) which runs on Windows, Mac, and Linux hosts.
 
 Full lab instructions: https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#websphere-application-server-troubleshooting-and-performance-lab-on-docker
 
@@ -38,7 +38,7 @@ Tip: To share files with your host machine, add the following to the `docker run
 
 ## Lab Highlights
 
-* [Using Apache JMeter to run a stress test on WebSphere Liberty or Traditional WAS](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#apache-jmeter)
+* [Using Apache JMeter to run a stress test on WebSphere Liberty or WAS traditional](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#apache-jmeter)
 * [Basic Linux CPU and memory analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#linux-cpu-and-memory-usage)
 * [IBM Java thread dump analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#ibm-java-and-openj9-thread-dumps)
 * [IBM Java garbage collection analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#garbage-collection)
@@ -55,19 +55,19 @@ Tip: To share files with your host machine, add the following to the `docker run
     * [Event Logging](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#event-logging)
     * [Diagnostic Trace](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#diagnostic-trace)
     * [Binary Logging](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#binary-logging)
-* Traditional WAS
+* WAS traditional
     * [Diagnostic Plans](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#diagnostic-plans)
 
 ## Installation Highlights
 
 * [Fedora x64](https://hub.docker.com/_/fedora/)
 * [WAS Liberty](https://hub.docker.com/_/websphere-liberty)
-* [Traditional WAS Base](https://hub.docker.com/r/ibmcom/websphere-traditional)
+* [WAS traditional Base](https://hub.docker.com/r/ibmcom/websphere-traditional)
 * [IBM Java 8](https://hub.docker.com/_/ibmjava)
 * [IBM HTTP Server](https://hub.docker.com/r/ibmcom/ibm-http-server)
 * [OpenLDAP](https://www.openldap.org/)
 * [DayTrader7 on WAS Liberty connected to OpenLDAP](https://github.com/WASdev/sample.daytrader7)
-* [DayTrader7 on Traditional WAS connected to OpenLDAP](https://github.com/WASdev/sample.daytrader7)
+* [DayTrader7 on WAS traditional connected to OpenLDAP](https://github.com/WASdev/sample.daytrader7)
 * [IBM Garbage Collection Memory Visualizer (GCMV)](https://marketplace.eclipse.org/content/ibm-monitoring-and-diagnostic-tools-garbage-collection-and-memory-visualizer-gcmv)
 * [Memory Analyzer Tool (MAT)](https://www.eclipse.org/mat/)
 * [IBM Extensions for Memory Analyzer (IEMA)](https://developer.ibm.com/javasdk/tools/)
