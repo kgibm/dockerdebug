@@ -1,7 +1,7 @@
 # WebSphere Application Server Troubleshooting and Performance Lab on Docker
 
 - Author: [Kevin Grigorenko](mailto:kevin.grigorenko@us.ibm.com)
-- Version: V15 (February 15, 2021)
+- Version: V16 (April 13, 2021)
 - Source: [https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug](https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug)
 
 # Table of Contents
@@ -2515,6 +2515,13 @@ Any currently running Java programs will need to be restarted if you want them t
 
 ##  Version History
 
+* V16 (April 13, 2021):
+    * Upgrade to Liberty 21.0.0.3
+    * Update to TMDA 4.6.9
+    * Add AdoptOpenJDK Java 16 (J9 and HotSpot)
+    * Change Health Center to use Eclipse 2020-03 because Luna is no longer available. The known StackOverflowError on 2020-03 doesn't always happen.
+    * Upgrade Request Metrics Analyzer to 2.0.20210111
+    * Increase Eclipse 2020-03 max heap to 4g
 * V15 (February 15, 2021):
     * Fix [issue 2](https://github.com/kgibm/dockerdebug/issues/2) by upgrading to Liberty 21.0.0.1
     * Upgrade to tWAS 9.0.5.6
