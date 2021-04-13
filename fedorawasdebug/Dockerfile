@@ -1,23 +1,18 @@
-# syntax=docker/dockerfile:1.0.0-experimental
-#
 # Purpose: This is not designed for production usage but instead as a debugging and learning container.
 #
 # usage (Requires Docker >= 18.09):
 # ======
-# Step 1: Optionally, create remotepassword.txt in the directory with this Dockerfile and set the contents of the
+# Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the
 #         file to the password used for VNC/RDP/root
 # Step 2: Pull dependent images:
 #   docker pull websphere-liberty
 #   docker pull ibmcom/websphere-traditional
 #   docker pull ibmcom/ibm-http-server
-# Step 2: Build the Docker image:
-#   With remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedorawasdebug .
-#   Without remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --progress=plain -t kgibm/fedorawasdebug .
-# Step 3: Run the Docker image:
+# Step 3: Build the Docker image:
+#   docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorawasdebug .
+# Step 4: Run the Docker image:
 #   docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug
-# Step 4: Remote into the docker image
+# Step 5: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
 #     was: vncviewer localhost:5902
@@ -44,7 +39,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 # The following Liberty version is used in the liberty-bikes builds. Find the latest version here:
 # https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
-ARG MAVEN_LIBERTY_VERSION="21.0.0.1"
+ARG MAVEN_LIBERTY_VERSION="21.0.0.3"
 
 ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
@@ -266,7 +261,7 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
       sudo mvn -q clean install && \
       sudo mkdir /home/was/rma/ && \
       sudo chown -R was:root /home/was/rma/ && \
-      printf '[Desktop Entry]\nType=Application\nName=Request Metrics Analyzer\nExec=java -jar /opt/request-metrics-analyzer-next/target/request-metrics-analyzer-next-1.0.20200409-jar-with-dependencies.jar\nPath=rma/\nTerminal=false\n' | sudo tee rma.desktop && \
+      printf '[Desktop Entry]\nType=Application\nName=Request Metrics Analyzer\nExec=java -jar /opt/request-metrics-analyzer-next/target/request-metrics-analyzer-next-2.0.20210111-jar-with-dependencies.jar\nPath=rma/\nTerminal=false\n' | sudo tee rma.desktop && \
       sudo chmod a+x rma.desktop && \
       sudo ln -s /opt/request-metrics-analyzer-next/rma.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/rma.desktop /home/was/Desktop/ \
@@ -281,7 +276,7 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
     echo "# https://www.ibm.com/support/pages/node/141227" && \
     ( \
       sudo mkdir /opt/manageprofilesinteractive/ && \
-      sudo wget -q -O /opt/manageprofilesinteractive/manageprofilesInteractive.zip "https://www.ibm.com/support/pages/sites/default/files/support/swg/swgtech.nsf/0/d6ca5180f6619c868525776f0069b7b7/%24FILE/ATTQDXZT.zip/manageprofilesInteractive.zip" && \
+      sudo wget -q -O /opt/manageprofilesinteractive/manageprofilesInteractive.zip "https://www.ibm.com/support/pages/system/files/support/swg/swgtech.nsf/0/d6ca5180f6619c868525776f0069b7b7/\$FILE/ATTQDXZT.zip/manageprofilesInteractive.zip" && \
       cd /opt/manageprofilesinteractive/ && \
       sudo unzip -q manageprofilesInteractive.zip \
     ) && \
@@ -295,13 +290,12 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
     echo "###############" && \
     echo "# https://marketplace.eclipse.org/content/ibm-liberty-developer-tools" && \
     echo "# https://marketplace.eclipse.org/node/1778478/api/p" && \
-    echo "# http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/" && \
+    echo "# https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/" && \
     sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
-                              -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/2019-06_comp/,http://download.eclipse.org/releases/2019-06,http://download.eclipse.org/eclipse/updates/4.12,http://download.eclipse.org/webtools/repository/latest \
+                              -repository https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/2020-03_comp/,https://download.eclipse.org/releases/2020-03,http://download.eclipse.org/eclipse/updates/4.15,https://download.eclipse.org/webtools/repository/latest \
                               -installIU com.ibm.wdt.ast.ws.tools.feature.feature.group \
                               -installIU com.ibm.osgi.wdt.feature.feature.group \
                               -installIU com.ibm.websphere.wdt.server.tools.main.feature.group \
-                              -installIU com.ibm.wdt.migration.tools.feature.feature.group \
                               -installIU com.ibm.wdt.webtools.top.feature.feature.group && \
     echo "# Required after installing anything into Eclipse" && \
     sudo chmod -R a+w /opt/eclipse/configuration && \
@@ -878,7 +872,7 @@ RUN echo "# Backup and clear Liberty and tWAS logs" && \
     sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
     sudo chown -R was:root /backup/
 
-RUN echo "Example data V20210111" && \
+RUN echo "Example data V20210413" && \
     echo "https://github.com/kgibm/dockerdebug/" && \
     sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
     sudo chown -R was:root /opt/dockerdebug/ && \
@@ -886,10 +880,10 @@ RUN echo "Example data V20210111" && \
 
 # Update lab document by updating the date in the echo and rebuild:
 RUN ( \
-      echo "Lab Document V20210111" && \
+      echo "Lab Document V20210413" && \
       cd /opt/dockerdebug/fedorawasdebug && \
       sudo git pull && \
-      sudo pandoc -s -o WAS_Troubleshooting_Perf_Lab.html --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" WAS_Troubleshooting_Perf_Lab.md && \
+      sudo pandoc -s -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
       ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
     )
 

@@ -1,16 +1,11 @@
-# syntax=docker/dockerfile:1.0.0-experimental
-#
 # Purpose: This is not designed for production usage but instead as a debugging and learning container.
 #
 # usage (Requires Docker >= 18.09):
 # ======
-# Step 1: Optionally, create remotepassword.txt in the directory with this Dockerfile and set the contents of the
+# Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the
 #         file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
-#   With remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedoradebug .
-#   Without remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --progress=plain -t kgibm/fedoradebug .
+#   docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedoradebug .
 # Step 3: Run the Docker image:
 #   docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedoradebug
 # Step 4: Remote into the docker image

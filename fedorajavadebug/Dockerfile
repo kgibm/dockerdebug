@@ -1,16 +1,11 @@
-# syntax=docker/dockerfile:1.0.0-experimental
-#
 # Purpose: This is not designed for production usage but instead as a debugging and learning container.
 #
 # usage (Requires Docker >= 18.09):
 # ======
-# Step 1: Optionally, create remotepassword.txt in the directory with this Dockerfile and set the contents of the
+# Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the
 #         file to the password used for VNC/RDP/root
 # Step 2: Build the Docker image:
-#   With remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --secret id=remotepassword,src=remotepassword.txt --progress=plain -t kgibm/fedorajavadebug .
-#   Without remotepassword.txt:
-#     DOCKER_BUILDKIT=1 docker build --progress=plain -t kgibm/fedorajavadebug .
+#   docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorajavadebug .
 # Step 3: Run the Docker image:
 #   docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedorajavadebug
 # Step 4: Remote into the docker image
@@ -125,10 +120,10 @@ hide_welcome_screen=true\n\
     ( \
       sudo mkdir /opt/tmda/ && \
       cd /opt/tmda/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca468.jar && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca469.jar && \
       sudo mkdir /home/was/tmda/ && \
       sudo chown -R was:root /home/was/tmda/ && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca468.jar\nPath=tmda/\nTerminal=false\n' >> tmda.desktop && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca469.jar\nPath=tmda/\nTerminal=false\n' >> tmda.desktop && \
       sudo chmod a+x tmda.desktop && \
       sudo ln -s /opt/tmda/tmda.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/tmda.desktop /home/was/Desktop/ \
@@ -173,35 +168,6 @@ hide_welcome_screen=true\n\
       sudo ln -s /opt/programs/pmat.desktop /home/was/Desktop/ \
     ) && \
     echo "#########################" && \
-    echo "# Install Health Center #" && \
-    echo "#########################" && \
-    echo "# Eclipse > Luna has some strange StackOverflowErrors with Health Center, so we install an old Eclipse for HC separately." && \
-    echo "# https://www.eclipse.org/downloads/packages/release/photon/r/eclipse-ide-java-ee-developers" && \
-    echo "# https://www.eclipse.org/downloads/packages/release" && \
-    sudo wget -q -O /opt/eclipse_old.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/SR2/eclipse-jee-luna-SR2-linux-gtk-x86_64.tar.gz&r=1" && \
-    ( \
-      cd /opt/ && \
-      sudo tar xzf eclipse_old.tar.gz && \
-      sudo rm -f /opt/eclipse_old.tar.gz && \
-      sudo mv /opt/eclipse /opt/eclipse_old \
-    ) && \
-    sudo sed -i 's/-Xmx512m/-Xmx2048m/g' /opt/eclipse_old/eclipse.ini && \
-    echo "# IBM Monitoring and Diagnostic Tools - Health Center" && \
-    echo "# https://www.ibm.com/support/knowledgecenter/en/SS3KLZ/com.ibm.java.diagnostics.healthcenter.doc/homepage/plugin-homepage-hc.html" && \
-    echo "# https://developer.ibm.com/javasdk/tools/" && \
-    sudo /opt/eclipse_old/eclipse -nosplash -application org.eclipse.equinox.p2.director \
-                                  -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/healthcenter/ \
-                                  -installIU com.ibm.java.diagnostics.healthcenter.core.feature.feature.group \
-                                  -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group && \
-    sudo mkdir /home/was/hc/ && \
-    sudo chown -R was:root /home/was/hc/ && \
-    sudo printf '[Desktop Entry]\nType=Application\nName=Health Center\nExec=/opt/eclipse_old/eclipse -data workspace_hc -perspective com.ibm.java.diagnostics.healthcenter.gui.perspective.status\nPath=hc/\nTerminal=false\n' >> /opt/eclipse_old/hc.desktop && \
-    sudo chmod a+x /opt/eclipse_old/hc.desktop && \
-    sudo ln -s /opt/eclipse_old/hc.desktop /opt/programs/ && \
-    sudo ln -s /opt/programs/hc.desktop /home/was/Desktop/ && \
-    echo "# Required after installing anything into Eclipse" && \
-    sudo chmod -R a+w /opt/eclipse_old/configuration && \
-    echo "#########################" && \
     echo "# Install GCMV and IDDE #" && \
     echo "#########################" && \
     echo "# Eclipse 2020-03" && \
@@ -212,6 +178,7 @@ hide_welcome_screen=true\n\
       cd /opt/ && \
       sudo tar xzf eclipse-jee-2020-03-R-incubation-linux-gtk-x86_64.tar.gz && \
       sudo rm -f /opt/eclipse-jee-2020-03-R-incubation-linux-gtk-x86_64.tar.gz && \
+      sudo sed -i 's/-Xmx.*/-Xmx4g/g' /opt/eclipse/eclipse.ini && \
       cd /opt/eclipse && \
       sudo mkdir /home/was/eclipse/ && \
       sudo chown -R was:root /home/was/eclipse/ && \
@@ -247,6 +214,25 @@ hide_welcome_screen=true\n\
     sudo ln -s /opt/programs/idde.desktop /home/was/Desktop/ && \
     echo "# Required after installing anything into Eclipse" && \
     sudo chmod -R a+w /opt/eclipse/configuration && \
+    echo "#########################" && \
+    echo "# Install Health Center #" && \
+    echo "#########################" && \
+    echo "# Eclipse > Luna has some strange StackOverflowErrors with Health Center but Luna and older are no longer available" && \
+    echo "# IBM Monitoring and Diagnostic Tools - Health Center" && \
+    echo "# https://www.ibm.com/support/knowledgecenter/en/SS3KLZ/com.ibm.java.diagnostics.healthcenter.doc/homepage/plugin-homepage-hc.html" && \
+    echo "# https://developer.ibm.com/javasdk/tools/" && \
+    sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
+                              -repository http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/runtimes/tools/healthcenter/ \
+                              -installIU com.ibm.java.diagnostics.healthcenter.core.feature.feature.group \
+                              -installIU com.ibm.java.diagnostics.healthcenter.gui.feature.feature.group && \
+    sudo mkdir /home/was/hc/ && \
+    sudo chown -R was:root /home/was/hc/ && \
+    sudo printf '[Desktop Entry]\nType=Application\nName=Health Center\nExec=/opt/eclipse/eclipse -data workspace_hc -perspective com.ibm.java.diagnostics.healthcenter.gui.perspective.status\nPath=hc/\nTerminal=false\n' >> /opt/eclipse/hc.desktop && \
+    sudo chmod a+x /opt/eclipse/hc.desktop && \
+    sudo ln -s /opt/eclipse/hc.desktop /opt/programs/ && \
+    sudo ln -s /opt/programs/hc.desktop /home/was/Desktop/ && \
+    echo "# Required after installing anything into Eclipse" && \
+    sudo chmod -R a+w /opt/eclipse/configuration && \
     echo "# https://github.com/kgibm/java_miscellaneous" && \
     ( \
       cd /opt/ && \
@@ -257,10 +243,6 @@ hide_welcome_screen=true\n\
       cd /opt/ && \
       sudo git clone https://github.com/kgibm/SimulateJavaOOM \
     ) && \
-    sudo git clone https://github.com/eclipse/openj9 /usr/local/src/openj9 && \
-    sudo git clone https://github.com/eclipse/openj9-omr /usr/local/src/openj9-omr && \
-    sudo chmod -R a+w /usr/local/src/openj9 && \
-    sudo chmod -R a+w /usr/local/src/openj9-omr && \
     echo "# Install MAT Source (still requires configuration in Eclipse): https://wiki.eclipse.org/MemoryAnalyzer/Contributor_Reference" && \
     sudo git clone git://git.eclipse.org/gitroot/mat/org.eclipse.mat.git /usr/local/src/mat && \
     sudo chmod -R a+w /usr/local/src/mat && \
@@ -278,7 +260,7 @@ RUN echo "############################" && \
     echo "# OpenJDK + HotSpot/OpenJ9 #" && \
     echo "############################" && \
     echo "# https://adoptopenjdk.net/" && \
-    for v in 8 11 14; do \
+    for v in 8 11 16; do \
         for j in openj9 hotspot; do \
           ( \
             sudo mkdir /opt/openjdk${v}_${j}/ && \
