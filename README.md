@@ -40,10 +40,13 @@
 1. `git push`
 1. `docker login`
 1. `docker images`
-1. For each of the above images:
-    1. `docker tag $IMAGEID $NAME:VXX` (Example `$NAME`=`kgibm/fedoradebug`)
-    1. `docker push $NAME:VXX`
-1. After all VXX versions are pushed, push the latest tags:
-    1. `docker push kgibm/fedoradebug:latest && docker push kgibm/fedorajavadebug:latest && docker push kgibm/fedorawasdebug:latest && docker push kgibm/fedorawasdebugejb:latest`
+1. For each of the above images: `docker tag $IMAGEID $NAME:VXX` (Example `$NAME`=`kgibm/fedoradebug`)
+1. Push all the VXX images: `docker push kgibm/fedoradebug:VXX && docker push kgibm/fedorajavadebug:VXX && docker push kgibm/fedorawasdebug:VXX && docker push kgibm/fedorawasdebugejb:VXX`
+1. After all VXX versions are pushed, push the latest tags: `docker push kgibm/fedoradebug:latest && docker push kgibm/fedorajavadebug:latest && docker push kgibm/fedorawasdebug:latest && docker push kgibm/fedorawasdebugejb:latest`
 1. `git tag VXX`
 1. `git push --tags`
+1. Delete old images from:
+    1. <https://hub.docker.com/repository/docker/kgibm/fedoradebug/tags?page=1&ordering=last_updated>
+    1. <https://hub.docker.com/repository/docker/kgibm/fedorajavadebug/tags?page=1&ordering=last_updated>
+    1. <https://hub.docker.com/repository/docker/kgibm/fedorawasdebug/tags?page=1&ordering=last_updated>
+    1. <https://hub.docker.com/repository/docker/kgibm/fedorawasdebugejb/tags?page=1&ordering=last_updated>
