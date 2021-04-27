@@ -844,7 +844,7 @@ SHELL_X=0\n\
       echo "# SOAP Port: 8880" && \
       sudo mkdir /opt/ptt/ && \
       cd /opt/ptt/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/com.ibm.ptt-linux.gtk.x86_64_V1.0.20200908.tar.gz && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/com.ibm.ptt-linux.gtk.x86_64_V1.0.20210427.tar.gz && \
       sudo tar xzf *.tar.gz && \
       sudo rm -f *.tar.gz && \
       sudo sed -i 's/-Dcom.ibm.ssl.evaluateHost=true/-Dcom.ibm.ssl.evaluateHost=false/g' /opt/ptt/ptt.ini && \
