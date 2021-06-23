@@ -1,13 +1,15 @@
 # docker build -t containerdiagsmall .
-# docker run -it containerdiagsmall
+# docker run --rm -it containerdiagsmall
 #
 # Notes:
+#   * As of writing this note, this image is about 440MB
 #   * Base fedora:latest is about 175MB
 #   * Tried ubi-minimal which is about 100MB but microdnf is missing many useful packages like fatrace and others 
-#   * As of writing this note, this image is about 320MB
-#   * gdb adds about 68MB but considered worth it for gcore, etc.
+#   * gdb adds about 68MB but considered worth it for gdb and gcore
+#   * runc adds about 14MB but considered worth it for use with oc debug on a node
 #   * git adds about 41MB so instead we just use wget https://github.com/$GROUP/$REPO/archive/master.zip
-#   * Therefore, the rest of the utilities are about 75MB
+#   * perf adds about 40MB but considered worth it since it's commonly needed
+#   * Therefore, the rest of the utilities are about 100MB
 #   * Deleting files in the parent (e.g. /usr/lib64/python*/__pycache__) isn't useful because it's still in that layer
 
 FROM fedora:latest
@@ -26,8 +28,10 @@ RUN dnf install -y \
         net-tools \
         nmon \
         p7zip \
+        perf \
         procps-ng \
         psmisc \
+        runc \
         sysstat \
         strace \
         tcpdump \
@@ -45,7 +49,7 @@ RUN dnf install -y \
             /usr/share/vim/*/tutor/
 
 # Update the version echo if needed for things like re-pulling from git
-RUN echo "Version 20210202" && \
+RUN echo "Version 20210623" && \
     get_git() { \
       wget -q -O /tmp/$1_$2_master.zip https://github.com/$1/$2/archive/master.zip; \
       unzip -q /tmp/$1_$2_master.zip -d /opt/; \
