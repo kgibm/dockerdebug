@@ -1,0 +1,30 @@
+FROM registry.access.redhat.com/ubi8/ubi
+RUN dnf install -y \
+        binutils \
+        curl \
+        fatrace \
+        gawk \
+        gdb \
+        iproute \
+        iputils \
+        less \
+        lsof \
+        ltrace \
+        ncdu \
+        net-tools \
+        nmon \
+        p7zip \
+        perf \
+        procps-ng \
+        psmisc \
+        runc \
+        sysstat \
+        strace \
+        tcpdump \
+        telnet \
+        traceroute \
+        unzip \
+        util-linux \
+        vim \
+        wget \
+        zip
