@@ -21,6 +21,7 @@ RUN dnf install -y \
         fatrace \
         gawk \
         gdb \
+        hostname \
         iproute \
         iputils \
         less \
