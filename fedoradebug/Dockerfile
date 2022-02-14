@@ -1,18 +1,16 @@
 # Purpose: This is not designed for production usage but instead as a debugging and learning container.
 #
-# usage (Requires Docker >= 18.09):
+# usage:
 # ======
-# Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the
-#         file to the password used for VNC/RDP/root
-# Step 2: Build the Docker image:
-#   docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedoradebug .
-# Step 3: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 22:22 -p 3390:3389 -it kgibm/fedoradebug
-# Step 4: Remote into the docker image
+# Step 1: Build the Docker image:
+#   podman build -t kgibm/fedoradebug .
+# Step 2: Run the Docker image:
+#   podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 3390:3389 -it kgibm/fedoradebug
+# Step 3: Remote into the docker image
 #   Linux:
 #     root: vncviewer localhost:5901
 #     was: vncviewer localhost:5902
-#     Use the password from remotepassword.txt
+#     Use the password websphere
 #   Mac:
 #     root: open vnc://localhost:5901
 #     was: open vnc://localhost:5902
@@ -39,8 +37,8 @@ RUN sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf && \
     dnf reinstall -y "*" && \
     dnf install -y dnf-plugins-core && \
     dnf debuginfo-install -y \
-      glibc \
-      kernel
+      glibc
+      # We don't install kernel-debuginfo because the underlying kernel won't match
 
 # Notes on the packages:
 # * Firefox crashes switching tabs with SIGBUS errors unless we use docker run --shm-size=...
@@ -94,10 +92,10 @@ RUN dnf install -y \
       iperf \
       iperf3 \
       iptraf-ng \
+      iproute-tc \
       iputils \
       java-1.8.0-openjdk \
       java-1.8.0-openjdk-devel \
-      jnettop \
       kcalc \
       kdesu \
       kernel-devel \
@@ -135,7 +133,6 @@ RUN dnf install -y \
       nmon \
       npm \
       nss-pam-ldapd \
-      ntp \
       numactl \
       openldap \
       openldap-clients \
@@ -179,7 +176,6 @@ RUN dnf install -y \
       strace \
       sudo \
       systemtap \
-      tc \
       tcping \
       tcpdump \
       telnet \
@@ -237,8 +233,9 @@ gpgkey=https://packages.microsoft.com/keys/microsoft.asc\n\
     ' | sudo tee /opt/express/run.sh && \
     sudo chmod a+x /opt/express/run.sh
 
-RUN --mount=type=secret,id=remotepassword \
-    dbus-uuidgen > /var/lib/dbus/machine-id && \
+RUN printf 'websphere' > /tmp/remotepassword
+
+RUN dbus-uuidgen > /var/lib/dbus/machine-id && \
     echo "enforcing=0" | sudo tee -a /etc/security/pwquality.conf && \
     groupadd nogroup && \
     echo "###############################################" && \
@@ -449,7 +446,7 @@ RUN --mount=type=secret,id=remotepassword \
     echo "# https://ant.apache.org/" && \
     ( \
       cd /opt/ && \
-      sudo wget -q https://www.apache.org/dist/ant/binaries/apache-ant-1.10.9-bin.zip && \
+      sudo wget -q https://www.apache.org/dist/ant/binaries/apache-ant-1.10.12-bin.zip && \
       sudo unzip -q apache-ant*.zip && \
       sudo rm -f apache-ant*.zip && \
       sudo mv apache-ant* apache-ant \
@@ -474,13 +471,13 @@ RUN --mount=type=secret,id=remotepassword \
     ( \
       sudo mkdir /opt/linperf/ && \
       cd /opt/linperf/ && \
-      sudo wget -q -O linperf.sh "https://www.ibm.com/support/pages/sites/default/files/inline-files/\$FILE/linperf.sh" && \
+      sudo wget -q -O linperf.sh "https://www.ibm.com/support/pages/system/files/inline-files/linperf.sh" && \
       sudo chmod a+x linperf.sh \
     ) && \
     echo "# https://jmeter.apache.org/" && \
     ( \
       cd /opt/ && \
-      sudo wget -q https://www.apache.org/dist/jmeter/binaries/apache-jmeter-5.3.zip && \
+      sudo wget -q https://www.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.3.zip && \
       sudo unzip -q apache-jmeter*.zip && \
       sudo rm -f apache-jmeter*.zip && \
       sudo mv apache-jmeter* apache-jmeter && \
@@ -512,17 +509,17 @@ RUN --mount=type=secret,id=remotepassword \
       sudo rm -f gradle.zip \
     ) && \
     sudo ln -s /opt/gradle-4.10.3/bin/gradle /usr/local/bin/gradle && \
-    echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh && \
+    echo -n "$(sudo head -n 1 /tmp/remotepassword)" | /usr/local/bin/setpassword.sh && \
     echo "############################" && \
     echo "# Final user configuration #" && \
     echo "############################" && \
     echo "# root's Desktop cannot take links (it doesn't work in this image seemingly because of some D-Bus/XFCE issue)" && \
     sudo chmod a+x /usr/share/applications/firefox.desktop && \
     sudo ln -s /usr/share/applications/firefox.desktop /home/was/Desktop/ && \
-    sudo chmod a+x /usr/share/applications/mousepad.desktop && \
-    sudo ln -s /usr/share/applications/mousepad.desktop /home/was/Desktop/ && \
-    sudo chmod a+x /usr/share/applications/wireshark.desktop && \
-    sudo ln -s /usr/share/applications/wireshark.desktop /home/was/Desktop/ && \
+    sudo chmod a+x /usr/share/applications/org.xfce.mousepad.desktop && \
+    sudo ln -s /usr/share/applications/org.xfce.mousepad.desktop /home/was/Desktop/ && \
+    sudo chmod a+x /usr/share/applications/org.wireshark.Wireshark.desktop && \
+    sudo ln -s /usr/share/applications/org.wireshark.Wireshark.desktop /home/was/Desktop/ && \
     sudo chmod a+x /usr/share/applications/galculator.desktop && \
     sudo ln -s /usr/share/applications/galculator.desktop /home/was/Desktop/ && \
     sudo chmod a+x /usr/share/applications/libreoffice-calc.desktop && \
@@ -576,8 +573,12 @@ dn: cn=Manager,dc=example,dc=com\n\
 objectclass: organizationalRole\n\
 cn: Manager\n\
 \n' | sudo tee /root/openldapmanager.ldif && \
+    echo "Starting slapd" && \
     sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+    echo "Running ldapmodify /root/openldapadminpwd.ldif" && \
+    cat /root/openldapadminpwd.ldif && \
     sudo ldapmodify -H ldapi:// -Y EXTERNAL -f /root/openldapadminpwd.ldif && \
+    echo "Running ldapadd for /root/openldapmanager.ldif" && \
     sudo ldapadd -x -D "cn=Manager,dc=example,dc=com" -w "$(echo -n "$(sudo head -n 1 /root/password.txt)")" -f /root/openldapmanager.ldif && \
     sudo ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/cosine.ldif && \
     sudo ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/nis.ldif && \
@@ -671,8 +672,7 @@ RUN printf "Built fedoradebug at $(date)\n" >> /tmp/tmp.log && \
     ' > /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-screensaver.xml && \
     echo "Don't auto-start xscreensaver or otherwise the xfce4-screensaver lock gets locked out after a while: https://bugzilla.xfce.org/show_bug.cgi?id=16140" && \
     sudo rm -rf /etc/xdg/autostart/xscreensaver* && \
-    sudo rm -f /usr/share/applications/xscreensaver-properties.desktop && \
-    sudo sed -i 's/timeout:.*/timeout: 2:00:00/g' /usr/share/X11/app-defaults/XScreenSaver
+    sudo rm -f /usr/share/applications/xscreensaver-properties.desktop
 
 # Query file mimetype: xdg-mime query filetype $FILE
 RUN xdg-mime default xreader.desktop application/pdf && \
