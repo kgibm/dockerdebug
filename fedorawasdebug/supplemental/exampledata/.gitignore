@@ -3,6 +3,7 @@ liberty/verbosegc_and_oom/core.*.dmp
 liberty/verbosegc_and_oom/core.*_*.zip
 twas/verbosegc_and_oom/core.*.dmp
 twas/verbosegc_and_oom/core.*_*.zip
+twas/verbosegc_and_oom/heapdump.20200630.223219.3967.0002.phd
 liberty/nativememoryleak/javacore.20191106.200057.228.0003.txt
 twas/tcpdump/diag_capture_9486a72b0326_20210316_164018.pcap
 core.*_Query/
