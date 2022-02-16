@@ -1,6 +1,6 @@
 # WebSphere Application Server Troubleshooting and Performance Lab on Docker
 
-A lab on Troubleshooting and Performance Tuning WAS Liberty and WAS traditional covering various topics like CPU usage, thread dumps, garbage collection, memory analysis, profiling, and more. The Docker container provides a full Linux VM with GUI (see screenshots below) which runs on Windows, Mac, and Linux hosts.
+A lab on Troubleshooting and Performance Tuning WebSphere Liberty and WAS traditional covering various topics like CPU usage, thread dumps, garbage collection, memory analysis, profiling, and more. The Docker container provides a full Linux VM with GUI (see screenshots below) which runs on Windows, Mac, and Linux hosts.
 
 Full lab instructions: https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#websphere-application-server-troubleshooting-and-performance-lab-on-docker
 
@@ -8,9 +8,9 @@ Full lab instructions: https://github.com/kgibm/dockerdebug/blob/master/fedorawa
 
 Watch a Quick Start video: https://www.youtube.com/watch?v=7o25Sq_-T44
 
-Note: You'll need more than 40GB of disk space and configure Docker with 4GB or more of RAM. For details on how to install and configure Docker, see the [lab instructions](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#lab).
+Note: You'll need more than 40GB of disk space and configure Docker/podman with 4GB or more of RAM. For details on how to install and configure, see the [lab instructions](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#lab).
 
-1. `docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
+1. `docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
 1. The container is fully started after about 2 minutes when the output shows:
    ```
    =========
@@ -61,34 +61,33 @@ Tip: To share files with your host machine, add the following to the `docker run
 ## Installation Highlights
 
 * [Fedora x64](https://hub.docker.com/_/fedora/)
-* [WAS Liberty](https://hub.docker.com/_/websphere-liberty)
+* [WebSphere Liberty](https://hub.docker.com/_/websphere-liberty)
 * [WAS traditional Base](https://hub.docker.com/r/ibmcom/websphere-traditional)
 * [IBM Java 8](https://hub.docker.com/_/ibmjava)
-* [IBM HTTP Server](https://hub.docker.com/r/ibmcom/ibm-http-server)
+* [IBM HTTP Server](https://www.ibm.com/docs/en/ibm-http-server/9.0.5)
 * [OpenLDAP](https://www.openldap.org/)
-* [DayTrader7 on WAS Liberty connected to OpenLDAP](https://github.com/WASdev/sample.daytrader7)
+* [DayTrader7 on WebSphere Liberty connected to OpenLDAP](https://github.com/WASdev/sample.daytrader7)
 * [DayTrader7 on WAS traditional connected to OpenLDAP](https://github.com/WASdev/sample.daytrader7)
-* [IBM Garbage Collection Memory Visualizer (GCMV)](https://marketplace.eclipse.org/content/ibm-monitoring-and-diagnostic-tools-garbage-collection-and-memory-visualizer-gcmv)
-* [Memory Analyzer Tool (MAT)](https://www.eclipse.org/mat/)
-* [IBM Extensions for Memory Analyzer (IEMA)](https://developer.ibm.com/javasdk/tools/)
-* [IBM Java Health Center (HC)](https://marketplace.eclipse.org/content/ibm-monitoring-and-diagnostic-tools-health-center)
+* [IBM Garbage Collection Memory Visualizer (GCMV)](https://www.ibm.com/support/pages/garbage-collection-and-memory-visualizer)
+* [Eclipse Memory Analyzer Tool (MAT)](https://www.ibm.com/support/pages/eclipse-memory-analyzer-tool-dtfj-and-ibm-extensions)
+* [IBM Java Health Center (HC)](https://www.ibm.com/support/pages/health-center-client)
 * [NMONVisualizer](https://nmonvisualizer.github.io/nmonvisualizer/)
 * [IBM Runtime Diagnostic Code Injection (Java Surgery)](https://www.ibm.com/support/pages/ibm-runtime-diagnostic-code-injection-java-platform-java-surgery)
 * [Request Metrics Analyzer Next](https://github.com/kgibm/request-metrics-analyzer-next)
-* [IBM Interactive Diagnostic Data Explorer (IDDE)](https://marketplace.eclipse.org/content/ibm-monitoring-and-diagnostic-tools-interactive-diagnostic-data-explorer-idde)
 * [IBM Thread and Monitor Dump Analyzer (TMDA)](https://www.ibm.com/support/pages/ibm-thread-and-monitor-dump-analyzer-java-tmda)
 * [IBM HeapAnalyzer (HA)](https://www.ibm.com/support/pages/ibm-heapanalyzer)
 * [IBM Pattern Modeling and Analysis Tool for Java Garbage Collector (PMAT)](https://www.ibm.com/support/pages/ibm-pattern-modeling-and-analysis-tool-java-garbage-collector-pmat)
 * [IBM Trace and Request Analyzer for WAS (TRA)](https://www.ibm.com/support/pages/ibm-trace-and-request-analyzer-websphere-application-server)
 * [IBM ClassLoader Analyzer](https://www.ibm.com/support/pages/ibm-classloader-analyzer)
-* [Eclipse 2020-03](https://www.eclipse.org/downloads/)
+* [Eclipse IDE for Enterprise Java and Web Developers](https://www.eclipse.org/downloads/)
   * [IBM Liberty Developer Tools](https://marketplace.eclipse.org/content/ibm-liberty-developer-tools)
 * [Firefox](https://www.mozilla.org/en-US/firefox/)
 * [LibreOffice](https://www.libreoffice.org/)
 * [Wireshark](https://www.wireshark.org/)
 * [Apache JMeter](https://jmeter.apache.org/)
 * [OpenJDK 8](https://openjdk.java.net/)
-* [AdoptOpenJDK OpenJ9 and HotSpot (V8, V11, V14)](https://adoptopenjdk.net/)
+* [IBM Semeru (V8, V11, V17)](https://developer.ibm.com/languages/java/semeru-runtimes/downloads)
+* [Eclipse Temurin (V8, V11, V17)](https://adoptium.net/)
 * [Liberty Bikes](https://github.com/OpenLiberty/liberty-bikes)
 * [TrapIt.ear](https://www.ibm.com/support/pages/websphere-application-server-log-watcher-using-trapitear-watch-websphere-application-server-events)
 * [swat.ear](https://github.com/kgibm/problemdetermination)
@@ -97,8 +96,6 @@ Tip: To share files with your host machine, add the following to the `docker run
 * [WebSphere Performance Cookbook](https://publib.boulder.ibm.com/httpserv/cookbook/)
 * [MariaDB](https://mariadb.org/)
 * [Apache Derby](https://db.apache.org/derby/)
-* [Open Liberty Source](https://github.com/OpenLiberty/open-liberty/)
-* [OpenJ9 Source](https://github.com/eclipse/openj9)
 * [IBM Channel Framework Analyzer](https://www.ibm.com/support/pages/ibm-channel-framework-analyzer)
 * [IBM Web Server Plug-in Analyzer for WebSphere Application Server (WSPA)](https://www.ibm.com/support/pages/ibm-web-server-plug-analyzer-websphere-application-server-wspa)
 * [Connection and Configuration Verification Tool for SSL/TLS](https://www.ibm.com/support/pages/connection-and-configuration-verification-tool-ssltls)
@@ -109,6 +106,7 @@ Tip: To share files with your host machine, add the following to the `docker run
 * [SIB Performance](https://www.ibm.com/support/pages/service-integration-bus-performance)
 * [IBM Database Connection Pool Analyzer for IBM WebSphere Application Server](https://www.ibm.com/support/pages/ibm-database-connection-pool-analyzer-ibm-websphere-application-server)
 * [Eclipse MAT Source](https://wiki.eclipse.org/MemoryAnalyzer/Contributor_Reference)
+* [IBM Service Integration Bus Destination Handler](https://www.ibm.com/support/pages/ibm-service-integration-bus-destination-handler-version-11)
 
 ## Notes
 
