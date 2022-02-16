@@ -1,18 +1,15 @@
 # Purpose: This is not designed for production usage but instead as a debugging and learning container.
 #
-# usage (Requires Docker >= 18.09):
+# usage:
 # ======
-# Step 1: Create remotepassword.txt in the directory with this Dockerfile and set the contents of the
-#         file to the password used for VNC/RDP/root
-# Step 2: Pull dependent images:
-#   docker pull websphere-liberty
-#   docker pull ibmcom/websphere-traditional
-#   docker pull ibmcom/ibm-http-server
-# Step 3: Build the Docker image:
-#   docker build --secret id=remotepassword,src=remotepassword.txt -t kgibm/fedorawasdebug .
-# Step 4: Run the Docker image:
-#   docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug
-# Step 5: Remote into the docker image
+# Step 1: Pull dependent images:
+#   podman pull websphere-liberty
+#   podman pull ibmcom/websphere-traditional
+# Step 2: Build the image:
+#   podman build -t kgibm/fedorawasdebug .
+# Step 3: Run the image:
+#   podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug
+# Step 4: Remote into the image
 #   Linux:
 #     root: vncviewer localhost:5901
 #     was: vncviewer localhost:5902
@@ -23,14 +20,13 @@
 #     Use the password from remotepassword.txt
 #   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
 # Tips:
-#   * To access the host filesystem from the container (and vice versa), add the following to docker run:
+#   * To access the host filesystem from the container (and vice versa), add the following to the run command:
 #     Linux: -v /:/host/
 #     Windows: -v //c/:/host/
 #     macOS: -v /tmp/:/hosttmp/
-#       Enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences)
+#       On Docker Desktop, enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences)
 # Notes:
-#   * Because of a maximum of 125 layers (https://github.com/docker/for-linux/issues/414), minimize the number of RUN
-#     commands when finalizing a new version.
+#   * Minimize the number of RUN commands when finalizing a new version to minimize layers to avoid layer restrictions.s
 
 # Based on https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile
 FROM kgibm/fedorajavadebug
@@ -39,7 +35,7 @@ LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 # The following Liberty version is used in the liberty-bikes builds. Find the latest version here:
 # https://search.maven.org/search?q=g:com.ibm.websphere.appserver.runtime%20AND%20a:wlp-javaee8&core=gav
-ARG MAVEN_LIBERTY_VERSION="21.0.0.3"
+ARG MAVEN_LIBERTY_VERSION="21.0.0.12"
 
 ENV LOG_DIR=/logs \
     WLP_OUTPUT_DIR=/opt/ibm/wlp/output \
@@ -82,26 +78,49 @@ COPY --from=websphere-liberty:latest --chown=was:root /etc/wlp /etc/wlp
 #############################
 
 # https://hub.docker.com/r/ibmcom/websphere-traditional
-# https://github.com/WASdev/ci.docker.websphere-traditional/blob/master/docker-build/9.0.5.x/Dockerfile-ubi8
+# https://github.com/WASdev/ci.docker.websphere-traditional/blob/master/docker-build/9.0.5.x/Dockerfile
 
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /work /work
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /licenses/* /licenses/
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /opt/IBM /opt/IBM
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /etc/websphere /etc/websphere
 
-#################
-# "Install" IHS #
-#################
-
-# https://hub.docker.com/r/ibmcom/ibm-http-server/tags
-# https://github.com/WASdev/ci.docker.ibm-http-server/blob/master/production/Dockerfile.install
-COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/HTTPServer /opt/IBM/HTTPServer
-COPY --from=ibmcom/ibm-http-server --chown=was:root /work/ihsstart.sh /work/ihsstart.sh
-COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Plugins /opt/IBM/WebSphere/Plugins
-COPY --from=ibmcom/ibm-http-server --chown=was:root /opt/IBM/WebSphere/Toolbox /opt/IBM/WebSphere/Toolbox
-
-RUN --mount=type=secret,id=remotepassword \
-    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+RUN sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+    echo "##################" && \
+    echo "# Configure tWAS #" && \
+    echo "##################" && \
+    echo "* libxcrypt-compat provides /lib64/libcrypt.so.1 needed for things like tWAS; otherwise: java.lang.UnsatisfiedLinkError: Ws60ProcessManagement (Not found in java.library.path)" && \
+    echo "https://fedoraproject.org/wiki/Changes/FullyRemoveDeprecatedAndUnsafeFunctionsFromLibcrypt" && \
+    sudo dnf install -y libxcrypt-compat && \
+    sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/"7276"/"7277"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/"7286"/"7287"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/"9080"/"9081"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/"2809"/"2810"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/"9402"/"9404"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
+    sed -i 's/9080/9081/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
+    sed -i 's/9443/9444/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
+    echo "# https://github.com/kgibm/problemdetermination" && \
+    ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/kgibm/problemdetermination \
+    ) && \
+    printf 'nodeName = AdminControl.getNode()\n\
+serverName = AdminServerManagement.listServers()[0]\n\
+serverName = serverName[:serverName.find("(")]\n\
+#AdminApplication.uninstallApplication("DefaultApplication")\n\
+# https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/rxml_taskoptions.html\n\
+AdminApp.install("/opt/problemdetermination/swat.ear", ["-appname", "swat", "-node", nodeName, "-server", serverName, "-usedefaultbindings"])\n\
+AdminConfig.save()\n' > /work/config/install_app.py && \
+    if [ "$(sudo head -n 1 /tmp/remotepassword)" != "" ]; then echo -n "$(sudo head -n 1 /tmp/remotepassword)" > /tmp/PASSWORD; fi && \
+    sed -i 's/ps -C.*/awk "\/ADMU3000I\/ { print \\$NF; }" \/opt\/IBM\/WebSphere\/AppServer\/profiles\/AppSrv01\/logs\/server1\/startServer.log)/g' /work/configure.sh && \
+    sed -i 's/start_server$/start_server;/g' /work/configure.sh && \
+    echo "# Running /work/configure.sh #" && \
+    /work/configure.sh && \
+    echo "# Finished /work/configure.sh #" && \
+    echo "#####################" && \
+    echo "# Configure Liberty #" && \
+    echo "#####################" && \
     sudo ln -s $WLP_OUTPUT_DIR/defaultServer /output && \
     sudo chown was:root /output && \
     sudo ln -s /opt/ibm/wlp/usr/servers/defaultServer /config && \
@@ -120,17 +139,11 @@ RANDFILE=/tmp/.rnd\n\
 JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX:+UseContainerSupport"\n\
 \n' >> /config/server.env && \
     /opt/ibm/helpers/runtime/docker-server.sh && \
-    echo "* libxcrypt-compat provides /lib64/libcrypt.so.1 needed for things like tWAS; otherwise: java.lang.UnsatisfiedLinkError: Ws60ProcessManagement (Not found in java.library.path)" && \
-    echo "https://fedoraproject.org/wiki/Changes/FullyRemoveDeprecatedAndUnsafeFunctionsFromLibcrypt" && \
-    sudo dnf install -y libxcrypt-compat && \
-    sed -i 's/"9443"/"9444"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/"7276"/"7277"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/"7286"/"7287"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/"9080"/"9081"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/"2809"/"2810"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/"9402"/"9404"/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/nodes/${NODE_NAME}/serverindex.xml && \
-    sed -i 's/9080/9081/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
-    sed -i 's/9443/9444/g' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${WAS_CELL}/virtualhosts.xml && \
+    cp /opt/problemdetermination/swat.ear /config/dropins/ && \
+    chown was:root /config/dropins/swat.ear && \
+    echo "#################" && \
+    echo "# Install Tools #" && \
+    echo "#################" && \
     echo "# IBM Trace and Request Analyzer for WebSphere Application Server" && \
     echo "# https://www.ibm.com/support/pages/ibm-trace-and-request-analyzer-websphere-application-server" && \
     ( \
@@ -189,7 +202,7 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
     ( \
       sudo mkdir /opt/wsvisualizer/ && \
       cd /opt/wsvisualizer/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/wsvisualizer/wsvisualizer_20131011.zip && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/wsvisualizer/wsvisualizer_20200123.zip && \
       sudo unzip -q *.zip && \
       sudo rm *.zip \
     ) && \
@@ -234,7 +247,7 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
     ( \
       sudo mkdir /opt/trapit/ && \
       cd /opt/trapit/ && \
-      sudo wget -q ftp://public.dhe.ibm.com/software/websphere/appserv/support/tools/trapit/trapit.ear \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/trapit/trapit.ear \
     ) && \
     echo "# https://github.com/kgibm/java_web_hello_world" && \
     ( \
@@ -242,11 +255,6 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
       sudo git clone https://github.com/kgibm/java_web_hello_world && \
       cd /opt/java_web_hello_world && \
       sudo mvn -q clean install \
-    ) && \
-    echo "# https://github.com/kgibm/problemdetermination" && \
-    ( \
-      cd /opt/ && \
-      sudo git clone https://github.com/kgibm/problemdetermination \
     ) && \
     echo "# https://github.com/kgibm/libertymon" && \
     ( \
@@ -292,26 +300,13 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
     echo "# https://marketplace.eclipse.org/node/1778478/api/p" && \
     echo "# https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/" && \
     sudo /opt/eclipse/eclipse -nosplash -application org.eclipse.equinox.p2.director \
-                              -repository https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/2020-03_comp/,https://download.eclipse.org/releases/2020-03,http://download.eclipse.org/eclipse/updates/4.15,https://download.eclipse.org/webtools/repository/latest \
+                              -repository https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/updates/wdt/2021-09_comp/,https://download.eclipse.org/releases/2021-12,https://download.eclipse.org/eclipse/updates/4.22,https://download.eclipse.org/webtools/repository/latest \
                               -installIU com.ibm.wdt.ast.ws.tools.feature.feature.group \
                               -installIU com.ibm.osgi.wdt.feature.feature.group \
                               -installIU com.ibm.websphere.wdt.server.tools.main.feature.group \
                               -installIU com.ibm.wdt.webtools.top.feature.feature.group && \
     echo "# Required after installing anything into Eclipse" && \
     sudo chmod -R a+w /opt/eclipse/configuration && \
-    echo "##################" && \
-    echo "# Configure tWAS #" && \
-    echo "##################" && \
-    printf 'nodeName = AdminControl.getNode()\n\
-serverName = AdminServerManagement.listServers()[0]\n\
-serverName = serverName[:serverName.find("(")]\n\
-#AdminApplication.uninstallApplication("DefaultApplication")\n\
-# https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/rxml_taskoptions.html\n\
-AdminApp.install("/opt/problemdetermination/swat.ear", ["-appname", "swat", "-node", nodeName, "-server", serverName, "-usedefaultbindings"])\n\
-AdminConfig.save()\n' > /work/config/install_app.py && \
-    if [ "$(sudo head -n 1 /run/secrets/remotepassword)" != "" ]; then echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" > /tmp/PASSWORD; fi && \
-    /work/configure.sh && \
-    cp /opt/problemdetermination/swat.ear /config/dropins/ && chown was:root /config/dropins/swat.ear && \
     echo "############################" && \
     echo "# Add supervisord programs #" && \
     echo "############################" && \
@@ -352,13 +347,14 @@ environment=\n\
     HOME="/home/was",\n\
     USER="was",\n\
 \n' | sudo tee /etc/supervisord.d/twas.supervisord.conf && \
-    echo -n "$(sudo head -n 1 /run/secrets/remotepassword)" | /usr/local/bin/setpassword.sh && \
+    echo -n "$(sudo head -n 1 /tmp/remotepassword)" | /usr/local/bin/setpassword.sh && \
     sudo mkdir /tmp/wlp-cache/ && \
     sudo chmod 777 /tmp/wlp-cache/ && \
     echo "# https://github.com/WASdev/sample.daytrader7" && \
     ( \
       sudo git clone https://github.com/WASdev/sample.daytrader7 /opt/daytrader7 && \
       cd /opt/daytrader7 && \
+      sudo git checkout 46d65972bcbd39df509e3603fe39db98f30160bf && \
       sudo sed -i 's/maxUsers=.*/maxUsers=15000/g' daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
       sudo sed -i 's/maxQuotes=.*/maxQuotes=10000/g' daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
       sudo sed -i 's/runtimeMode=.*/runtimeMode=1/g' daytrader-ee7-web/src/main/webapp/properties/daytrader.properties && \
@@ -398,8 +394,7 @@ environment=\n\
     USER="mysql",\n\
 \n' | sudo tee /etc/supervisord.d/mysqld.supervisord.conf
 
-RUN --mount=type=secret,id=remotepassword \
-    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+RUN sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     echo "# https://github.com/WASdev/sample.daytrader7/blob/master/daytrader-ee7-wlpcfg/servers/daytrader7Sample/server.xml" && \
     printf '\n\
 <server>\n\
@@ -508,7 +503,7 @@ RUN --mount=type=secret,id=remotepassword \
     echo "# https://db.apache.org/derby/" && \
     ( \
       cd /opt/ && \
-      sudo wget -q -O /opt/derby.zip https://www.apache.org/dist//db/derby/db-derby-10.14.2.0/db-derby-10.14.2.0-bin.zip && \
+      sudo wget -q -O /opt/derby.zip https://www.apache.org/dist/db/derby/db-derby-10.14.2.0/db-derby-10.14.2.0-bin.zip && \
       sudo unzip -q derby.zip && \
       sudo rm derby.zip && \
       sudo mv *derby* derby \
@@ -548,8 +543,6 @@ environment=\n\
     sudo mkdir /opt/docs/ && \
     mkdir -p /home/was/Desktop && \
     chown was /home/was/Desktop && \
-    echo "# https://github.com/OpenLiberty/open-liberty" && \
-    sudo git clone https://github.com/OpenLiberty/open-liberty /usr/local/src/open-liberty && \
     echo "# https://github.com/OpenLiberty/liberty-bikes" && \
     echo "# We want WebSphere Liberty features like adminCenter so we replace libertyRuntime" && \
     echo "# https://mvnrepository.com/artifact/com.ibm.websphere.appserver.runtime" && \
@@ -593,8 +586,7 @@ stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
 \n' | sudo tee /etc/supervisord.d/finished.supervisord.conf
 
-RUN --mount=type=secret,id=remotepassword \
-    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+RUN sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     echo "# Configure DayTrader7 on tWAS" && \
     sudo sed -i 's/9082/9080/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
     sudo sed -i 's/THREADS,50/THREADS,4/g' /opt/daytrader7/jmeter_files/daytrader7.jmx && \
@@ -687,17 +679,41 @@ AdminConfig.save()\n\
 \n" > /home/was/twas_config_virtualhost.jy && \
     /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1 && \
     /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /home/was/twas_config_virtualhost.jy -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
-    /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)" && \
-    sed -i 's/Listen 80/Listen 9083/g' /opt/IBM/HTTPServer/conf/httpd.conf && \
+    /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1 -username wsadmin -password "$(cat /tmp/PASSWORD)"
+
+#################
+# "Install" IHS #
+#################
+
+COPY --chown=was:root *IHS-ARCHIVE*zip /opt/IBM/
+
+RUN ( \
+      cd /opt/IBM && \
+      sudo unzip *IHS-ARCHIVE*zip && \
+      sudo rm *IHS-ARCHIVE*zip && \
+      sudo mv IHS HTTPServer && \
+      sudo chown -R was:root /opt/IBM/HTTPServer \
+    ) && \
+    mv /opt/IBM/HTTPServer/conf/httpd.conf.default /opt/IBM/HTTPServer/conf/httpd.conf && \
+    sed -i 's/Listen @@Port@@/Listen 9083/g' /opt/IBM/HTTPServer/conf/httpd.conf && \
     sed -i 's/ReportInterval 300/ReportInterval 10/g' /opt/IBM/HTTPServer/conf/httpd.conf && \
+    sed -i 's/@@ServerRoot@@/\/opt\/IBM\/HTTPServer/g' /opt/IBM/HTTPServer/conf/httpd.conf && \
+    sed -i 's/@@User@@/was/g' /opt/IBM/HTTPServer/conf/httpd.conf && \
+    sed -i 's/@@Group@@/root/g' /opt/IBM/HTTPServer/conf/httpd.conf && \
+    sed -i 's/@@ServerName@@/localhost/g' /opt/IBM/HTTPServer/conf/httpd.conf && \
+    sed -i 's/@@SERVERROOT@@/\/opt\/IBM\/HTTPServer/g' /opt/IBM/HTTPServer/bin/apachectl-std && \
+    sudo ln -s /lib64/libpcre.so.1 /lib64/libpcre.so.0 && \
+    sudo mv /opt/IBM/HTTPServer/conf/mime.types.default /opt/IBM/HTTPServer/conf/mime.types && \
+    sudo mv /opt/IBM/HTTPServer/conf/magic.default /opt/IBM/HTTPServer/conf/magic && \
+    sudo mkdir -p /opt/IBM/WebSphere/Plugins/logs/ && \
     /opt/IBM/WebSphere/AppServer/bin/GenPluginCfg.sh && \
     printf '\n\
-LoadModule was_ap24_module /opt/IBM/WebSphere/Plugins/bin/64bits/mod_was_ap24_http.so\n\
+LoadModule was_ap24_module /opt/IBM/HTTPServer/plugin/bin/mod_was_ap24_http.so\n\
 WebSpherePluginConfig /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config/cells/plugin-cfg.xml\n\
 \n' | sudo tee -a /opt/IBM/HTTPServer/conf/httpd.conf && \
     printf '\n\
 [program:ihs]\n\
-command=/opt/IBM/HTTPServer/bin/apachectl start\n\
+command=/opt/IBM/HTTPServer/bin/apachectl-std start\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 redirect_stderr=true\n\
@@ -705,15 +721,14 @@ startretries=0\n\
 startsecs=0\n\
 autorestart=false\n\
 priority=70\n\
-user=root\n\
+user=was\n\
 autostart=true\n\
 environment=\n\
-    HOME="/root",\n\
-    USER="root",\n\
+    HOME="/home/was",\n\
+    USER="was",\n\
 \n' | sudo tee /etc/supervisord.d/ihs.supervisord.conf
 
-RUN --mount=type=secret,id=remotepassword \
-    sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
+RUN sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
     echo "Configure global security" && \
     printf 'dn: cn=wsadminldap,ou=Users,dc=example,dc=com\n\
 cn: wsadminldap\n\
@@ -760,7 +775,8 @@ AdminConfig.save()\n\
 LOG_DIR=/opt/ibm/wlp/usr/servers/test/logs/\n\
 WLP_OUTPUT_DIR=/opt/ibm/wlp/usr/servers/\n\
 ' >> /opt/ibm/wlp/usr/servers/test/server.env && \
-    sudo sed -i 's/-Xmx2g/-Xmx3g/g' /opt/mat/MemoryAnalyzer.ini && \
+    sudo sed -i 's/-Xmx2g/-Xmx3g/g' /opt/mat/ibmjava/MemoryAnalyzer.ini && \
+    sudo sed -i 's/-Xmx2g/-Xmx3g/g' /opt/mat/openj9/MemoryAnalyzer.ini && \
     sudo chmod a+x /opt/sibexplorer/sibexplorer.sh && \
     sudo rm /opt/sibexplorer/*.bat && \
     sudo sed -i 's/SWTJARS=.*/SWTJARS=\/opt\/swt\//g' /opt/sibexplorer/env.sh && \
@@ -838,13 +854,12 @@ SHELL_X=0\n\
       sudo unzip -q *.zip && \
       sudo rm -f *.zip *.exe \
     ) && \
-    sudo chmod -R a+w /usr/local/src/open-liberty && \
     ( \
       echo "# PerformanceTuningToolkit: https://www.ibm.com/support/pages/websphere-application-server-performance-tuning-toolkit" && \
       echo "# SOAP Port: 8880" && \
       sudo mkdir /opt/ptt/ && \
       cd /opt/ptt/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/com.ibm.ptt-linux.gtk.x86_64_V1.0.20210427.tar.gz && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ptt/com.ibm.ptt-linux.gtk.x86_64.tar.gz && \
       sudo tar xzf *.tar.gz && \
       sudo rm -f *.tar.gz && \
       sudo sed -i 's/-Dcom.ibm.ssl.evaluateHost=true/-Dcom.ibm.ssl.evaluateHost=false/g' /opt/ptt/ptt.ini && \
@@ -859,6 +874,22 @@ SHELL_X=0\n\
       sudo ln -s /opt/ptt/ptt.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/ptt.desktop /home/was/Desktop/ \
     ) && \
+    ( \
+      echo "# IBM Service Integration Bus Destination Handler: https://www.ibm.com/support/pages/ibm-service-integration-bus-destination-handler-version-11" && \
+      sudo mkdir /opt/sibdesthandler/ && \
+      cd /opt/sibdesthandler/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/sibdesthandler/SIBDestinationHandler-2.0.20211229.jar && \
+      printf '#!/bin/sh\n\
+        java -Xmx1g -jar /opt/sibdesthandler/SIBDestinationHandler-2.0.20211229.jar\n\
+      ' | sudo tee /opt/sibdesthandler/sibdesthandler.sh && \
+      sudo chmod a+x /opt/sibdesthandler/sibdesthandler.sh && \
+      sudo mkdir /home/was/sibdesthandler/ && \
+      sudo chown -R was:root /home/was/sibdesthandler/ && \
+      printf '[Desktop Entry]\nType=Application\nName=SIB Destination Handler\nExec=/opt/sibdesthandler/sibdesthandler.sh\nPath=sibdesthandler/\nTerminal=false\n' | sudo tee /opt/sibdesthandler/sibdesthandler.desktop && \
+      sudo chmod a+x /opt/sibdesthandler/sibdesthandler.desktop && \
+      sudo ln -s /opt/sibdesthandler/sibdesthandler.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/sibdesthandler.desktop /home/was/Desktop/ \
+    ) && \
     /opt/ibm/wlp/bin/server start defaultServer --clean && \
     /opt/ibm/wlp/bin/server stop defaultServer
 
@@ -872,7 +903,7 @@ RUN echo "# Backup and clear Liberty and tWAS logs" && \
     sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
     sudo chown -R was:root /backup/
 
-RUN echo "Example data V20210413" && \
+RUN echo "Example data V20220215" && \
     echo "https://github.com/kgibm/dockerdebug/" && \
     sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
     sudo chown -R was:root /opt/dockerdebug/ && \
@@ -880,10 +911,10 @@ RUN echo "Example data V20210413" && \
 
 # Update lab document by updating the date in the echo and rebuild:
 RUN ( \
-      echo "Lab Document V20210413" && \
+      echo "Lab Document V20220215" && \
       cd /opt/dockerdebug/fedorawasdebug && \
       sudo git pull && \
-      sudo pandoc -s -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
+      sudo pandoc -s --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
       ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
     )
 
