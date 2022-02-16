@@ -1,0 +1,314 @@
+# Purpose: This is not designed for production usage but instead as a debugging and learning container.
+#
+# usage:
+# ======
+# Step 1: Build the image:
+#   podman build -t kgibm/fedorajavadebug .
+# Step 2: Run the image:
+#   podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 3390:3389 -it kgibm/fedorajavadebug
+# Step 3: Remote into the image
+#   Linux:
+#     root: vncviewer localhost:5901
+#     was: vncviewer localhost:5902
+#     Use the password from remotepassword.txt
+#   Mac:
+#     root: open vnc://localhost:5901
+#     was: open vnc://localhost:5902
+#     Use the password from remotepassword.txt
+#   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
+# Tips:
+#   * To access the host filesystem from the container (and vice versa), add the following to the run command:
+#     Linux: -v /:/host/
+#     Windows: -v //c/:/host/
+#     macOS: -v /tmp/:/hosttmp/
+#       On Docker Desktop, enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences)
+# Notes:
+#   * Minimize the number of RUN commands when finalizing a new version to minimize layers to avoid layer restrictions.
+
+FROM kgibm/fedoradebug
+
+LABEL maintainer="kevin.grigorenko@us.ibm.com"
+
+####################
+# Install IBM Java #
+####################
+
+# https://github.com/ibmruntimes/ci.docker/blob/master/ibmjava/8/sdk/ubuntu/Dockerfile
+COPY --from=ibmjava:8-sdk /opt/ibm/java /opt/ibm/java
+
+########################
+# Put IBM Java on PATH #
+########################
+
+RUN echo "# https://fedoraproject.org/wiki/Alternatives_system" && \
+    sudo alternatives --install \
+         /usr/bin/java java /opt/ibm/java/bin/java 99999999 \
+         --slave /usr/bin/javac javac /opt/ibm/java/bin/javac \
+         --slave /usr/bin/jar jar /opt/ibm/java/bin/jar \
+         --slave /usr/bin/javah javah /opt/ibm/java/bin/javah \
+         --slave /usr/bin/javap javap /opt/ibm/java/bin/javap \
+         --slave /usr/bin/javadoc javadoc /opt/ibm/java/bin/javadoc \
+         --slave /usr/bin/javaws javaws /opt/ibm/java/bin/javaws \
+         --slave /usr/bin/jconsole jconsole /opt/ibm/java/bin/jconsole \
+         --slave /usr/bin/jdmpview jdmpview /opt/ibm/java/bin/jdmpview \
+         --slave /usr/bin/keytool keytool /opt/ibm/java/bin/keytool \
+         --slave /usr/bin/jdb jdb /opt/ibm/java/bin/jdb \
+         --slave /usr/bin/ControlPanel ControlPanel /opt/ibm/java/bin/ControlPanel \
+         --family ibmjava && \
+    sudo alternatives --auto java && \
+    echo "###############" && \
+    echo "# Install MAT #" && \
+    echo "###############" && \
+    echo "# Eclipse Memory Analyzer Tool (MAT)" && \
+    echo "# https://www.eclipse.org/mat/" && \
+    sudo mkdir -p /opt/mat/ibmjava/ && \
+    sudo mkdir -p /opt/mat/openj9/ && \
+    sudo wget -q -O /opt/mat/ibmjava/mat.tar.gz https://public.dhe.ibm.com/software/websphere/appserv/support/tools/iema/com.ibm.java.diagnostics.memory.analyzer.MemoryAnalyzer.openj9-linux.gtk.x86_64.tar.gz && \
+    sudo wget -q -O /opt/mat/openj9/mat-openj9.tar.gz https://public.dhe.ibm.com/software/websphere/appserv/support/tools/iema/com.ibm.java.diagnostics.memory.analyzer.MemoryAnalyzer-linux.gtk.x86_64.tar.gz && \
+    ( \
+      cd /opt/mat/ibmjava/ && \
+      sudo tar xzf mat.tar.gz && \
+      sudo rm -f mat.tar.gz && \
+      cd /opt/mat/openj9/ && \
+      sudo tar xzf mat-openj9.tar.gz && \
+      sudo rm -f mat-openj9.tar.gz && \
+      sudo mkdir -p /home/was/mat/ibmjava/ && \
+      sudo mkdir -p /home/was/mat/openj9/ && \
+      sudo chown -R was:root /home/was/mat/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=/opt/mat/ibmjava/MemoryAnalyzer -data matibmjavaworkspace\nPath=mat/ibmjava/\nTerminal=false\n' >> /opt/mat/ibmjava/mat.desktop && \
+      sudo chmod a+x /opt/mat/ibmjava/mat.desktop && \
+      sudo ln -s /opt/mat/ibmjava/mat.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/mat.desktop /home/was/Desktop/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=MAT (OpenJ9)\nExec=/opt/mat/openj9/MemoryAnalyzer -data matopenj9workspace\nPath=mat/openj9/\nTerminal=false\n' >> /opt/mat/openj9/mat-openj9.desktop && \
+      sudo chmod a+x /opt/mat/openj9/mat-openj9.desktop && \
+      sudo ln -s /opt/mat/openj9/mat-openj9.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/mat-openj9.desktop /home/was/Desktop/ \
+    ) && \
+    sudo mkdir -p /home/was/matibmjavaworkspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
+    sudo chown -R was /home/was/matibmjavaworkspace/ && \
+    sudo mkdir -p /root/matibmjavaworkspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
+    printf 'bytes_display=Smart\n\
+eclipse.preferences.version=1\n\
+hideGettingStartedWizard=false\n\
+hide_welcome_screen=true\n\
+' > /home/was/matibmjavaworkspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs && \
+    sudo cp /home/was/matibmjavaworkspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs /root/matibmjavaworkspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
+    sudo chown root /home/was/matibmjavaworkspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs && \
+    sudo mkdir -p /home/was/matopenj9workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
+    sudo chown -R was /home/was/matopenj9workspace/ && \
+    sudo mkdir -p /root/matopenj9workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
+    printf 'bytes_display=Smart\n\
+eclipse.preferences.version=1\n\
+hideGettingStartedWizard=false\n\
+hide_welcome_screen=true\n\
+' > /home/was/matopenj9workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs && \
+    sudo cp /home/was/matopenj9workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs /root/matopenj9workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/ && \
+    sudo chown root /home/was/matopenj9workspace/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.mat.ui.prefs && \
+    echo "# Increase the default max heap size" && \
+    sudo sed -i 's/-Xmx1024m/-Xmx2g/g' /opt/mat/ibmjava/MemoryAnalyzer.ini && \
+    sudo sed -i 's/-Xmx1024m/-Xmx2g/g' /opt/mat/openj9/MemoryAnalyzer.ini && \
+    echo "# IBM Runtime Diagnostic Code Injection for the Java Platform (RDCI or Java Surgery)" && \
+    echo "# https://www.ibm.com/support/pages/ibm-runtime-diagnostic-code-injection-java-platform-java-surgery" && \
+    ( \
+      sudo mkdir /opt/surgery/ && \
+      cd /opt/surgery/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/surgery/surgery.jar \
+    ) && \
+    echo "# IBM Thread and Monitor Dump Analyzer (TMDA)" && \
+    echo "# https://www.ibm.com/support/pages/ibm-thread-and-monitor-dump-analyzer-java-tmda" && \
+    ( \
+      sudo mkdir /opt/tmda/ && \
+      cd /opt/tmda/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/jca/jca4611.jar && \
+      sudo mkdir /home/was/tmda/ && \
+      sudo chown -R was:root /home/was/tmda/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=TMDA\nExec=java -jar /opt/tmda/jca4611.jar\nPath=tmda/\nTerminal=false\n' >> tmda.desktop && \
+      sudo chmod a+x tmda.desktop && \
+      sudo ln -s /opt/tmda/tmda.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/tmda.desktop /home/was/Desktop/ \
+    ) && \
+    echo "# IBM ClassLoader Analyzer" && \
+    echo "# https://www.ibm.com/support/pages/ibm-classloader-analyzer" && \
+    ( \
+      sudo mkdir /opt/classloaderanalyzer/ && \
+      cd /opt/classloaderanalyzer/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/ica/ica107.jar && \
+      sudo mkdir /home/was/cla/ && \
+      sudo chown -R was:root /home/was/cla/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=Classloader Analyzer\nExec=java -jar /opt/classloaderanalyzer/ica107.jar\nPath=cla/\nTerminal=false\n' >> cla.desktop && \
+      sudo chmod a+x cla.desktop && \
+      sudo ln -s /opt/classloaderanalyzer/cla.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/cla.desktop /home/was/Desktop/ \
+    ) && \
+    echo "# IBM HeapAnalyzer" && \
+    echo "# https://www.ibm.com/support/pages/ibm-heapanalyzer" && \
+    ( \
+      sudo mkdir /opt/heapanalyzer/ && \
+      cd /opt/heapanalyzer/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/HeapAnalyzer/ha457.jar && \
+      sudo mkdir /home/was/ha/ && \
+      sudo chown -R was:root /home/was/ha/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=Heap Analyzer\nExec=java -jar /opt/heapanalyzer/ha457.jar\nPath=ha/\nTerminal=false\n' >> ha.desktop && \
+      sudo chmod a+x ha.desktop && \
+      sudo ln -s /opt/heapanalyzer/ha.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/ha.desktop /home/was/Desktop/ \
+    ) && \
+    echo "# IBM Pattern Modeling and Analysis Tool for Java Garbage Collector (PMAT)" && \
+    echo "# https://www.ibm.com/support/pages/ibm-pattern-modeling-and-analysis-tool-java-garbage-collector-pmat" && \
+    ( \
+      sudo mkdir /opt/pmat/ && \
+      cd /opt/pmat/ && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/pmat/ga458.jar && \
+      sudo mkdir /home/was/pmat/ && \
+      sudo chown -R was:root /home/was/pmat/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=PMAT\nExec=java -jar /opt/pmat/ga458.jar\nPath=pmat/\nTerminal=false\n' >> pmat.desktop && \
+      sudo chmod a+x pmat.desktop && \
+      sudo ln -s /opt/pmat/pmat.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/pmat.desktop /home/was/Desktop/ \
+    ) && \
+    echo "###################" && \
+    echo "# Install Eclipse #" && \
+    echo "###################" && \
+    echo "# Eclipse 2021-12" && \
+    echo "# https://www.eclipse.org/downloads/packages/release/2021-12/r/eclipse-ide-enterprise-java-and-web-developers" && \
+    sudo wget -q -O /opt/eclipse.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2021-12/R/eclipse-jee-2021-12-R-linux-gtk-x86_64.tar.gz&r=1" && \
+    ( \
+      cd /opt/ && \
+      sudo tar xzf eclipse.tar.gz && \
+      sudo rm -f /opt/eclipse.tar.gz && \
+      sudo sed -i 's/-Xmx.*/-Xmx2g/g' /opt/eclipse/eclipse.ini && \
+      sudo mkdir /home/was/eclipse/ && \
+      sudo chown -R was:root /home/was/eclipse/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=Eclipse\nExec=/opt/eclipse/eclipse -data workspace_eclipse\nPath=eclipse/\nTerminal=false\n' >> /opt/eclipse/eclipse.desktop && \
+      sudo chmod a+x /opt/eclipse/eclipse.desktop && \
+      sudo ln -s /opt/eclipse/eclipse.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/eclipse.desktop /home/was/Desktop/ \
+    ) && \
+    echo "################" && \
+    echo "# Install GCMV #" && \
+    echo "################" && \
+    sudo mkdir -p /opt/gcmv/ && \
+    sudo wget -q -O /opt/gcmv/gcmv.tar.gz https://public.dhe.ibm.com/software/websphere/appserv/support/tools/gcmv/com.ibm.java.diagnostics.visualizer.product-linux.gtk.x86_64.tar.gz && \
+    ( \
+      cd /opt/gcmv/ && \
+      sudo tar xzf gcmv.tar.gz && \
+      sudo rm -f gcmv.tar.gz && \
+      sudo sed -i 's/-Xmx.*/-Xmx1g/g' /opt/gcmv/gcmv.ini && \
+      sudo mkdir /home/was/gcmv/ && \
+      sudo chown -R was:root /home/was/gcmv/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=GCMV\nExec=/opt/gcmv/gcmv -data workspace_gcmv\nPath=gcmv/\nTerminal=false\n' >> /opt/gcmv/gcmv.desktop && \
+      sudo chmod a+x /opt/gcmv/gcmv.desktop && \
+      sudo ln -s /opt/gcmv/gcmv.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/gcmv.desktop /home/was/Desktop/ \
+    ) && \
+    echo "#########################" && \
+    echo "# Install Health Center #" && \
+    echo "#########################" && \
+    echo "# https://www.ibm.com/support/knowledgecenter/en/SS3KLZ/com.ibm.java.diagnostics.healthcenter.doc/homepage/plugin-homepage-hc.html" && \
+    sudo mkdir -p /opt/hc/ && \
+    sudo wget -q -O /opt/hc/hc.tar.gz https://public.dhe.ibm.com/software/websphere/appserv/support/tools/hc/com.ibm.java.diagnostics.healthcenter.rcp-linux.gtk.x86_64.tar.gz && \
+    ( \
+      cd /opt/hc/ && \
+      sudo tar xzf hc.tar.gz && \
+      sudo rm -f hc.tar.gz && \
+      sudo sed -i 's/-Xmx.*/-Xmx1g/g' /opt/hc/healthcenter.ini && \
+      sudo mkdir /home/was/hc/ && \
+      sudo chown -R was:root /home/was/hc/ && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=HealthCenter\nExec=/opt/hc/healthcenter -data workspace_hc\nPath=hc/\nTerminal=false\n' >> /opt/hc/hc.desktop && \
+      sudo chmod a+x /opt/hc/hc.desktop && \
+      sudo ln -s /opt/hc/hc.desktop /opt/programs/ && \
+      sudo ln -s /opt/programs/hc.desktop /home/was/Desktop/ \
+    ) && \
+    echo "# https://github.com/kgibm/java_miscellaneous" && \
+    ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/kgibm/java_miscellaneous \
+    ) && \
+    echo "# https://github.com/kgibm/SimulateJavaOOM" && \
+    ( \
+      cd /opt/ && \
+      sudo git clone https://github.com/kgibm/SimulateJavaOOM \
+    ) && \
+    echo "# Install MAT Source (still requires configuration in Eclipse): https://wiki.eclipse.org/MemoryAnalyzer/Contributor_Reference" && \
+    sudo git clone https://git.eclipse.org/r/mat/org.eclipse.mat.git /usr/local/src/mat && \
+    sudo chmod -R a+w /usr/local/src/mat && \
+    sudo mkdir /opt/mat/dev/ && \
+    ( \
+      cd /opt/mat/dev/ && \
+      sudo wget -q http://www.eclipse.org/mat/dev/mat_code_formatter.xml && \
+      sudo wget -q https://wiki.eclipse.org/MemoryAnalyzer/Contributor_Reference && \
+      sudo wget -O updatesite.zip -q $(curl -s https://www.eclipse.org/mat/downloads.php | grep "Archived Update Site" | sed 's/.*href="//g' | sed 's/".*/\&r=1/g') && \
+      sudo unzip -q updatesite.zip && \
+      sudo rm -f updatesite.zip \
+    )
+
+RUN echo "#####################" && \
+    echo "# OpenJDK + HotSpot #" && \
+    echo "#####################" && \
+    echo "# https://adoptium.net/" && \
+    for v in 8 11 17; do \
+        for j in hotspot; do \
+          ( \
+            sudo mkdir /opt/openjdk${v}_${j}/ && \
+            echo "# Downloading OpenJDK ${v}_${j}" && \
+            sudo curl --silent --output /opt/openjdk${v}_${j}/temurin.tar.gz -L "https://api.adoptium.net/v3/binary/latest/${v}/ga/linux/x64/jdk/${j}/normal/eclipse" && \
+            cd /opt/openjdk${v}_${j}/ && \
+            sudo tar xzf /opt/openjdk${v}_${j}/temurin.tar.gz && \
+            sudo rm /opt/openjdk${v}_${j}/temurin.tar.gz && \
+            sudo mv jdk* jdk && \
+            sudo alternatives --install \
+                /usr/bin/java java /opt/openjdk${v}_${j}/jdk/bin/java 89999999 \
+                --slave /usr/bin/javac javac /opt/openjdk${v}_${j}/jdk/bin/javac \
+                --slave /usr/bin/jar jar /opt/openjdk${v}_${j}/jdk/bin/jar \
+                --slave /usr/bin/javah javah /opt/openjdk${v}_${j}/jdk/bin/javah \
+                --slave /usr/bin/javap javap /opt/openjdk${v}_${j}/jdk/javap \
+                --slave /usr/bin/javadoc javadoc /opt/openjdk${v}_${j}/jdk/bin/javadoc \
+                --slave /usr/bin/javaws javaws /opt/openjdk${v}_${j}/jdk/bin/javaws \
+                --slave /usr/bin/jconsole jconsole /opt/openjdk${v}_${j}/jdk/bin/jconsole \
+                --slave /usr/bin/jdmpview jdmpview /opt/openjdk${v}_${j}/jdk/bin/jdmpview \
+                --slave /usr/bin/keytool keytool /opt/openjdk${v}_${j}/jdk/bin/keytool \
+                --slave /usr/bin/jdb jdb /opt/openjdk${v}_${j}/jdk/bin/jdb \
+                --slave /usr/bin/ControlPanel ControlPanel /opt/openjdk${v}_${j}/jdk/bin/ControlPanel \
+                --family openjdk && \
+            sudo alternatives --auto java \
+          ) \
+        done \
+      done && \
+    echo "####################" && \
+    echo "# OpenJDK + Semeru #" && \
+    echo "####################" && \
+    echo "# https://developer.ibm.com/languages/java/semeru-runtimes/downloads" && \
+    echo "# ibm for Open Edition and ibm_ce for Certified Edition" && \
+    for v in 8 11 17; do \
+        for j in ibm; do \
+          ( \
+            sudo mkdir /opt/openjdk${v}_${j}/ && \
+            echo "# Downloading Semeru ${v}_${j}" && \
+            sudo curl --silent --output /opt/openjdk${v}_${j}/semeru.tar.gz -L "https://www.ibm.com/semeru-runtimes/api/v3/binary/latest/${v}/ga/linux/x64/jdk/openj9/normal/${j}" && \
+            cd /opt/openjdk${v}_${j}/ && \
+            sudo tar xzf /opt/openjdk${v}_${j}/semeru.tar.gz && \
+            sudo rm /opt/openjdk${v}_${j}/semeru.tar.gz && \
+            sudo mv jdk* jdk && \
+            sudo alternatives --install \
+                /usr/bin/java java /opt/openjdk${v}_${j}/jdk/bin/java 89999999 \
+                --slave /usr/bin/javac javac /opt/openjdk${v}_${j}/jdk/bin/javac \
+                --slave /usr/bin/jar jar /opt/openjdk${v}_${j}/jdk/bin/jar \
+                --slave /usr/bin/javah javah /opt/openjdk${v}_${j}/jdk/bin/javah \
+                --slave /usr/bin/javap javap /opt/openjdk${v}_${j}/jdk/javap \
+                --slave /usr/bin/javadoc javadoc /opt/openjdk${v}_${j}/jdk/bin/javadoc \
+                --slave /usr/bin/javaws javaws /opt/openjdk${v}_${j}/jdk/bin/javaws \
+                --slave /usr/bin/jconsole jconsole /opt/openjdk${v}_${j}/jdk/bin/jconsole \
+                --slave /usr/bin/jdmpview jdmpview /opt/openjdk${v}_${j}/jdk/bin/jdmpview \
+                --slave /usr/bin/keytool keytool /opt/openjdk${v}_${j}/jdk/bin/keytool \
+                --slave /usr/bin/jdb jdb /opt/openjdk${v}_${j}/jdk/bin/jdb \
+                --slave /usr/bin/ControlPanel ControlPanel /opt/openjdk${v}_${j}/jdk/bin/ControlPanel \
+                --family openjdk && \
+            sudo alternatives --auto java \
+          ) \
+        done \
+      done
+
+RUN echo -n "$(sudo head -n 1 /tmp/remotepassword)" | /usr/local/bin/setpassword.sh
+
+# Last statement must be switching to root for supervisord
+USER root
