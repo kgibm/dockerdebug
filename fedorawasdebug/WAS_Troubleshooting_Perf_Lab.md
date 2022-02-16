@@ -1,7 +1,7 @@
 # WebSphere Application Server Troubleshooting and Performance Lab on Docker
 
 - Author: [Kevin Grigorenko](mailto:kevin.grigorenko@us.ibm.com)
-- Version: V16 (April 13, 2021)
+- Version: V17 (February 16, 2022)
 - Source: [https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug](https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug)
 
 # Table of Contents
@@ -35,7 +35,7 @@
 -   [Native Memory Leaks](#native-memory-leaks)
     -   [Native Memory Theory](#native-memory-theory)
     -   [Native Memory Leak Lab](#native-memory-leak-lab)
--   [WAS Liberty](#was-liberty)
+-   [WebSphere Liberty](#was-liberty)
     -   [Liberty Bikes](#liberty-bikes)
     -   [Server Configuration (server.xml)](#server-configuration-serverxml)
     -   [Java Arguments](#java-arguments)
@@ -63,11 +63,11 @@
 
 1.  [WAS traditional](https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.5/com.ibm.websphere.nd.multiplatform.doc/ae/welcome_ndmp.html) (colloquially: tWAS or WAS Classic): Released in 1998 and still fully supported and used by many.
 
-2.  [WAS Liberty](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/as_ditamaps/was900_welcome_liberty_ndmp.html) (or WebSphere Liberty): Released in 2012 and designed for fast startup, composability, and the cloud. The commercial WAS Liberty product is built on top of the open source [OpenLiberty](https://github.com/OpenLiberty/open-liberty). The colloquial term \'Liberty\' may refer to WAS Liberty, OpenLiberty, or both.
+2.  [WebSphere Liberty](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/as_ditamaps/was900_welcome_liberty_ndmp.html) (or WebSphere Liberty): Released in 2012 and designed for fast startup, composability, and the cloud. The commercial WebSphere Liberty product is built on top of the open source [OpenLiberty](https://github.com/OpenLiberty/open-liberty). The colloquial term \'Liberty\' may refer to WebSphere Liberty, OpenLiberty, or both.
 
 WAS traditional and Liberty share some source code but [differ in significant ways](http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/documentation/ChoosingTraditionalWASorLiberty-16.0.0.4.pdf).
 
-Both WAS traditional and WAS Liberty come in different flavors including *Base* and *Network Deployment (ND)* in which ND layers additional features such as advanced high availability on top of Base, although ND capabilities are generally not used in orchestrated cloud environments like Kubernetes as such capabilities are built-in.
+Both WAS traditional and WebSphere Liberty come in different flavors including *Base* and *Network Deployment (ND)* in which ND layers additional features such as advanced high availability on top of Base, although ND capabilities are generally not used in orchestrated cloud environments like Kubernetes as such capabilities are built-in.
 
 ## Lab Screenshots
 
@@ -77,29 +77,13 @@ Both WAS traditional and WAS Liberty come in different flavors including *Base* 
 
 ## Lab
 
-This lab assumes the installation and use of Docker to run the lab. For example, install Docker Desktop for Windows, Mac, or Linux hosts:
+### What's in the lab?
 
--   Windows (\"Requires Microsoft Windows 10 Professional or Enterprise 64-bit.\")
+This lab covers the major tools and techniques for troubleshooting and performance tuning for both WAS traditional and WebSphere Liberty, in addition to specific tools for each. There is significant overlap because a lot of troubleshooting and tuning occurs at the operating system and Java levels, largely independent of WAS.
 
-    -   Download: <https://hub.docker.com/editions/community/docker-ce-desktop-windows>
+This lab Docker image come with WAS traditional and WebSphere Liberty pre-installed so installation and configuration steps are skipped.
 
-    -   For details, see <https://docs.docker.com/docker-for-windows/install/>
-
--   Mac (\"Requires Apple Mac OS Sierra 10.12 or above\")
-
-    -   Download: <https://hub.docker.com/editions/community/docker-ce-desktop-mac>
-
-    -   For details, see <https://docs.docker.com/docker-for-mac/install/>
-
--   For a Linux host, simply install and start Docker (sudo systemctl start docker):
-
-    -   For an example, see <https://docs.docker.com/install/linux/docker-ce/fedora/>
-
-This lab covers the major tools and techniques for troubleshooting and performance tuning for both WAS traditional and WAS Liberty, in addition to specific tools for each. There is significant overlap because a lot of troubleshooting and tuning occurs at the operating system and Java levels, largely independent of WAS.
-
-This lab Docker image come with WAS traditional and WAS Liberty pre-installed so installation and configuration steps are skipped.
-
-The way we are using Docker in these [lab](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/Dockerfile) [Docker](https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile) [images](https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile) is to run multiple services in the same container (e.g. VNC, Remote Desktop, WAS traditional, WAS Liberty, a full GUI server, etc.) and although this approach is [valid and supported](https://docs.docker.com/config/containers/multi-service_container/), it is not generally recommended for real-world application deployment usage. In this case, Docker is used primarily for easy distribution and building of this lab. For labs that demonstrate how to use WAS in production, see [WebSphere Application Server and Docker Tutorials](https://github.com/WASdev/ci.docker.tutorials).
+The way we are using Docker in these [lab](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/Dockerfile) [Docker](https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile) [images](https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile) is to run multiple services in the same container (e.g. VNC, Remote Desktop, WAS traditional, WebSphere Liberty, a full GUI server, etc.) and although this approach is [valid and supported](https://docs.docker.com/config/containers/multi-service_container/), it is not generally recommended for real-world application deployment usage. In this case, Docker is used primarily for easy distribution and building of this lab. For labs that demonstrate how to use WAS in production, see [WebSphere Application Server and Docker Tutorials](https://github.com/WASdev/ci.docker.tutorials).
 
 ## Operating System
 
@@ -109,11 +93,11 @@ This lab is built on top of Linux (specifically, Fedora Linux, which is the open
 
 WAS traditional ships with a packaged IBM Java 8 on Linux, AIX, Windows, z/OS, and IBM i.
 
-WAS Liberty supports any Java 8 or Java 11 compliant Java (with some [minimum requirements](https://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/rwlp_restrict.html?view=kc#rwlp_restrict__rest13)).
+WebSphere Liberty supports any Java 8 or Java 11 compliant Java (with some [minimum requirements](https://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/rwlp_restrict.html?view=kc#rwlp_restrict__rest13)).
 
-This lab uses IBM Java 8 for both WAS traditional and WAS Liberty. The concepts and techniques apply generally to other Java runtimes although details of other Java runtimes (e.g. [HotSpot](https://publib.boulder.ibm.com/httpserv/cookbook/Java.html)) vary significantly and are covered elsewhere.
+This lab uses IBM Java 8 for both WAS traditional and WebSphere Liberty. The concepts and techniques apply generally to other Java runtimes although details of other Java runtimes (e.g. [HotSpot](https://publib.boulder.ibm.com/httpserv/cookbook/Java.html)) vary significantly and are covered elsewhere.
 
-The IBM Java virtual machine (named J9) has become largely open sourced into the [OpenJ9 project](https://github.com/eclipse/openj9). OpenJ9 ships with OpenJDK through the [AdoptOpenJDK project](https://adoptopenjdk.net/). OpenJDK is somewhat different than the JDK that IBM Java uses. WAS Liberty supports running with newer versions of OpenJDK+OpenJ9, although some IBM Java tooling such as HealthCenter is not yet available in OpenJ9, so the focus of this lab continues to be IBM Java 8.
+The IBM Java virtual machine (named J9) has become largely open sourced into the [OpenJ9 project](https://github.com/eclipse/openj9). OpenJ9 ships with OpenJDK through the [IBM Semeru offering](https://developer.ibm.com/languages/java/semeru-runtimes/downloads). OpenJDK is somewhat different than the JDK that IBM Java uses. WebSphere Liberty supports running with newer versions of OpenJDK+OpenJ9, although some IBM Java tooling such as HealthCenter is not yet available in OpenJ9, so the focus of this lab continues to be IBM Java 8.
 
 # Core Concepts
 
@@ -121,7 +105,94 @@ Problem determination and performance tuning are best done with all layers of th
 
 <img src="./media/image4.png" width="530" height="493" />
 
+# Lab environment
+
+This lab assumes the installation and use of `podman` or Docker Desktop to run the lab:
+
+* `podman`: 
+    * Windows: <https://podman.io/getting-started/installation#windows>
+    * macOS: <https://podman.io/getting-started/installation#macos>
+    * For a Linux host, simply install `podman`
+* Docker Desktop:
+    * Windows ("Requires Microsoft Windows 10 Professional or Enterprise 64-bit.")
+        * Download: <https://hub.docker.com/editions/community/docker-ce-desktop-windows>
+        * For details, see <https://docs.docker.com/desktop/windows/install/>
+    * macOS ("must be version 10.15 or newer")
+        * Download: <https://hub.docker.com/editions/community/docker-ce-desktop-mac>
+        * For details, see <https://docs.docker.com/desktop/mac/install/>
+    * For a Linux host, simply install and start Docker (e.g. `sudo systemctl start docker`):
+        * For an example, see <https://docs.docker.com/engine/install/fedora/>
+
+# podman Basics
+
+If you are using `podman` for this lab, perform the following prerequisite steps:
+
+1. On macOS and Windows:
+    1. Create the `podman` virtual machine with sufficient memory (at least 4GB and, ideally, at least 8GB), CPU, and disk. For example:
+       ```
+       podman machine init --memory 10240 --cpus 4 --disk-size 50
+       ```
+    1. Start the `podman` virtual machine:
+       ```
+       podman machine start
+       ```
+2.  Download the images:
+
+    `podman pull kgibm/fedorawasdebug`
+
+    1.  Note that these images are \>20GB. If you plan to run this in a classroom setting, consider performing all the steps up to and including this item before arriving at the classroom.
+
+3.  Start the lab:
+
+    `podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
+
+4.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
+    
+        =========
+        = READY =
+        =========
+
+5.  VNC or Remote Desktop into the container:
+
+    1.  macOS built-in VNC client:
+
+        1.  Open another tab in the terminal and run:
+
+            1.  **open vnc://localhost:5902**
+
+            2.  Password: **websphere**
+
+    1.  Linux VNC client:
+
+        1.  Open another tab in the terminal and run:
+
+            1.  **vncviewer localhost:5902**
+
+            2.  Password: **websphere**
+
+    1.  Windows 3<sup>rd</sup> party VNC client:
+
+        i.  If you are able to install and use a 3<sup>rd</sup> party VNC client (there are a few free options online), then connect to **localhost** on port **5902** with password **websphere**.
+
+    1.  Windows Remote Desktop client:
+
+        i.  Windows requires a few steps to make Remote Desktop work with a Docker container. See [Appendix: Windows Remote Desktop Client](#windows-remote-desktop-client) for instructions.
+
+    1.  SSH:
+
+        1.  If you want to simulate production-like access, you can SSH into the container (e.g. using terminal ssh or PuTTY) although you'll need one of the GUI methods above to run most of this lab:
+
+            1.  **ssh was\@localhost**
+
+            2.  Password: **websphere**
+
+6.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
+    \
+    <img src="./media/image13.png" width="1160" height="615" />
+
 # Docker Basics
+
+If you are using Docker Desktop for this lab, perform the following prerequisite steps:
 
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
     \
@@ -1814,26 +1885,18 @@ This lab will leak classloaders which use native memory outside the Java heap an
         \
         <img src="./media/image123.png" width="717" height="461" />
 
-# WAS Liberty
+# WebSphere Liberty
 
-WAS Liberty has many built-in troubleshooting and performance features, including:
+WebSphere Liberty has many built-in troubleshooting and performance features, including:
 
 -   Admin Center
-
 -   Request Timing
-
 -   HTTP NCSA access log
-
 -   MXBean Monitoring
-
 -   Server Dumps
-
 -   Event Logging
-
 -   Diagnostic trace
-
 -   Binary logging
-
 -   Timed operations
 
 ##  Liberty Bikes
@@ -2515,6 +2578,9 @@ Any currently running Java programs will need to be restarted if you want them t
 
 ##  Version History
 
+* V17 (February 16, 2022):
+    * Upgrade to Liberty 21.0.0.12
+    * Add IBM Semeru runtimes
 * V16 (April 13, 2021):
     * Upgrade to Liberty 21.0.0.3
     * Update to TMDA 4.6.9
