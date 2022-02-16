@@ -2,11 +2,11 @@
 #
 # usage:
 # ======
-# Step 1: Build the Docker image:
+# Step 1: Build the image:
 #   podman build -t kgibm/fedoradebug .
-# Step 2: Run the Docker image:
+# Step 2: Run the image:
 #   podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 3390:3389 -it kgibm/fedoradebug
-# Step 3: Remote into the docker image
+# Step 3: Remote into the image
 #   Linux:
 #     root: vncviewer localhost:5901
 #     was: vncviewer localhost:5902
@@ -17,14 +17,13 @@
 #     Use the password from remotepassword.txt
 #   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
 # Tips:
-#   * To access the host filesystem from the container (and vice versa), add the following to docker run:
+#   * To access the host filesystem from the container (and vice versa), add the following to the run command:
 #     Linux: -v /:/host/
 #     Windows: -v //c/:/host/
 #     macOS: -v /tmp/:/hosttmp/
-#       Enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences)
+#       On Docker Desktop, enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences)
 # Notes:
-#   * Because of a maximum of 125 layers (https://github.com/docker/for-linux/issues/414), minimize the number of RUN
-#     commands when finalizing a new version.
+#   * Minimize the number of RUN commands when finalizing a new version to minimize layers to avoid layer restrictions.
 
 # https://hub.docker.com/_/fedora
 FROM fedora:latest
