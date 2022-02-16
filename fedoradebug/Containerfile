@@ -117,6 +117,7 @@ RUN dnf install -y \
       man-pages \
       maven \
       meld \
+      mlocate \
       mousepad \
       mtr \
       multitail \

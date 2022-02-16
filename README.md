@@ -35,10 +35,10 @@
 1. `git` add, commit, and push the `WAS_Troubleshooting_Perf_Lab.*` files.
 1. `podman pull websphere-liberty`
 1. `podman pull ibmcom/websphere-traditional`
-1. If needed, update Liberty build in `MAVEN_LIBERTY_VERSION` in `fedorawasdebug/Dockerfile`
+1. If needed, update Liberty build in `MAVEN_LIBERTY_VERSION` in `fedorawasdebug/Containerfile`
 1. `podman build -t kgibm/fedorawasdebug .`
 1. Run and test the image.
-1. `podman build -t kgibm/fedorawasdebugejb -f Dockerfile.ejb .`
+1. `podman build -t kgibm/fedorawasdebugejb -f Containerfile.ejb .`
 1. `git commit -am "VXX: New version with ..."`
 1. `git push`
 1. `podman login`
