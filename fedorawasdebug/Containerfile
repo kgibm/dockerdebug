@@ -903,7 +903,7 @@ RUN echo "# Backup and clear Liberty and tWAS logs" && \
     sudo mv /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/* /backup/twas/ffdc/ && \
     sudo chown -R was:root /backup/
 
-RUN echo "Example data V20220215" && \
+RUN echo "Example data V20220221" && \
     echo "https://github.com/kgibm/dockerdebug/" && \
     sudo git clone https://github.com/kgibm/dockerdebug/ /opt/dockerdebug/ && \
     sudo chown -R was:root /opt/dockerdebug/ && \
@@ -911,7 +911,7 @@ RUN echo "Example data V20220215" && \
 
 # Update lab document by updating the date in the echo and rebuild:
 RUN ( \
-      echo "Lab Document V20220215" && \
+      echo "Lab Document V20220221" && \
       cd /opt/dockerdebug/fedorawasdebug && \
       sudo git pull && \
       echo "Don't use --metadata title= here and just ignore the warning about it missing" && \

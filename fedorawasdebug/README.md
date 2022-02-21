@@ -133,6 +133,8 @@ Tip: To share files with your host machine, add the following to the `docker run
    podman system prune --all --force
    podman rmi --all
    ```
+1. Update version number, date and revision history in `WAS_Troubleshooting_Perf_Lab.md`
+1. Update version number in `fedorawasdebug/Containerfile`
 1. `cd fedoradebug`
 1. `podman build -t kgibm/fedoradebug .`
 1. `cd ../fedorajavadebug`
@@ -140,7 +142,6 @@ Tip: To share files with your host machine, add the following to the `docker run
 1. `cd ../fedorawasdebug`
 1. Remove any previous IHS zips
 1. Download the latest "IBM HTTP Server archive file for 64-bit Linux, x86" from <https://www.ibm.com/support/pages/fix-list-ibm-http-server-version-90>
-1. Update version number and date, and revision history in `WAS_Troubleshooting_Perf_Lab.md`
 1. Generate lab PDF (yes, this is before building the final image):
    ```
    sed 's/<img src="\(.*\)" width.*\/>/![](\1)/g' WAS_Troubleshooting_Perf_Lab.md > WAS_Troubleshooting_Perf_Lab_imagesconverted.md

@@ -1,7 +1,7 @@
 # WebSphere Application Server Troubleshooting and Performance Lab on Docker
 
 - Author: [Kevin Grigorenko](mailto:kevin.grigorenko@us.ibm.com)
-- Version: V17 (February 16, 2022)
+- Version: V17 (February 21, 2022)
 - Source: [https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug](https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug)
 
 # Table of Contents
@@ -2578,11 +2578,20 @@ Show the Java version to verify the change (in this case, I chose option 7 and t
 
 Any currently running Java programs will need to be restarted if you want them to use the different version of Java (WAS traditional is an exception because it uses a bundled version of Java).
 
-##  Version History
+## Version History
 
-* V17 (February 16, 2022):
+* V17 (February 21, 2022):
+    * Add podman instructions in addition to Docker Desktop
+    * Upgrade to tWAS 9.0.5.10
     * Upgrade to Liberty 21.0.0.12
     * Add IBM Semeru runtimes
+    * Update MAT, GCMV, and HealthCenter
+    * Update Request Metrics Analyzer Next
+    * Update to Eclipse 2021-12
+    * Update WAS Configuration Visualizer
+    * Switch to IBM HTTP Server archive install
+    * Update Performance Tuning Toolkit
+    * Add IBM Service Integration Bus Destination Handler
 * V16 (April 13, 2021):
     * Upgrade to Liberty 21.0.0.3
     * Update to TMDA 4.6.9
