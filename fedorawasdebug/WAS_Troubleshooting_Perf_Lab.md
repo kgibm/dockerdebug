@@ -8,8 +8,10 @@
 
 -   [Introduction](#introduction)
 -   [Core Concepts](#core-concepts)
--   [Docker Basics](#docker-basics)
-    -   [Apache Jmeter](#apache-jmeter)
+-   [Installation](#installation)
+-   Usage
+    -   [Start with podman](#start-with-podman)
+    -   [Start with Docker Desktop](#start-with-docker-desktop)
 -   [Linux CPU and Memory Usage](#linux-cpu-and-memory-usage)
     -   [linperf Theory](#linperf-theory)
     -   [linperf Lab](#linperf-lab)
