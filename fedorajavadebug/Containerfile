@@ -75,11 +75,11 @@ RUN echo "# https://fedoraproject.org/wiki/Alternatives_system" && \
       sudo mkdir -p /home/was/mat/ibmjava/ && \
       sudo mkdir -p /home/was/mat/openj9/ && \
       sudo chown -R was:root /home/was/mat/ && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=/opt/mat/ibmjava/MemoryAnalyzer -data matibmjavaworkspace\nPath=mat/ibmjava/\nTerminal=false\n' >> /opt/mat/ibmjava/mat.desktop && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=MAT\nExec=/opt/mat/ibmjava/MemoryAnalyzer -data matibmjavaworkspace -vm /opt/openjdk11_ibm/jdk/bin/\nPath=mat/ibmjava/\nTerminal=false\n' >> /opt/mat/ibmjava/mat.desktop && \
       sudo chmod a+x /opt/mat/ibmjava/mat.desktop && \
       sudo ln -s /opt/mat/ibmjava/mat.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/mat.desktop /home/was/Desktop/ && \
-      sudo printf '[Desktop Entry]\nType=Application\nName=MAT (OpenJ9)\nExec=/opt/mat/openj9/MemoryAnalyzer -data matopenj9workspace\nPath=mat/openj9/\nTerminal=false\n' >> /opt/mat/openj9/mat-openj9.desktop && \
+      sudo printf '[Desktop Entry]\nType=Application\nName=MAT (OpenJ9)\nExec=/opt/mat/openj9/MemoryAnalyzer -data matopenj9workspace -vm /opt/openjdk11_ibm/jdk/bin/\nPath=mat/openj9/\nTerminal=false\n' >> /opt/mat/openj9/mat-openj9.desktop && \
       sudo chmod a+x /opt/mat/openj9/mat-openj9.desktop && \
       sudo ln -s /opt/mat/openj9/mat-openj9.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/mat-openj9.desktop /home/was/Desktop/ \

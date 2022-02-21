@@ -269,7 +269,7 @@ JVM_ARGS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ -XX
       sudo mvn -q clean install && \
       sudo mkdir /home/was/rma/ && \
       sudo chown -R was:root /home/was/rma/ && \
-      printf '[Desktop Entry]\nType=Application\nName=Request Metrics Analyzer\nExec=java -jar /opt/request-metrics-analyzer-next/target/request-metrics-analyzer-next-2.0.20210111-jar-with-dependencies.jar\nPath=rma/\nTerminal=false\n' | sudo tee rma.desktop && \
+      printf '[Desktop Entry]\nType=Application\nName=Request Metrics Analyzer\nExec=java -jar /opt/request-metrics-analyzer-next/target/request-metrics-analyzer-next-2.0.20210805-jar-with-dependencies.jar\nPath=rma/\nTerminal=false\n' | sudo tee rma.desktop && \
       sudo chmod a+x rma.desktop && \
       sudo ln -s /opt/request-metrics-analyzer-next/rma.desktop /opt/programs/ && \
       sudo ln -s /opt/programs/rma.desktop /home/was/Desktop/ \
@@ -914,7 +914,8 @@ RUN ( \
       echo "Lab Document V20220215" && \
       cd /opt/dockerdebug/fedorawasdebug && \
       sudo git pull && \
-      sudo pandoc -s --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
+      echo "Don't use --metadata title= here and just ignore the warning about it missing" && \
+      sudo pandoc -s -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
       ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
     )
 
