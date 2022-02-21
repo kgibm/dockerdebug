@@ -107,6 +107,8 @@ Problem determination and performance tuning are best done with all layers of th
 
 # Lab environment
 
+## Installation
+
 This lab assumes the installation and use of `podman` or Docker Desktop to run the lab:
 
 * `podman`: 
@@ -123,7 +125,7 @@ This lab assumes the installation and use of `podman` or Docker Desktop to run t
     * For a Linux host, simply install and start Docker (e.g. `sudo systemctl start docker`):
         * For an example, see <https://docs.docker.com/engine/install/fedora/>
 
-# podman Basics
+## Start with podman
 
 If you are using `podman` for this lab, perform the following prerequisite steps:
 
@@ -190,7 +192,7 @@ If you are using `podman` for this lab, perform the following prerequisite steps
     \
     <img src="./media/image13.png" width="1160" height="615" />
 
-# Docker Basics
+## Start with Docker Desktop
 
 If you are using Docker Desktop for this lab, perform the following prerequisite steps:
 
