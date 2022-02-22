@@ -134,7 +134,7 @@ If you are using `podman` for this lab, perform the following prerequisite steps
 1. On macOS and Windows:
     1. Create the `podman` virtual machine with sufficient memory (at least 4GB and, ideally, at least 8GB), CPU, and disk. For example:
        ```
-       podman machine init --memory 10240 --cpus 4 --disk-size 50
+       podman machine init --memory 10240 --cpus 4 --disk-size 100
        ```
     1. Start the `podman` virtual machine:
        ```
