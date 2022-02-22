@@ -142,13 +142,13 @@ If you are using `podman` for this lab, perform the following prerequisite steps
        ```
 2.  Download the images:
 
-    `podman pull kgibm/fedorawasdebug`
+    `podman pull quay.io/kgibm/fedorawasdebug`
 
     1.  Note that these images are \>20GB. If you plan to run this in a classroom setting, consider performing all the steps up to and including this item before arriving at the classroom.
 
 3.  Start the lab:
 
-    `podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
+    `podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it quay.io/kgibm/fedorawasdebug`
 
 4.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
     
@@ -243,13 +243,13 @@ If you are using Docker Desktop for this lab, perform the following prerequisite
 
 5.  Download the images:
 
-    `docker pull kgibm/fedorawasdebug`
+    `docker pull quay.io/kgibm/fedorawasdebug`
 
     1.  Note that these images are \>20GB. If you plan to run this in a classroom setting, consider performing all the steps up to and including this item before arriving at the classroom.
 
 6.  Start the lab by starting the Docker container from the command line:
 
-    `docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
+    `docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it quay.io/kgibm/fedorawasdebug`
 
 7.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
     
@@ -2456,15 +2456,15 @@ By default, the Docker container does not have access to the host filesystem and
 
 * Linux: Add `-v /:/host/` to the `docker run` command. For example:
   ```
-  docker run ... -v /:/host/ -it kgibm/fedorawasdebug
+  docker run ... -v /:/host/ -it quay.io/kgibm/fedorawasdebug
   ```
 * Windows: Add `-v //c/:/host/` to the docker run command. For example:
   ```
-  docker run ... -v //c/:/host/ -it kgibm/fedorawasdebug
+  docker run ... -v //c/:/host/ -it quay.io/kgibm/fedorawasdebug
   ```
 * macOS: Add `-v /tmp/:/hosttmp/` to the `docker run` command. Enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences). For example:
   ```
-  docker run ... -v /tmp/:/hosttmp/ -it kgibm/fedorawasdebug
+  docker run ... -v /tmp/:/hosttmp/ -it quay.io/kgibm/fedorawasdebug
   ```
 
 ##  Saving State
@@ -2480,8 +2480,8 @@ Saving state of a Docker container would be useful for situations such as multi-
     1.  Find the container ID with **docker ps**:
 
             $ docker ps -a
-            CONTAINER ID        IMAGE                  COMMAND             CREATED             STATUS              PORTS           NAMES
-            0a041815fbc2        kgibm/fedorawasdebug   "/entrypoint.sh"    9 seconds ago       Up 7 seconds        0.0.0.0:22...   nostalgic_zhukovsky
+            CONTAINER ID   IMAGE                          COMMAND             CREATED             STATUS              PORTS           NAMES
+            0a041815fbc2   quay.io/kgibm/fedorawasdebug   "/entrypoint.sh"    9 seconds ago       Up 7 seconds        0.0.0.0:22...   nostalgic_zhukovsky
 
     1.  Commit the container:
 
