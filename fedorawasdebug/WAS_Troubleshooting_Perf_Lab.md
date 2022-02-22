@@ -625,7 +625,7 @@ We will review the thread dumps gathered by linperf.sh above:
 
 1.  Complete the *linperf.sh Lab* above which includes producing thread dumps.
 
-2.  Open **/opt/programs/** in the file browser and double click on **TMDA**:
+2.  From the desktop, double click on **TMDA**:
 
 3.  Click Open Thread Dumps and select all of the **javacore\*.txt** files using the Shift key. These may be in your home directory (**/home/was**) if you moved them in the previous exercise; otherwise, they're in the default working directory (Liberty: **/opt/ibm/wlp/output/defaultServer** ; WAS traditional: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**):\
     \
@@ -854,7 +854,7 @@ Add the verbosegc option to the jvm.options file:
 
 3.  [Stop JMeter](#stop-jmeter)
 
-4.  Open **/opt/programs/** in the file browser and double click on **GCMV**:
+4.  From the desktop, double click on **GCMV**:
 
 5.  Click **File** \> **Load File\...** and select the **verbosegc.001.log** file. For example:\
     \
@@ -1146,7 +1146,7 @@ Do not confuse system dumps which are usually named **core\*.dmp** with thread d
 
 1.  Complete the *Garbage Collection Lab* above which will have caused an OutOfMemoryError and produced a heapdump.
 
-2.  Open **/opt/programs/** in the file browser and double click on **MAT**.
+2.  From the desktop, double click on **MAT**.
 
 1.  Click **File** \> **Open Heap Dump\...**\
     <img src="./media/image78.png" width="271" height="244" />
@@ -1340,7 +1340,7 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
 7.  Stop WAS as in step 2 above.
 
-8.  Open **/opt/programs/** in the file browser and double click on **Health Center**.
+8.  From the desktop, double click on **HealthCenter**.
 
 9.  Click **File \> Load Data\...** (note that it\'s towards the bottom of the **File** menu; **Open File** does not work):\
     \
@@ -1875,7 +1875,7 @@ This lab will leak classloaders which use native memory outside the Java heap an
 
     1.  In this example, about 1.2GB of native memory (outside the Java heap) is consumed by classes and classloaders. This is the primary suspect for this NOOM.
 
-9.  Given that the primary suspects are classes/classloaders, next we'll analyze the heap dump. Open the Memory Analyzer Tool at **/opt/programs/MAT** and load the **core\*dmp** file. This may take 20-30 minutes so while it's loading you can review the additional details in the next steps and return once the loading is complete.
+9.  Given that the primary suspects are classes/classloaders, next we'll analyze the heap dump. Open the Memory Analyzer Tool by double clicking the **MAT** icon on the desktop and load the **core\*dmp** file. This may take 20-30 minutes so while it's loading you can review the additional details in the next steps and return once the loading is complete.
 
     1.  When you first load the system dump, you'll see that there is no large dominator so there are no large pie pieces:\
         \

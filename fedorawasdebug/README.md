@@ -10,7 +10,7 @@ Watch a Quick Start video: https://www.youtube.com/watch?v=7o25Sq_-T44
 
 Note: You'll need more than 40GB of disk space and configure Docker/podman with 4GB or more of RAM. For details on how to install and configure, see the [lab instructions](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#lab).
 
-1. `docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it kgibm/fedorawasdebug`
+1. `docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it quay.io/kgibm/fedorawasdebug`
 1. The container is fully started after about 2 minutes when the output shows:
    ```
    =========
@@ -157,10 +157,10 @@ Tip: To share files with your host machine, add the following to the `docker run
 1. `podman build -t kgibm/fedorawasdebugejb -f Containerfile.ejb .`
 1. `git commit -am "VXX: New version with ..."`
 1. `git push`
-1. `podman login`
+1. `podman login quay.io`
 1. `podman images`
-1. For each of the above images: `podman tag $IMAGEID $NAME:VXX` (Example `$NAME`=`kgibm/fedoradebug`)
-1. Push all the VXX images: `podman push kgibm/fedoradebug:VXX && podman push kgibm/fedorajavadebug:VXX && podman push kgibm/fedorawasdebug:VXX && podman push kgibm/fedorawasdebugejb:VXX`
+1. For each of the above images: `podman tag $IMAGEID $NAME:VXX` (Example `$NAME`=`quay.io/kgibm/fedoradebug`)
+1. Push all the VXX images: `podman push quay.io/kgibm/fedoradebug:VXX && podman push quay.io/kgibm/fedorajavadebug:VXX && podman push quay.io/kgibm/fedorawasdebug:VXX && podman push quay.io/kgibm/fedorawasdebugejb:VXX`
 1. After all VXX versions are pushed, push the latest tags: `podman push kgibm/fedoradebug:latest && podman push kgibm/fedorajavadebug:latest && podman push kgibm/fedorawasdebug:latest && podman push kgibm/fedorawasdebugejb:latest`
 1. `git tag VXX`
 1. `git push --tags`
