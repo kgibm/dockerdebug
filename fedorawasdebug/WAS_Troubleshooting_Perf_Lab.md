@@ -140,6 +140,10 @@ If you are using `podman` for this lab, perform the following prerequisite steps
        ```
        podman machine start
        ```
+    1. Switch to a "root" podman:
+       ```
+       podman system connection default podman-machine-default-root
+       ```
 2.  Download the images:
 
     `podman pull quay.io/kgibm/fedorawasdebug`
