@@ -127,6 +127,8 @@ This lab assumes the installation and use of `podman` or Docker Desktop to run t
     * For a Linux host, simply install and start Docker (e.g. `sudo systemctl start docker`):
         * For an example, see <https://docs.docker.com/engine/install/fedora/>
 
+The image is about 20GB. If you plan to run this in a classroom setting, consider pulling the image beforehand: `podman pull quay.io/kgibm/fedorawasdebug` or `docker pull quay.io/kgibm/fedorawasdebug`
+
 ## Start with podman
 
 If you are using `podman` for this lab, perform the following prerequisite steps:
@@ -144,23 +146,17 @@ If you are using `podman` for this lab, perform the following prerequisite steps
        ```
        podman system connection default podman-machine-default-root
        ```
-2.  Download the images:
-
-    `podman pull quay.io/kgibm/fedorawasdebug`
-
-    1.  Note that these images are \>20GB. If you plan to run this in a classroom setting, consider performing all the steps up to and including this item before arriving at the classroom.
-
-3.  Start the lab:
+2.  Start the lab:
 
     `podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it quay.io/kgibm/fedorawasdebug`
 
-4.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
+3.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
     
         =========
         = READY =
         =========
 
-5.  VNC or Remote Desktop into the container:
+4.  VNC or Remote Desktop into the container:
 
     1.  macOS built-in VNC client:
 
@@ -194,7 +190,7 @@ If you are using `podman` for this lab, perform the following prerequisite steps
 
             2.  Password: **websphere**
 
-6.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
+5.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
     \
     <img src="./media/image13.png" width="1160" height="615" />
 
@@ -245,23 +241,17 @@ If you are using Docker Desktop for this lab, perform the following prerequisite
     Windows:\
     <img src="./media/image12.png" width="463" height="393" />
 
-5.  Download the images:
-
-    `docker pull quay.io/kgibm/fedorawasdebug`
-
-    1.  Note that these images are \>20GB. If you plan to run this in a classroom setting, consider performing all the steps up to and including this item before arriving at the classroom.
-
-6.  Start the lab by starting the Docker container from the command line:
+5.  Start the lab by starting the Docker container from the command line:
 
     `docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it quay.io/kgibm/fedorawasdebug`
 
-7.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
+6.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
     
         =========
         = READY =
         =========
 
-8.  VNC or Remote Desktop into the container:
+7.  VNC or Remote Desktop into the container:
 
     1.  macOS built-in VNC client:
 
@@ -295,7 +285,7 @@ If you are using Docker Desktop for this lab, perform the following prerequisite
 
             2.  Password: **websphere**
 
-9.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
+8.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
     \
     <img src="./media/image13.png" width="1160" height="615" />
 
