@@ -1336,7 +1336,7 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
 6.  [Stop JMeter](#stop-jmeter)
 
-7.  Stop WAS as in step 2 above.
+7.  Stop WAS as in step 3 above.
 
 8.  From the desktop, double click on **HealthCenter**.
 
