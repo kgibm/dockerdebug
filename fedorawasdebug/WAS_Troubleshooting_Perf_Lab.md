@@ -2195,7 +2195,7 @@ The [server dump](http://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.
 
 You may run this from the **bin** directory. For example:
 
-    $ /home/was/liberty-bikes/build/wlp/bin/server dump frontendServer
+    $ ~/liberty-bikes/build/wlp/bin/server dump frontendServer
     Dumping server frontendServer.
     Server frontendServer dump complete in /home/was/liberty-bikes/build/wlp/usr/servers/frontendServer/frontendServer.dump-19.06.10_08.18.18.zip.
     Server frontendServer dump complete in /home/was/liberty-bikes/build/wlp/usr/servers/frontendServer/frontendServer.dump-19.06.10\_08.18.18.zip.
@@ -2206,7 +2206,7 @@ The output of the dump command is a great thing to upload when first opening any
 
 You may also specify a comma-separated list of Java diagnostic artifacts including **heap** for a PHD file, **system** for an operating system core dump, and **thread** for a thread dump. For example:
 
-    $ server dump frontendServer --include=system
+    $ ~/liberty-bikes/build/wlp/bin/server dump frontendServer --include=system
 
 ##  Event Logging
 
