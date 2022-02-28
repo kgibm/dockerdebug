@@ -2014,6 +2014,7 @@ The slow request detection part of the feature monitors for HTTP requests that e
         <featureManager>
           <feature>requestTiming-1.0</feature>
         </featureManager>
+        <requestTiming slowRequestThreshold="60s" hungRequestThreshold="180s" sampleRate="1" />
 
 2.  Execute a request that takes more than one minute by opening a browser to http://localhost:12000/swat/Sleep?duration=65000
 
