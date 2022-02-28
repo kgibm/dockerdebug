@@ -149,6 +149,11 @@ If you are using `podman` for this lab, perform the following prerequisite steps
        ```
        podman system connection default podman-machine-default-root
        ```
+    1. Run the following commands to allow producing core dumps within the container:
+       ```
+       podman machine ssh ln -sf /dev/null /etc/sysctl.d/50-coredump.conf
+       podman machine ssh sysctl -w kernel.core_pattern=core
+       ```
 2.  Start the lab:
 
     `podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it quay.io/kgibm/fedorawasdebug`
@@ -1162,54 +1167,50 @@ Do not confuse system dumps which are usually named **core\*.dmp** with thread d
     \
     <img src="./media/image82.png" width="653" height="401" />
 
-6.  The first thing to check is to see whether there were any errors processing the dump. Click **Window** \> **Error Log**:\
-    \
-    <img src="./media/image83.png" width="530" height="304" />
-
-7.  Review the list and check for any warnings or errors:\
+6.  The first thing to check is to see whether there were any errors processing the dump. Review the **Error Log** and check for any warnings or errors:\
     <img src="./media/image84.png" width="938" height="215" />
 
     1.  It is possible to have a few warnings without too many problems. If you believe the warnings are limiting your analysis, consider opening an IBM Support case to investigate the issue with the IBM Java support team.
 
-8.  The overview tab shows the total live Java heap usage and the number of live classes, classloaders, and objects:\
+7.  The overview tab shows the total live Java heap usage and the number of live classes, classloaders, and objects:\
     \
     <img src="./media/image85.png" width="680" height="531" />
 
     1.  By default, MAT performs a full "garbage collection" when it loads the dump so everything you see is only pertaining to live Java objects. You can click on the **Unreachable Objects Histogram** link to see a histogram of any objects that are trash.
 
-9.  The pie chart on the **Overview** tab shows the largest dominator objects so it's a subset of the **Dominator Tree** button:\
+8.  The pie chart on the **Overview** tab shows the largest dominator objects so it's a subset of the **Dominator Tree** button:\
     \
     <img src="./media/image86.png" width="680" height="531" />
 
-10. You may left click on a pie slice and select **List objects** \> **with outgoing references** to review the object graph of the large dominator:\
+9.  You may left click on a pie slice and select **List objects** \> **with outgoing references** to review the object graph of the large dominator:\
     \
     <img src="./media/image87.png" width="754" height="538" />
 
-11. Expand the outgoing references tree and walk down the path with the largest **Retained Heap** values; in this example, there is an ArrayList that retains 194MB. Continue walking down the tree and you will find an Object array with hundreds of elements, each of about 1MB, which matches what we executed to create the OutOfMemoryError:\
+10. Expand the outgoing references tree and walk down the path with the largest **Retained Heap** values; in this example, there is an ArrayList that retains 194MB. Continue walking down the tree and you will find an Object array with hundreds of elements, each of about 1MB, which matches what we executed to create the OutOfMemoryError:\
     \
     <img src="./media/image88.png" width="754" height="538" />
 
-12. In this case, we want to find out what references this ArrayList, so right click on it and select **List objects** \> **with incoming references**:\
+11. In this case, we want to find out what references this ArrayList, so right click on it and select **List objects** \> **with incoming references**:\
     \
     <img src="./media/image89.png" width="754" height="538" />
 
-13. This results in the following view:\
+12. This results in the following view:\
     \
     <img src="./media/image90.png" width="754" height="250" />
 
     1.  In this example, there are two references to the ArrayList. The first is that the class com.ibm.AllocateObject has a static field called holder which references the ArrayList. We know it is static because of the word **class** in front of the class name. The second is the thread **Default Executor-thread-169**.
 
-14. From the above analysis, we know there is what appears to be a leak into a static ArrayList and there is a thread that has a reference to it, so naturally we want to see what that thread is doing. Open the **Thread Overview** query:\
+13. From the above analysis, we know there is what appears to be a leak into a static ArrayList and there is a thread that has a reference to it, so naturally we want to see what that thread is doing. Open the **Thread Overview** query:\
     <img src="./media/image91.png" width="680" height="531" />
 
-15. This will list every thread, the thread name, the retained heap of the thread, other thread details, and the stack frame along with stack frame locals:\
+14. This will list every thread, the thread name, the retained heap of the thread, other thread details, and the stack frame along with stack frame locals:\
     <img src="./media/image92.png" width="754" height="520" />
 
-16. We know from above that the thread that references the ArrayList is named **Default Executor-thread-169**. In your case, the thread may be named differently. You may enter this thread name into the **Name** column's **\<Regex\>** input:\
+15. We know from above that the thread that references the ArrayList is named **Default Executor-thread-169**. In your case, the thread may be named differently. You may enter this thread name into the **Name** column's **\<Regex\>** input:\
     \
     <img src="./media/image93.png" width="754" height="239" />
 
-17. Press Enter to filter the results, expand the thread stack and find the servlet that caused the leak:\
+16. Press Enter to filter the results, expand the thread stack and find the servlet that caused the leak:\
     <img src="./media/image94.png" width="805" height="425" />
 
     1.  Note that you can see the actual objects on each stack frame. In this case, we can clearly see the servlet has a reference to the AllocateObject class and the ArrayList which is retaining most of the heap. This stack usually makes it much easier for the application developer to understand what happened. Right click on the thread and select **Thread Details** to get a full thread stack that may be copy-and-pasted:\
@@ -1219,26 +1220,26 @@ Do not confuse system dumps which are usually named **core\*.dmp** with thread d
         \
         <img src="./media/image96.png" width="609" height="425" />
 
-18. Another common view to explore is the **Histogram**:\
+17. Another common view to explore is the **Histogram**:\
     <img src="./media/image97.png" width="680" height="531" />
 
-19. Click on the calculator button and select **Calculate Minimum Retained Size (quick approx.)** to populate the **Retained Heap** column for each class:\
+18. Click on the calculator button and select **Calculate Minimum Retained Size (quick approx.)** to populate the **Retained Heap** column for each class:\
     \
     <img src="./media/image98.png" width="812" height="289" />
 
-20. This fills in the retained heap column which then you can click to sort descending:\
+19. This fills in the retained heap column which then you can click to sort descending:\
     <img src="./media/image99.png" width="812" height="524" />
 
-21. You may click on a row with a large retained heap size, right click and select outgoing references. For example:\
+20. You may click on a row with a large retained heap size, right click and select outgoing references. For example:\
     <img src="./media/image100.png" width="812" height="524" />
 
-22. Then sort by **Retained Heap** and again you will find the large object:\
+21. Then sort by **Retained Heap** and again you will find the large object:\
     <img src="./media/image101.png" width="812" height="524" />
 
-23. The next common view to explore is the **Leak Suspects** view. On the **Overview** tab, scroll down and click on **Leak Suspects**:\
+22. The next common view to explore is the **Leak Suspects** view. On the **Overview** tab, scroll down and click on **Leak Suspects**:\
     <img src="./media/image102.png" width="812" height="359" />
 
-24. The report will list leak suspects in the order of their size. The following example shows the same leaking **Object\[\]** inside the **ArrayList**:\
+23. The report will list leak suspects in the order of their size. The following example shows the same leaking **Object\[\]** inside the **ArrayList**:\
      <img src="./media/image103.png" width="812" height="435" />
 
 The [IBM Extensions for Memory Analyzer (IEMA)](https://publib.boulder.ibm.com/httpserv/cookbook/Major_Tools-IBM_Memory_Analyzer_Tool.html#Major_Tools-IBM_Memory_Analyzer_Tool_MAT-Installation) provide additional extensions on top of MAT with WAS, Java, and other related queries.
