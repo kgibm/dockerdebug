@@ -133,7 +133,7 @@ The image is about 20GB. If you plan to run this in a classroom setting, conside
   ```
   docker pull quay.io/kgibm/fedorawasdebug
   ```
-* `podman`
+* podman:
   ```
   podman system connection default podman-machine-default-root
   podman pull quay.io/kgibm/fedorawasdebug
