@@ -129,14 +129,14 @@ This lab assumes the installation and use of `podman` or Docker Desktop to run t
 
 The image is about 20GB. If you plan to run this in a classroom setting, consider pulling the image beforehand:
 
-* Docker Desktop:
-  ```
-  docker pull quay.io/kgibm/fedorawasdebug
-  ```
 * podman:
   ```
   podman system connection default podman-machine-default-root
   podman pull quay.io/kgibm/fedorawasdebug
+  ```
+* Docker Desktop:
+  ```
+  docker pull quay.io/kgibm/fedorawasdebug
   ```
 
 ## Start with podman
