@@ -161,12 +161,13 @@ Tip: To share files with your host machine, add the following to the `docker run
 1. `podman login quay.io`
 1. `podman images`
 1. For each of the above images: `podman tag $IMAGEID $NAME:VXX` (Example `$NAME`=`quay.io/kgibm/fedoradebug`)
+1. Do the same for the `latest` tag
 1. Push all the VXX images: `podman push quay.io/kgibm/fedoradebug:VXX && podman push quay.io/kgibm/fedorajavadebug:VXX && podman push quay.io/kgibm/fedorawasdebug:VXX && podman push quay.io/kgibm/fedorawasdebugejb:VXX`
-1. After all VXX versions are pushed, push the latest tags: `podman push kgibm/fedoradebug:latest && podman push kgibm/fedorajavadebug:latest && podman push kgibm/fedorawasdebug:latest && podman push kgibm/fedorawasdebugejb:latest`
+1. After all VXX versions are pushed, push the latest tags: `podman push quay.io/kgibm/fedoradebug:latest && podman push quay.io/kgibm/fedorajavadebug:latest && podman push quay.io/kgibm/fedorawasdebug:latest && podman push quay.io/kgibm/fedorawasdebugejb:latest`
 1. `git tag VXX`
 1. `git push --tags`
 1. Delete old images from:
-    1. <https://hub.docker.com/repository/docker/kgibm/fedoradebug/tags?page=1&ordering=last_updated>
-    1. <https://hub.docker.com/repository/docker/kgibm/fedorajavadebug/tags?page=1&ordering=last_updated>
-    1. <https://hub.docker.com/repository/docker/kgibm/fedorawasdebug/tags?page=1&ordering=last_updated>
-    1. <https://hub.docker.com/repository/docker/kgibm/fedorawasdebugejb/tags?page=1&ordering=last_updated>
+    1. <https://quay.io/repository/kgibm/fedoradebug?tab=tags>
+    1. <https://quay.io/repository/kgibm/fedorajavadebug?tab=tags>
+    1. <https://quay.io/repository/kgibm/fedorawasdebug?tab=tags>
+    1. <https://quay.io/repository/kgibm/fedorawasdebugejb?tab=tags>
