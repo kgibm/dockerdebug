@@ -308,6 +308,22 @@ RUN echo "#####################" && \
         done \
       done
 
+RUN echo "# https://adoptium.net/jmc" && \
+    sudo mkdir /opt/jmc && \
+    cd /opt/jmc && \
+    sudo curl --silent --output jmc.tar.gz -L https://github.com/adoptium/jmc-overrides/releases/download/8.1.1/org.openjdk.jmc-8.1.1-linux.gtk.x86_64.tar.gz && \
+    sudo tar xzf jmc.tar.gz && \
+    sudo rm jmc.tar.gz && \
+    sudo mv JDK\ Mission\ Control/* . && \
+    sudo rmdir JDK\ Mission\ Control && \
+    sudo sed -i 's/-vmargs/-vm\n\/opt\/openjdk11_hotspot\/jdk\/bin\/\n-vmargs/g' jmc.ini && \
+    sudo mkdir /home/was/jmc/ && \
+    sudo chown -R was:root /home/was/jmc/ && \
+    sudo printf '[Desktop Entry]\nType=Application\nName=Mission Control\nExec=/opt/jmc/jmc -data workspace_jmc\nPath=jmc/\nTerminal=false\n' >> /opt/jmc/jmc.desktop && \
+    sudo chmod a+x /opt/jmc/jmc.desktop && \
+    sudo ln -s /opt/jmc/jmc.desktop /opt/programs/ && \
+    sudo ln -s /opt/programs/jmc.desktop /home/was/Desktop/
+
 RUN echo -n "$(sudo head -n 1 /tmp/remotepassword)" | /usr/local/bin/setpassword.sh
 
 # Last statement must be switching to root for supervisord

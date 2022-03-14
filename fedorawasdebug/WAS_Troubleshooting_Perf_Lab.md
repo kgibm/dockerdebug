@@ -1,4 +1,4 @@
-# WebSphere Application Server Troubleshooting and Performance Lab on Docker
+# WebSphere Performance and Troubleshooting Lab
 
 - Author: [Kevin Grigorenko](mailto:kevin.grigorenko@us.ibm.com)
 - Version: V17 (February 21, 2022)
@@ -61,15 +61,15 @@
 
 # Introduction
 
-[WebSphere Application Server](https://www.ibm.com/cloud/websphere-application-platform) (WAS) is a platform for serving Java-based applications. WAS comes in two major product forms:
+IBM® [WebSphere® Application Server](https://www.ibm.com/cloud/websphere-application-platform) (WAS) is a platform for serving Java™-based applications. WAS comes in two major product forms:
 
-1.  [WAS traditional](https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.5/com.ibm.websphere.nd.multiplatform.doc/ae/welcome_ndmp.html) (colloquially: tWAS or WAS Classic): Released in 1998 and still fully supported and used by many.
+1. [WAS traditional](https://www.ibm.com/docs/en/was-nd/9.0.5?topic=network-deployment-all-operating-systems-version-90) (colloquially, tWAS): Released in 1998 and still fully supported and used by many.
 
-2.  [WebSphere Liberty](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/as_ditamaps/was900_welcome_liberty_ndmp.html) (or WebSphere Liberty): Released in 2012 and designed for fast startup, composability, and the cloud. The commercial WebSphere Liberty product is built on top of the open source [OpenLiberty](https://github.com/OpenLiberty/open-liberty). The colloquial term \'Liberty\' may refer to WebSphere Liberty, OpenLiberty, or both.
+2. [WebSphere Liberty](https://www.ibm.com/docs/en/was-liberty/nd): Released in 2012 and designed for fast startup, composability, and the cloud. The commercial WebSphere Liberty product is built on top of the open source [OpenLiberty](https://github.com/OpenLiberty/open-liberty). The colloquial term 'Liberty' may refer to WebSphere Liberty, OpenLiberty, or both.
 
 WAS traditional and Liberty share some source code but [differ in significant ways](http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/documentation/ChoosingTraditionalWASorLiberty-16.0.0.4.pdf).
 
-Both WAS traditional and WebSphere Liberty come in different flavors including *Base* and *Network Deployment (ND)* in which ND layers additional features such as advanced high availability on top of Base, although ND capabilities are generally not used in orchestrated cloud environments like Kubernetes as such capabilities are built-in.
+Both WAS traditional and Liberty come in different flavors including *Base* and *Network Deployment (ND)* in which ND layers additional features such as advanced high availability on top of Base, although ND capabilities are generally not used in orchestrated cloud environments like Kubernetes as such capabilities are built-in.
 
 ## Lab Screenshots
 
