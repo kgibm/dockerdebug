@@ -324,8 +324,5 @@ RUN echo "# https://adoptium.net/jmc" && \
     sudo ln -s /opt/jmc/jmc.desktop /opt/programs/ && \
     sudo ln -s /opt/programs/jmc.desktop /home/was/Desktop/
 
-RUN printf 'websphere' > /tmp/remotepassword && \
-    echo -n "$(sudo head -n 1 /tmp/remotepassword)" | /usr/local/bin/setpassword.sh
-
 # Last statement must be switching to root for supervisord
 USER root

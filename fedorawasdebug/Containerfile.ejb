@@ -9,9 +9,7 @@
 
 FROM kgibm/fedorawasdebug
 
-RUN printf 'websphere' > /tmp/remotepassword && \
-    echo -n "$(sudo head -n 1 /tmp/remotepassword)" | /usr/local/bin/setpassword.sh && \
-    sudo sed -i 's/\(<ThroughputController.*MarketSummary.*enabled="\)true">/\1false">/g' /opt/daytrader7/jmeter_files/*jmx && \
+RUN sudo sed -i 's/\(<ThroughputController.*MarketSummary.*enabled="\)true">/\1false">/g' /opt/daytrader7/jmeter_files/*jmx && \
     sudo sed -i 's/\(<.*WS2 Open Connection.*enabled="\)true">/\1false">/g' /opt/daytrader7/jmeter_files/*jmx && \
     sudo sed -i 's/runtimeMode=1/runtimeMode=0/g' /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/installedApps/DefaultCell01/DayTrader7.ear/daytrader-ee7-web.war/properties/daytrader.properties && \
     ( \

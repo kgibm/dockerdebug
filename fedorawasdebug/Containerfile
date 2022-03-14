@@ -86,8 +86,6 @@ COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /opt/IBM /opt/I
 COPY --from=ibmcom/websphere-traditional:latest --chown=was:root /etc/websphere /etc/websphere
 
 RUN sudo /usr/sbin/slapd -F /etc/openldap/slapd.d -h "ldapi:// ldap://" && \
-    printf 'websphere' > /tmp/remotepassword && \
-    echo -n "$(sudo head -n 1 /tmp/remotepassword)" | /usr/local/bin/setpassword.sh && \
     echo "##################" && \
     echo "# Configure tWAS #" && \
     echo "##################" && \
