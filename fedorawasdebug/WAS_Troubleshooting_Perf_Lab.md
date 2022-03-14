@@ -83,9 +83,9 @@ Both WAS traditional and Liberty come in different flavors including *Base* and 
 
 This lab covers the major tools and techniques for troubleshooting and performance tuning for both WAS traditional and WebSphere Liberty, in addition to specific tools for each. There is significant overlap because a lot of troubleshooting and tuning occurs at the operating system and Java levels, largely independent of WAS.
 
-This lab Docker image come with WAS traditional and WebSphere Liberty pre-installed so installation and configuration steps are skipped.
+This lab container image come with WAS traditional and WebSphere Liberty pre-installed so installation and configuration steps are skipped.
 
-The way we are using Docker in these [lab](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/Dockerfile) [Docker](https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile) [images](https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile) is to run multiple services in the same container (e.g. VNC, Remote Desktop, WAS traditional, WebSphere Liberty, a full GUI server, etc.) and although this approach is [valid and supported](https://docs.docker.com/config/containers/multi-service_container/), it is not generally recommended for real-world application deployment usage. In this case, Docker is used primarily for easy distribution and building of this lab. For labs that demonstrate how to use WAS in production, see [WebSphere Application Server and Docker Tutorials](https://github.com/WASdev/ci.docker.tutorials).
+The way we are using these container images is to run multiple services in the same container (e.g. VNC, Remote Desktop, WAS traditional, WebSphere Liberty, a full GUI server, etc.) and although this approach is [valid and supported](https://docs.docker.com/config/containers/multi-service_container/), it is generally not recommended for real-world application deployment usage. For labs that demonstrate how to use WAS in production, see [WebSphere Application Server and Docker Tutorials](https://github.com/WASdev/ci.docker.tutorials).
 
 ## Operating System
 
@@ -95,7 +95,7 @@ This lab is built on top of Linux (specifically, Fedora Linux, which is the open
 
 WAS traditional ships with a packaged IBM Java 8 on Linux, AIX, Windows, z/OS, and IBM i.
 
-WebSphere Liberty supports any Java 8 or Java 11 compliant Java (with some [minimum requirements](https://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/rwlp_restrict.html?view=kc#rwlp_restrict__rest13)).
+WebSphere Liberty supports any Java 8 or Java 11 compliant Java (with some [minimum requirements](https://www.ibm.com/docs/en/was-liberty/nd?topic=liberty-runtime-environment-known-restrictions#rwlp_restrict__rest13)).
 
 This lab uses IBM Java 8 for both WAS traditional and WebSphere Liberty. The concepts and techniques apply generally to other Java runtimes although details of other Java runtimes (e.g. [HotSpot](https://publib.boulder.ibm.com/httpserv/cookbook/Java.html)) vary significantly and are covered elsewhere.
 
