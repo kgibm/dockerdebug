@@ -86,6 +86,7 @@ Tip: To share files with your host machine, add the following to the `docker run
 * [Wireshark](https://www.wireshark.org/)
 * [Apache JMeter](https://jmeter.apache.org/)
 * [OpenJDK 8](https://openjdk.java.net/)
+* [Eclipse Mission Control](https://adoptium.net/jmc)
 * [IBM Semeru (V8, V11, V17)](https://developer.ibm.com/languages/java/semeru-runtimes/downloads)
 * [Eclipse Temurin (V8, V11, V17)](https://adoptium.net/)
 * [Liberty Bikes](https://github.com/OpenLiberty/liberty-bikes)
@@ -134,7 +135,7 @@ Tip: To share files with your host machine, add the following to the `docker run
    podman rmi --all
    ```
 1. Update version number, date and revision history in `WAS_Troubleshooting_Perf_Lab.md`
-1. Update version number in `fedorawasdebug/Containerfile`
+1. Update version numbers in the `echo`s at the bottom of `fedorawasdebug/Containerfile`
 1. `cd fedoradebug`
 1. `podman build -t kgibm/fedoradebug .`
 1. `cd ../fedorajavadebug`

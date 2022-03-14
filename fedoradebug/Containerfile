@@ -5,7 +5,7 @@
 # Step 1: Build the image:
 #   podman build -t kgibm/fedoradebug .
 # Step 2: Run the image:
-#   podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 3390:3389 -it quay.io/kgibm/fedoradebug
+#   podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 5901:5901 -p 5902:5902 -p 3390:3389 -it kgibm/fedoradebug
 # Step 3: Remote into the image
 #   Linux:
 #     root: vncviewer localhost:5901
@@ -14,7 +14,7 @@
 #   Mac:
 #     root: open vnc://localhost:5901
 #     was: open vnc://localhost:5902
-#     Use the password from remotepassword.txt
+#     Use the password websphere
 #   Windows: Remote desktop requires detailed instructions. Consider using a free VNC client.
 # Tips:
 #   * To access the host filesystem from the container (and vice versa), add the following to the run command:

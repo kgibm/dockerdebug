@@ -1,7 +1,7 @@
 # WebSphere Performance and Troubleshooting Lab
 
 - Author: [Kevin Grigorenko](mailto:kevin.grigorenko@us.ibm.com)
-- Version: V17 (February 21, 2022)
+- Version: V18 (March 14, 2022)
 - Source: [https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug](https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug)
 
 # Table of Contents
@@ -2588,10 +2588,13 @@ Any currently running Java programs will need to be restarted if you want them t
 
 ## Version History
 
+* V18 (March 14, 2022):
+    * Add workaround for [Liberty Issue 20082](https://github.com/OpenLiberty/open-liberty/issues/20082)
+    * Add Eclipse Mission Control 8.1
 * V17 (February 21, 2022):
     * Add podman instructions in addition to Docker Desktop
     * Upgrade to tWAS 9.0.5.10
-    * Upgrade to Liberty 21.0.0.12
+    * Upgrade to Liberty 22.0.0.1
     * Add IBM Semeru runtimes
     * Update MAT, GCMV, and HealthCenter
     * Update Request Metrics Analyzer Next
