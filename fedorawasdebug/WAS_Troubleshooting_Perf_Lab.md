@@ -119,13 +119,13 @@ The image is about 20GB. If you plan to run this in a classroom setting, perform
 
 ### Installing podman
 
+If you are using `podman` instead of Docker Desktop:
+
 * Windows: <https://podman.io/getting-started/installation#windows>
 * macOS: <https://podman.io/getting-started/installation#macos>
 * For a Linux host, simply install `podman`
 
 #### podman post-installation steps
-
-If you are using `podman` instead of Docker Desktop:
 
 1. On macOS and Windows:
     1. Create the `podman` virtual machine with sufficient memory (at least 4GB and, ideally, at least 8GB), CPU, and disk. For example (memory is in MB):
@@ -156,6 +156,8 @@ The following section on Docker Desktop should be skipped since you are using `p
 
 ### Installing Docker Desktop
 
+If you are using Docker Desktop instead of `podman`:
+
 * Windows ("Requires Microsoft Windows 10 Professional or Enterprise 64-bit.")
     * Download: <https://hub.docker.com/editions/community/docker-ce-desktop-windows>
     * For details, see <https://docs.docker.com/desktop/windows/install/>
@@ -166,8 +168,6 @@ The following section on Docker Desktop should be skipped since you are using `p
     * For an example, see <https://docs.docker.com/engine/install/fedora/>
 
 #### Docker Desktop post-installation steps
-
-If you are using Docker Desktop instead of `podman`:
 
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
     \
