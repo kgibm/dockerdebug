@@ -131,6 +131,8 @@ The image is about 20GB. If you plan to run this in a classroom setting, conside
 
 ### podman post-installation steps
 
+If you are using `podman`:
+
 1. On macOS and Windows:
     1. Create the `podman` virtual machine with sufficient memory (at least 4GB and, ideally, at least 8GB), CPU, and disk. For example (memory is in MB):
        ```
