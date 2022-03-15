@@ -127,6 +127,8 @@ This lab assumes the installation and use of `podman` or Docker Desktop to run t
     * For a Linux host, simply install and start Docker (e.g. `sudo systemctl start docker`):
         * For an example, see <https://docs.docker.com/engine/install/fedora/>
 
+The image is about 20GB. If you plan to run this in a classroom setting, consider performing the post-installation steps beforehand which includes downloading the image.
+
 ### podman post-installation steps
 
 1. On macOS and Windows:
@@ -148,6 +150,10 @@ This lab assumes the installation and use of `podman` or Docker Desktop to run t
        podman machine ssh ln -sf /dev/null /etc/sysctl.d/50-coredump.conf
        podman machine ssh sysctl -w kernel.core_pattern=core
        ```
+1. Download the image:
+   ```
+   podman pull quay.io/kgibm/fedorawasdebug
+   ```
 
 ### Docker Desktop post-installation steps
 
@@ -185,6 +191,11 @@ This lab assumes the installation and use of `podman` or Docker Desktop to run t
         \
         Windows:\
         <img src="./media/image10.png" width="600" height="419" />
+
+4.  Open a terminal or command prompt and download the image:
+    ```
+    docker pull quay.io/kgibm/fedorawasdebug
+    ```
 
 ## Start the container
 
