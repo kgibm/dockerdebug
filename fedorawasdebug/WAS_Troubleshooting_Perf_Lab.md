@@ -131,7 +131,7 @@ The image is about 20GB. If you plan to run this in a classroom setting, conside
 
 ### podman post-installation steps
 
-If you are using `podman`:
+If you are using `podman` instead of Docker Desktop:
 
 1. On macOS and Windows:
     1. Create the `podman` virtual machine with sufficient memory (at least 4GB and, ideally, at least 8GB), CPU, and disk. For example (memory is in MB):
@@ -161,6 +161,8 @@ If you are using `podman`:
 The following section should on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Start with podman](#start-with-podman).
 
 ### Docker Desktop post-installation steps
+
+If you are using Docker Desktop instead of `podman`:
 
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
     \
