@@ -111,7 +111,7 @@ Problem determination and performance tuning are best done with all layers of th
 
 ## Installation
 
-This lab assumes the installation and use of `podman` or Docker Desktop to run the lab:
+This lab assumes the installation and use of `podman` or Docker Desktop to run the lab. Choose one or the other to perform the lab:
 
 * `podman`: 
     * Windows: <https://podman.io/getting-started/installation#windows>
@@ -156,6 +156,8 @@ The image is about 20GB. If you plan to run this in a classroom setting, conside
    ```
    This command may not show any output for a long time.
 
+The following section should on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Start with podman](#start-with-podman).
+
 ### Docker Desktop post-installation steps
 
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
@@ -197,6 +199,8 @@ The image is about 20GB. If you plan to run this in a classroom setting, conside
     ```
     docker pull quay.io/kgibm/fedorawasdebug
     ```
+
+The following section on `podman` should be skipped since you are using Docker Desktop. The next section for Docker Desktop is [Start with Docker Desktop](start-with-docker-desktop).
 
 ## Start the container
 
@@ -251,6 +255,9 @@ If you are using `podman` for this lab:
 4.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
     \
     <img src="./media/image13.png" width="1160" height="615" />
+
+The following section should on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Apache JMeter](#apache-jmeter).
+
 
 ### Start with Docker Desktop
 
