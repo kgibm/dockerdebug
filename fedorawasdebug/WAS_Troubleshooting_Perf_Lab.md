@@ -242,7 +242,7 @@ If you are using `podman` for this lab instead of Docker Desktop:
         1.  Open another tab in the terminal and run:
 
             1.  **vncviewer localhost:5902**
-
+                * You may need to install `vncviewer` first.
             2.  Password: **websphere**
 
     1.  Windows 3<sup>rd</sup> party VNC client:
@@ -305,7 +305,7 @@ If you are using Docker Desktop for this lab instead of `podman`:
         1.  Open another tab in the terminal and run:
 
             1.  **vncviewer localhost:5902**
-
+                * You may need to install `vncviewer` first.
             2.  Password: **websphere**
 
     1.  Windows 3<sup>rd</sup> party VNC client:
