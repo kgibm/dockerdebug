@@ -210,7 +210,7 @@ The following section on `podman` should be skipped since you are using Docker D
 
 ### Start with podman
 
-If you are using `podman` for this lab:
+If you are using `podman` for this lab instead of Docker Desktop:
 
 1.  Start the lab:
 
@@ -265,7 +265,7 @@ The following section on Docker Desktop should be skipped since you are using `p
 
 ### Start with Docker Desktop
 
-If you are using Docker Desktop for this lab:
+If you are using Docker Desktop for this lab instead of `podman`:
 
 1.  Open a terminal or command prompt:\
     \
