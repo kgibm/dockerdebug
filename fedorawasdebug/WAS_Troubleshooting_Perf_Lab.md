@@ -115,7 +115,7 @@ Problem determination and performance tuning are best done with all layers of th
 
 This lab assumes the installation and use of `podman` or Docker Desktop to run the lab. Choose one or the other.
 
-The image is about 20GB. If you plan to run this in a classroom setting, consider performing the post-installation steps beforehand which includes downloading the image.
+The image is about 20GB. If you plan to run this in a classroom setting, perform the installation steps beforehand which includes downloading the image.
 
 ### Installing podman
 
