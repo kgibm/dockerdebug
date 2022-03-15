@@ -8,8 +8,10 @@
 
 -   [Introduction](#introduction)
 -   [Core Concepts](#core-concepts)
--   [Installation](#installation)
--   Usage
+-   Installation
+    -   [With podman][#installing-podman]
+    -   [With Docker Desktop][#installing-docker-desktop]
+-   Starting the lab
     -   [Start with podman](#start-with-podman)
     -   [Start with Docker Desktop](#start-with-docker-desktop)
 -   [Linux CPU and Memory Usage](#linux-cpu-and-memory-usage)
@@ -111,25 +113,17 @@ Problem determination and performance tuning are best done with all layers of th
 
 ## Installation
 
-This lab assumes the installation and use of `podman` or Docker Desktop to run the lab. Choose one or the other to perform the lab:
-
-* `podman`: 
-    * Windows: <https://podman.io/getting-started/installation#windows>
-    * macOS: <https://podman.io/getting-started/installation#macos>
-    * For a Linux host, simply install `podman`
-* Docker Desktop:
-    * Windows ("Requires Microsoft Windows 10 Professional or Enterprise 64-bit.")
-        * Download: <https://hub.docker.com/editions/community/docker-ce-desktop-windows>
-        * For details, see <https://docs.docker.com/desktop/windows/install/>
-    * macOS ("must be version 10.15 or newer")
-        * Download: <https://hub.docker.com/editions/community/docker-ce-desktop-mac>
-        * For details, see <https://docs.docker.com/desktop/mac/install/>
-    * For a Linux host, simply install and start Docker (e.g. `sudo systemctl start docker`):
-        * For an example, see <https://docs.docker.com/engine/install/fedora/>
+This lab assumes the installation and use of `podman` or Docker Desktop to run the lab. Choose one or the other.
 
 The image is about 20GB. If you plan to run this in a classroom setting, consider performing the post-installation steps beforehand which includes downloading the image.
 
-### podman post-installation steps
+### Installing podman
+
+* Windows: <https://podman.io/getting-started/installation#windows>
+* macOS: <https://podman.io/getting-started/installation#macos>
+* For a Linux host, simply install `podman`
+
+#### podman post-installation steps
 
 If you are using `podman` instead of Docker Desktop:
 
@@ -160,7 +154,18 @@ If you are using `podman` instead of Docker Desktop:
 
 The following section on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Start with podman](#start-with-podman).
 
-### Docker Desktop post-installation steps
+### Installing Docker Desktop
+
+* Windows ("Requires Microsoft Windows 10 Professional or Enterprise 64-bit.")
+    * Download: <https://hub.docker.com/editions/community/docker-ce-desktop-windows>
+    * For details, see <https://docs.docker.com/desktop/windows/install/>
+* macOS ("must be version 10.15 or newer")
+    * Download: <https://hub.docker.com/editions/community/docker-ce-desktop-mac>
+    * For details, see <https://docs.docker.com/desktop/mac/install/>
+* For a Linux host, simply install and start Docker (e.g. `sudo systemctl start docker`):
+    * For an example, see <https://docs.docker.com/engine/install/fedora/>
+
+#### Docker Desktop post-installation steps
 
 If you are using Docker Desktop instead of `podman`:
 
