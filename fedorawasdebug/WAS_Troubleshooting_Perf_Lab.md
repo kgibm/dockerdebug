@@ -9,8 +9,8 @@
 -   [Introduction](#introduction)
 -   [Core Concepts](#core-concepts)
 -   Installation
-    -   [With podman][#installing-podman]
-    -   [With Docker Desktop][#installing-docker-desktop]
+    -   [With podman](#installing-podman)
+    -   [With Docker Desktop](#installing-docker-desktop)
 -   Starting the lab
     -   [Start with podman](#start-with-podman)
     -   [Start with Docker Desktop](#start-with-docker-desktop)
