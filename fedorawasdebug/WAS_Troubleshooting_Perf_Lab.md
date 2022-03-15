@@ -127,21 +127,7 @@ This lab assumes the installation and use of `podman` or Docker Desktop to run t
     * For a Linux host, simply install and start Docker (e.g. `sudo systemctl start docker`):
         * For an example, see <https://docs.docker.com/engine/install/fedora/>
 
-The image is about 20GB. If you plan to run this in a classroom setting, consider pulling the image beforehand:
-
-* podman (if you haven't created the machine yet, see the first two steps in the next section):
-  ```
-  podman system connection default podman-machine-default-root
-  podman pull quay.io/kgibm/fedorawasdebug
-  ```
-* Docker Desktop:
-  ```
-  docker pull quay.io/kgibm/fedorawasdebug
-  ```
-
-## Start with podman
-
-If you are using `podman` for this lab, perform the following prerequisite steps:
+### podman post-installation steps
 
 1. On macOS and Windows:
     1. Create the `podman` virtual machine with sufficient memory (at least 4GB and, ideally, at least 8GB), CPU, and disk. For example (memory is in MB):
@@ -162,9 +148,113 @@ If you are using `podman` for this lab, perform the following prerequisite steps
        podman machine ssh ln -sf /dev/null /etc/sysctl.d/50-coredump.conf
        podman machine ssh sysctl -w kernel.core_pattern=core
        ```
-2.  Start the lab:
+
+### Docker Desktop post-installation steps
+
+1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
+    \
+    macOS:\
+    <img src="./media/image5.png" width="319" height="455" />
+
+2.  Windows:\
+    <img src="./media/image6.png" width="568" height="444" />
+
+3.  Ensure that Docker receives sufficient resources, particularly memory:
+
+    1.  Click the Docker Desktop icon and select **Preferences...** (on macOS) or **Settings** (on Windows)
+
+    1.  Select the **Advanced** tab.
+
+    1.  Ensure **Memory** is at least 4GB and, ideally, at least 8GB. The lab may work with less memory although this has not been tested.
+
+    1.  Click **Apply**\
+        \
+        macOS:\
+        <img src="./media/image140.png" width="1037" height="656" />\
+        \
+        Windows:\
+        \
+        <img src="./media/image10.png" width="600" height="419" />
+
+    1.  Select the **Disk** tab.
+
+    1.  Increase the **Disk image size** to at least **100GB** and click **Apply**:\
+        \
+        macOS:\
+        <img src="./media/image140.png" width="1037" height="656" />\
+        \
+        Windows:\
+        <img src="./media/image10.png" width="600" height="419" />
+
+## Start the container
+
+### Start with podman
+
+If you are using `podman` for this lab, perform the following prerequisite steps:
+
+1.  Start the lab:
 
     `podman run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it quay.io/kgibm/fedorawasdebug`
+
+2.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
+    
+        =========
+        = READY =
+        =========
+
+3.  VNC or Remote Desktop into the container:
+
+    1.  macOS built-in VNC client:
+
+        1.  Open another tab in the terminal and run:
+
+            1.  **open vnc://localhost:5902**
+
+            2.  Password: **websphere**
+
+    1.  Linux VNC client:
+
+        1.  Open another tab in the terminal and run:
+
+            1.  **vncviewer localhost:5902**
+
+            2.  Password: **websphere**
+
+    1.  Windows 3<sup>rd</sup> party VNC client:
+
+        i.  If you are able to install and use a 3<sup>rd</sup> party VNC client (there are a few free options online), then connect to **localhost** on port **5902** with password **websphere**.
+
+    1.  Windows Remote Desktop client:
+
+        i.  Windows requires a few steps to make Remote Desktop work with a Docker container. See [Appendix: Windows Remote Desktop Client](#windows-remote-desktop-client) for instructions.
+
+    1.  SSH:
+
+        1.  If you want to simulate production-like access, you can SSH into the container (e.g. using terminal ssh or PuTTY) although you'll need one of the GUI methods above to run most of this lab:
+
+            1.  **ssh was\@localhost**
+
+            2.  Password: **websphere**
+
+4.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
+    \
+    <img src="./media/image13.png" width="1160" height="615" />
+
+### Start with Docker Desktop
+
+If you are using Docker Desktop for this lab, perform the following prerequisite steps:
+
+1.  Open a terminal or command prompt:\
+    \
+    macOS:\
+    <img src="./media/image11.png" width="588" height="108" />\
+    \
+    Windows:\
+    <img src="./media/image12.png" width="463" height="393" />
+
+2.  Start the lab by starting the Docker container from the command line:
+
+    `docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it quay.io/kgibm/fedorawasdebug`
 
 3.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
     
@@ -206,102 +296,7 @@ If you are using `podman` for this lab, perform the following prerequisite steps
 
             2.  Password: **websphere**
 
-5.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
-    \
-    <img src="./media/image13.png" width="1160" height="615" />
-
-## Start with Docker Desktop
-
-If you are using Docker Desktop for this lab, perform the following prerequisite steps:
-
-1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
-    \
-    macOS:\
-    <img src="./media/image5.png" width="319" height="455" />
-
-2.  Windows:\
-    <img src="./media/image6.png" width="568" height="444" />
-
-3.  Ensure that Docker receives sufficient resources, particularly memory:
-
-    1.  Click the Docker Desktop icon and select **Preferences...** (on macOS) or **Settings** (on Windows)
-
-    1.  Select the **Advanced** tab.
-
-    1.  Ensure **Memory** is at least 4GB and, ideally, at least 8GB. The lab may work with less memory although this has not been tested.
-
-    1.  Click **Apply**\
-        \
-        macOS:\
-        <img src="./media/image140.png" width="1037" height="656" />\
-        \
-        Windows:\
-        \
-        <img src="./media/image10.png" width="600" height="419" />
-
-    1.  Select the **Disk** tab.
-
-    1.  Increase the **Disk image size** to at least **100GB** and click **Apply**:\
-        \
-        macOS:\
-        <img src="./media/image140.png" width="1037" height="656" />\
-        \
-        Windows:\
-        <img src="./media/image10.png" width="600" height="419" />
-
-4.  Open a terminal or command prompt:\
-    \
-    macOS:\
-    <img src="./media/image11.png" width="588" height="108" />\
-    \
-    Windows:\
-    <img src="./media/image12.png" width="463" height="393" />
-
-5.  Start the lab by starting the Docker container from the command line:
-
-    `docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it quay.io/kgibm/fedorawasdebug`
-
-6.  Wait about 2 minutes until you see the following in the output (if not seen, review any errors):
-    
-        =========
-        = READY =
-        =========
-
-7.  VNC or Remote Desktop into the container:
-
-    1.  macOS built-in VNC client:
-
-        1.  Open another tab in the terminal and run:
-
-            1.  **open vnc://localhost:5902**
-
-            2.  Password: **websphere**
-
-    1.  Linux VNC client:
-
-        1.  Open another tab in the terminal and run:
-
-            1.  **vncviewer localhost:5902**
-
-            2.  Password: **websphere**
-
-    1.  Windows 3<sup>rd</sup> party VNC client:
-
-        i.  If you are able to install and use a 3<sup>rd</sup> party VNC client (there are a few free options online), then connect to **localhost** on port **5902** with password **websphere**.
-
-    1.  Windows Remote Desktop client:
-
-        i.  Windows requires a few steps to make Remote Desktop work with a Docker container. See [Appendix: Windows Remote Desktop Client](#windows-remote-desktop-client) for instructions.
-
-    1.  SSH:
-
-        1.  If you want to simulate production-like access, you can SSH into the container (e.g. using terminal ssh or PuTTY) although you'll need one of the GUI methods above to run most of this lab:
-
-            1.  **ssh was\@localhost**
-
-            2.  Password: **websphere**
-
-8.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
+6.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
     \
     <img src="./media/image13.png" width="1160" height="615" />
 
