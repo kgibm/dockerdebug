@@ -123,7 +123,7 @@ If you are using `podman` instead of Docker Desktop:
 
 * Windows: <https://podman.io/getting-started/installation#windows>
 * macOS: <https://podman.io/getting-started/installation#macos>
-* For a Linux host, simply install `podman`
+* For a Linux host, simply [install](https://publib.boulder.ibm.com/httpserv/cookbook/Operating_Systems-Linux.html#Operating_Systems-Linux-Installing_Programs) `podman`
 
 #### podman post-installation steps
 
@@ -242,7 +242,7 @@ If you are using `podman` for this lab instead of Docker Desktop:
         1.  Open another tab in the terminal and run:
 
             1.  **vncviewer localhost:5902**
-                * You may need to install `vncviewer` first.
+                * You may need to [install](https://publib.boulder.ibm.com/httpserv/cookbook/Operating_Systems-Linux.html#Operating_Systems-Linux-Installing_Programs) `vncviewer` first.
             2.  Password: **websphere**
 
     1.  Windows 3<sup>rd</sup> party VNC client:
@@ -305,7 +305,7 @@ If you are using Docker Desktop for this lab instead of `podman`:
         1.  Open another tab in the terminal and run:
 
             1.  **vncviewer localhost:5902**
-                * You may need to install `vncviewer` first.
+                * You may need to [install](https://publib.boulder.ibm.com/httpserv/cookbook/Operating_Systems-Linux.html#Operating_Systems-Linux-Installing_Programs) `vncviewer` first.
             2.  Password: **websphere**
 
     1.  Windows 3<sup>rd</sup> party VNC client:
