@@ -154,6 +154,7 @@ The image is about 20GB. If you plan to run this in a classroom setting, conside
    ```
    podman pull quay.io/kgibm/fedorawasdebug
    ```
+   This command may not show any output for a long time.
 
 ### Docker Desktop post-installation steps
 
