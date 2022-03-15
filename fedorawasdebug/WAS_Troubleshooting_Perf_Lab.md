@@ -148,6 +148,7 @@ If you are using `podman` for this lab, perform the following prerequisite steps
        ```
        podman machine init --memory 10240 --cpus 4 --disk-size 100
        ```
+       If you already have a podman machine and you'd like to resize it to make it bigger, it's usually simplest to just delete it using `podman machine rm` and then re-create it using the above command.
     1. Start the `podman` virtual machine:
        ```
        podman machine start
