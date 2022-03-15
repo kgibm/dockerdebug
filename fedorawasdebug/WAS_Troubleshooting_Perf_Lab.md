@@ -190,7 +190,7 @@ This lab assumes the installation and use of `podman` or Docker Desktop to run t
 
 ### Start with podman
 
-If you are using `podman` for this lab, perform the following prerequisite steps:
+If you are using `podman` for this lab:
 
 1.  Start the lab:
 
@@ -242,7 +242,7 @@ If you are using `podman` for this lab, perform the following prerequisite steps
 
 ### Start with Docker Desktop
 
-If you are using Docker Desktop for this lab, perform the following prerequisite steps:
+If you are using Docker Desktop for this lab:
 
 1.  Open a terminal or command prompt:\
     \
