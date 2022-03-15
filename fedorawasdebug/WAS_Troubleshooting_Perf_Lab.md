@@ -158,7 +158,7 @@ If you are using `podman` instead of Docker Desktop:
    ```
    This command may not show any output for a long time.
 
-The following section should on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Start with podman](#start-with-podman).
+The following section on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Start with podman](#start-with-podman).
 
 ### Docker Desktop post-installation steps
 
@@ -260,7 +260,7 @@ If you are using `podman` for this lab:
     \
     <img src="./media/image13.png" width="1160" height="615" />
 
-The following section should on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Apache JMeter](#apache-jmeter).
+The following section on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Apache JMeter](#apache-jmeter).
 
 
 ### Start with Docker Desktop
