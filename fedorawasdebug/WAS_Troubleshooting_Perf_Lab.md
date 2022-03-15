@@ -8,7 +8,7 @@
 
 -   [Introduction](#introduction)
 -   [Core Concepts](#core-concepts)
--   Installation
+-   [Installation](#installation)
     -   [With podman](#installing-podman)
     -   [With Docker Desktop](#installing-docker-desktop)
 -   Starting the lab
