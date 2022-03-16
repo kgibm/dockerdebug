@@ -654,6 +654,8 @@ RUN printf "Built fedoradebug at $(date)\n" >> /tmp/tmp.log && \
     mkdir -p /home/was/.config/gtk-3.0/ && \
     printf 'tooltip { opacity: 0; }\n' > /home/was/.config/gtk-3.0/gtk.css && \
     chown -R was:root /home/was/.config/gtk-3.0/ && \
+    echo "# Weird issue with xfce4-screensaver where pam_unix doesn't work, so just always allow with pam_succeed_if" && \
+    sed -i '1 i\auth sufficient pam_succeed_if.so user = was' /etc/pam.d/xfce4-screensaver && \
     mkdir -p /home/was/.config/xfce4/xfconf/xfce-perchannel-xml/ && \
     printf '<?xml version="1.0" encoding="UTF-8"?>\n\
       <channel name="xfce4-screensaver" version="1.0">\n\
