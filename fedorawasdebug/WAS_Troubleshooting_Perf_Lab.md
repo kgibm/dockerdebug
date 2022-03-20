@@ -2405,16 +2405,19 @@ IBM HTTP Server is a reverse proxy HTTP server in this image which proxies to WA
 
 ## Stopping the container
 
-The `docker run` commands in this lab do not use the `-d` (daemon) flag which means that they run in the foreground. To stop such a container, use one of the following methods:
+The `podman run` or `docker run` command in this lab does not use the `-d` (daemon) flag which means that it runs in the foreground. To stop such a container, use one of the following methods:
 
-1. Hold down the `Control/Ctrl` key on your keyboard and press `C` in the terminal window where `docker run` is running.
-1. In a separate terminal window, find the container ID with `docker ps` and then run `docker stop $ID`.
+1. Hold down the `Control/Ctrl` key on your keyboard and press `C` in the terminal window where the `run` command is running.
+1. In a separate terminal window, find the container ID with `podman ps` or `docker ps` command and then run `podman stop $ID` or `docker stop $ID`.
 
-If you add `-d` to `docker run`, then to view the std logs, find the container ID with `docker ps` and then run `docker logs $ID`. To stop, use `docker stop $ID`.
+If you add `-d` to `podman run` or `docker run`, then to view the standard out logs, find the container ID with `podman ps` or `docker ps` and then run `podman logs $ID` or `docker logs $ID`. To stop, use `podman stop $ID` or `docker stop $ID`.
 
 ## Remote terminal into the container
 
-The container supports `ssh` into the container, but it's more common to simply use Docker commands. In a separate terminal window, find the container ID with `docker ps` and then run `docker exec -u was -it $ID sh`.
+In a separate command prompt or terminal window, execute one of the following commands depending on whether you're using `podman` or Docker Desktop:
+
+* `podman exec -u was -it $(podman ps -q) bash`
+* `docker exec -u was -it $(podman ps -q) bash`
 
 ##  Windows Remote Desktop Client
 
@@ -2609,6 +2612,30 @@ Show the Java version to verify the change (in this case, I chose option 7 and t
     JCL      - 74a8738189 based on jdk-13.0.1+9)
 
 Any currently running Java programs will need to be restarted if you want them to use the different version of Java (WAS traditional is an exception because it uses a bundled version of Java).
+
+## Common Issues
+
+### VNC and the clipboard
+
+The clipboard may not be shared when using VNC. There are two workarounds:
+
+1. From within the VNC session, open the PDF of the lab from the desktop and use that instead. Then you can copy/paste within the lab.
+2. For command line steps, start a new command prompt or terminal and execute one of the following commands depending on whether you're using `podman` or Docker Desktop:
+    * `podman exec -u was -it $(podman ps -q) bash`
+    * `docker exec -u was -it $(podman ps -q) bash`
+
+### Cannot login after screen locked
+
+This is a known issue that will be fixed on the next build of the lab. Until then, the workaround is:
+
+1. Start a new command prompt or terminal and execute one of the following commands depending on whether you're using `podman` or Docker Desktop:
+    * `podman exec -u was -it $(podman ps -q) bash`
+    * `docker exec -u was -it $(podman ps -q) bash`
+2. Then execute the following command:
+   ```
+   sed -i '1 i\auth sufficient pam_succeed_if.so user = was' /etc/pam.d/xfce4-screensaver
+   ```
+3. Try unlocking the screen again.
 
 ## Version History
 
