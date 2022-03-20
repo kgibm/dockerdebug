@@ -1004,6 +1004,7 @@ The slow request detection part of the feature monitors for HTTP requests that e
    [3/20/22 16:22:23:662 UTC] 0000007d com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0068I: Java dump created: /opt/ibm/wlp/output/defaultServer/javacore.20220320.162223.17.0001.txt
    ```
     1. Thread dumps [will be captured](https://openliberty.io/docs/latest/slow-hung-request-detection.html#_hung_request_detection), one minute apart, after the threshold is breached.
+1. Review the thread dumps using the TMDA tool and see if you can find the captured long-running request.
 
 In general, it is a good practice to use `requestTiming`, even in production. Configure the thresholds to values that are at the upper end of acceptable times for the users and the business. Configure and test the `sampleRate` to ensure the overhead of `requestTiming` is acceptable in production.
 
