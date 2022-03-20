@@ -793,34 +793,17 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
 2.  Add Health Center arguments to the JVM:
 
-    1.  If learning Liberty, add the following line to **/opt/ibm/wlp/usr/servers/defaultServer/jvm.options**:
+    1.  Add the following line to **/opt/ibm/wlp/usr/servers/defaultServer/jvm.options**:
 
         `-Xhealthcenter:level=headless`
 
-    2.  If learning WAS traditional, go to the same place where you entered the maximum heap size and add a space and **-Xhealthcenter:level=headless** to **Generic JVM arguments**:\
-        <img src="./media/image106.png" width="491" height="110" />
-
-        1.  Then click OK and Save.
-
 3.  Stop the server:
-
-    1.  If learning Liberty:
 
         `/opt/ibm/wlp/bin/server stop defaultServer`
 
-    2.  If learning WAS traditional:
-
-        `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1 -username wsadmin -password websphere`
-
 4.  Start the server
 
-    1.  If learning Liberty:
-
         `/opt/ibm/wlp/bin/server start defaultServer`
-
-    2.  If learning WAS traditional:
-
-        `/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1`
 
 5.  [Start JMeter](#start-jmeter) and run it for 5 minutes.
 
@@ -834,7 +817,7 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
     \
     <img src="./media/image107.png" width="643" height="656" />
 
-10. Select the **healthcenter\*.hcd** file from (Liberty: **/opt/ibm/wlp/output/defaultServer** ; WAS traditional: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**):\
+10. Select the **healthcenter\*.hcd** file from **/opt/ibm/wlp/output/defaultServer**:\
     <img src="./media/image108.png" width="784" height="260" />
 
 11. Wait for the data to complete loading:\
@@ -969,8 +952,6 @@ Keep track of a summary of the situation, a list of problems, hypotheses, and ex
 ### Liberty Performance Tuning Recipe
 
 The IBM WebSphere Application Server Performance Cookbook provides a [recipe for common tuning of Liberty and underlying components](https://publib.boulder.ibm.com/httpserv/cookbook/Recipes-WAS_Liberty_Recipes.html):
-
-
 
 # WebSphere Liberty
 
@@ -1138,18 +1119,6 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
 ##  Manually accessing/testing Liberty and tWAS
 
 1.  Test Liberty by going to http://localhost:9080/daytrader/ in your host browser or the remote desktop/VNC browser.
-
-    User = wsadmin, Password = websphere
-
-2.  Test WAS traditional by going to http://localhost:9081/daytrader/ in your host browser or in the remote desktop/VNC browser.
-
-    User = wsadmin, Password = websphere
-
-3.  Test the WAS traditional Administrative Console by going to https://localhost:9043/ibm/console in your client browser or in the remote desktop/VNC browser.
-
-    User = wsadmin, Password = websphere
-
-4.  Test IBM HTTP Server and WAS traditional by going to http://localhost:9083/daytrader/ in your host browser or in the remote desktop/VNC browser.
 
     User = wsadmin, Password = websphere
 
