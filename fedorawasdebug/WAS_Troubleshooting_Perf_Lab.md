@@ -1940,47 +1940,41 @@ The slow request detection part of the feature monitors for HTTP requests that e
 
 ### requestTiming Lab
 
-1. Modify **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/server.xml** to add:
+1. Modify `/config/server.xml` to add the following before `</server>`:
+   ```
+   <featureManager><feature>requestTiming-1.0</feature></featureManager>
+   <requestTiming slowRequestThreshold="60s" hungRequestThreshold="180s" sampleRate="1" />
+   ```
+2. Execute a request that takes more than one minute by opening a browser to http://localhost:9080/swat/Sleep?duration=65000
+3. After about a minute and the request completes, review the requestTiming warning in `/logs/messages.log` -- for example:
+   ```
+   [3/20/22 16:16:52:250 UTC] 0000007b com.ibm.ws.request.timing.manager.SlowRequestManager         W TRAS0112W: Request AAAAPOsEvAG_AAAAAAAAAAA has been running on thread 00000079 for at least 60003.299ms. The following stack trace shows what this thread is currently running.
+   
+     at java.lang.Thread.sleep(Native Method)
+     at java.lang.Thread.sleep(Thread.java:956)
+     at com.ibm.Sleep.doSleep(Sleep.java:35)
+     at com.ibm.Sleep.doWork(Sleep.java:18)
+     at com.ibm.BaseServlet.service(BaseServlet.java:73)
+     at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+     [...]
+   
+   The following table shows the events that have run during this request.
+   
+   Duration      Operation
+   60008.080ms + websphere.servlet.service | swat | Sleep?duration=65000 
+   ```
+    1. The warning shows a stack at the time `requestTiming` notices the threshold is breached and it's followed be a tree of components of the request. The plus sign (+) indicates that an operation is still in progress. The indentation level indicates which events requested which other events.
+4. Execute a request that takes about three minutes by opening a browser to http://localhost:9080/swat/Sleep?duration=200000
+5. After about five minutes, review the requestTiming warning in `/logs/messages.log` -- in addition to the previous warning, multiple thread dumps are produced:
+   ```
+   [3/20/22 16:22:23:565 UTC] 0000007d com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.
+   [3/20/22 16:22:23:662 UTC] 0000007d com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0068I: Java dump created: /opt/ibm/wlp/output/defaultServer/javacore.20220320.162223.17.0001.txt
+   ```
+    1. Thread dumps [will be captured](https://openliberty.io/docs/latest/slow-hung-request-detection.html#_hung_request_detection), one minute apart, after the threshold is breached.
 
-        <featureManager>
-          <feature>requestTiming-1.0</feature>
-        </featureManager>
-        <requestTiming slowRequestThreshold="60s" hungRequestThreshold="180s" sampleRate="1" />
-
-2. Execute a request that takes more than one minute by opening a browser to http://localhost:12000/swat/Sleep?duration=65000
-
-3. After about a minute and the request completes, review the requestTiming warning in **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/logs/messages.log** -- for example:
-
-        [6/10/19 7:13:30:493 UTC] 000002c2 com.ibm.ws.request.timing.manager.SlowRequestManager         W TRAS0112W: Request AAAAXVL5xKX_AAAAAAAAAAA has been running on thread 00000275 for at least 60001.614ms. The following stack trace shows what this thread is currently running.
-
-          at java.lang.Thread.sleep(Native Method)
-          at java.lang.Thread.sleep(Thread.java:942)
-          at com.ibm.Sleep.doSleep(Sleep.java:35)
-          at com.ibm.Sleep.doWork(Sleep.java:18)
-          at com.ibm.BaseServlet.service(BaseServlet.java:73)
-          at javax.servlet.http.HttpServlet.service(HttpServlet.java:791) [...]
-
-        The following table shows the events that have run during this request.
-
-        Duration      Operation
-        5             websphere.sql             | SELECT * FROM ...
-        60007.665ms + websphere.servlet.service | swat | Sleep?duration=65000
-
-    1.  The warning shows a stack at the time requestTiming notices the threshold is breached and it's followed be a tree of components of the request. The plus sign (+) indicates that an operation is still in progress. The indentation level indicates which events requested which other events.
-
-4. Execute a request that takes about three minutes by opening a browser to http://localhost:12000/swat/Sleep?duration=185000
-
-5. After about three minutes and the request completes, review the requestTiming warning in **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/logs/messages.log** -- in addition to the previous warning, multiple thread dumps are produced:
-
-    `[6/10/19 7:27:52:950 UTC] 0000052d com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`\
-    `[6/10/19 7:28:52:950 UTC] 00000556 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`\
-    `[6/10/19 7:29:52:950 UTC] 00000584 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`
-
-    1.  Three thread dumps [will be captured](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/rwlp_requesttiming.html), one minute apart, after the threshold is breached.
+In general, it is a good practice to use `requestTiming`, even in production. Configure the thresholds to values that are at the upper end of acceptable times for the users and the business. Configure and test the `sampleRate` to ensure the overhead of `requestTiming` is acceptable in production.
 
 When the requestTiming feature is enabled, the server dump command will include a snapshot of all the event trees for all requests thus giving a very nice and lightweight way to see active requests in the system at a detailed level (including URI, etc.), in a similar way that thread dumps do the same for thread stacks.
-
-In general, it is a good practice to use requestTiming, even in production. Configure the thresholds to values that are at the upper end of acceptable times for the users and the business. Configure and test the sampleRate to ensure the overhead of requestTiming is acceptable in production.
 
 ## HTTP NCSA Access Log
 
