@@ -97,7 +97,7 @@ This lab is built on top of Linux (specifically, Fedora Linux, which is the open
 
 WAS traditional ships with a packaged IBM Java 8 on Linux, AIX, Windows, z/OS, and IBM i.
 
-WebSphere Liberty supports any Java 8 or Java 11 compliant Java (with some [minimum requirements](https://www.ibm.com/docs/en/was-liberty/nd?topic=liberty-runtime-environment-known-restrictions#rwlp_restrict__rest13)).
+WebSphere Liberty supports any [Java 8, 11, or 17 edition](https://openliberty.io/docs/latest/java-se.html).
 
 This lab uses IBM Java 8 for both WAS traditional and WebSphere Liberty. The concepts and techniques apply generally to other Java runtimes although details of other Java runtimes (e.g. [HotSpot](https://publib.boulder.ibm.com/httpserv/cookbook/Java.html)) vary significantly and are covered elsewhere.
 
