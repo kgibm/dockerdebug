@@ -1063,68 +1063,6 @@ Next, let's simulate a memory issue.
 
 The above three sections -- operating system CPU and memory, thread dumps, and garbage collection -- are the three key elements that should be reviewed for all problems and performance issues. The rest of the lab will review other problem types and performance tuning and other types of tools.
 
-#  Methodology
-
-First, let's review some general tips about problem determination and performance methodology:
-
-##  The Scientific Method
-
-Troubleshooting is the act of understanding problems and then changing systems to resolve those problems. The best approach to troubleshooting is the scientific method which is basically as follows:
-
-1.  Observe and measure evidence of the problem. For example: \"Users are receiving HTTP 500 errors when visiting the website.\"
-
-2.  Create prioritized hypotheses about the causes of the problem. For example: \"I found exceptions in the logs. I hypothesize that the exceptions are creating the HTTP 500 errors.\"
-
-3.  Research ways to test the hypotheses using experiments. For example: \"I searched the documentation and previous problem reports and the exceptions may be caused by a default setting configuration. I predict that changing this setting will resolve the problem if this hypothesis is true.\"
-
-4.  Run experiments to test hypotheses. For example: \"Please change this setting and see if the user errors are resolved.\"
-
-5.  Observe and measure experimental evidence. If the problem is not resolved, repeat the steps above; otherwise, create a theory about the cause of the problem.
-
-##  Organizing an Investigation
-
-Keep track of a summary of the situation, a list of problems, hypotheses, and experiments/tests. Use numbered items so that people can easily reference things in phone calls or emails. The summary should be restricted to a single sentence for problems, resolution criteria, statuses, and next steps. Any details are in the subsequent tables. The summary is a difficult skill to learn, so try to constrain yourself to a single (short!) sentence. For example:
-
-### Summary
-
-1.  Problems: 1) Average website response time of 5000ms and 2) website error rate \> 10%.
-
-2.  Resolution criteria: 1) Average response time of 300ms and 2) error rate of \<= 1%.
-
-3.  Statuses: 1) Reduced average response time to 2000ms and 2) error rate to 5%.
-
-4.  Next steps: 1) Investigate database response times and 2) gather diagnostic trace.
-
-### Problems
-
-| \#  | Problem                                  | Case \#     | Status                                                          | Next Steps                                         |
-| :-: | ---------------------------------------- | ----------- | --------------------------------------------------------------- | ------------------------------------- |
-| 1   | Average response time greater than 300ms | TS001234567 | Reduced average response time to 2000ms by increasing heap size | Investigate database response times               |
-| 2   | Website error rate greater than 1%       | TS001234568 | Reduced website error rate to 5% by fixing an application bug.  | Run diagnostic trace for remaining errors |
-
-### Hypotheses for Problem \#1
-
-| \#  | Hypothesis                                                                   | Evidence                                                       | Status                                                                                     |
-| :-: | ---------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| 1   | High proportion of time in garbage collection leading to reduced performance | Verbosegc showed proportion of time in GC of 20%                  | Increased Java maximum heap size to -Xmx1g and proportion of time in GC went down to 5% |
-| 2   | Slow database response times                                                 | Thread stacks showed many threads waiting on the database | Gather database re-sponse times                                                         |
-
-### Hypotheses for Problem \#2
-
-| \#  | Hypothesis                                                            | Evidence                                                                       | Status                                                                 |
-| :-: | --------------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| 1 | NullPointerException in com.application.foo is causing errors           | NullPointerExceptions in the logs correlate with HTTP 500 response codes | Application fixed the NullPointerException and error rates were halved |
-| 2 | ConcurrentModificationException in com.websphere.bar is causing errors  | ConcurrentModificationExceptions correlate with HTTP 500 response codes | Gather WAS diagnostic trace capturing some exceptions                  |
-
-### Experiments/Tests
-
-| \#  | Experiment/Test               | Start                   | End                     | Environment        | Changes                       | Results                                              |
-| :-: | ----------------------------- | ----------------------- | ----------------------- | ------------------ | ----------------------------- | ---------------------------------------------------- |
-| 1 | Baseline                        | 2019-01-01 09:00:00 UTC | 2019-01-01 17:00:00 UTC | Production server1 | None                          | Average response time 5000ms; Website error rate 10% |
-| 2 | Reproduce in a test environment | 2019-01-02 11:00:00 UTC | 2019-01-01 12:00:00 UTC | Test server1       | None                          | Average response time 8000ms; Website error rate 15% |
-| 3 | Test problem #1 - hypothesis #1 | 2019-01-03 12:30:00 UTC | 2019-01-01 14:00:00 UTC | Test server1       | Increase Java heap size to 1g | Average response time 4000ms; Website error rate 15% |
-| 4 | Test problem #1 - hypothesis #1 | 2019-01-04 09:00:00 UTC | 2019-01-01 17:00:00 UTC | Production server1 | Increase Java heap size to 1g | Average response time 2000ms; Website error rate 10% |
-
 ##  Performance Tuning Tips
 
 1.  Performance tuning is usually about focusing on a few key variables. We will highlight the most common tuning knobs that can often improve the speed of the average application by 200% or more relative to the default configuration. The first step, however, should be to use and be guided by the tools and methodologies. Gather data, analyze it and create hypotheses: then test your hypotheses. Rinse and repeat. As Donald Knuth says: \"Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time \[...\]. Yet we should not pass up our opportunities in that critical 3%. A good programmer will not be lulled into complacency by such reasoning, he will be wise to look carefully at the critical code; but only after that code has been identified. It is often a mistake to make a priori judgments about what parts of a program are really critical, since the universal experience of programmers who have been using measurement tools has been that their intuitive guesses fail.\" (Donald Knuth, Structured Programming with go to Statements, Stanford University, 1974, Association for Computing Machinery)
@@ -1287,7 +1225,7 @@ The [IBM Extensions for Memory Analyzer (IEMA)](https://publib.boulder.ibm.com/h
 
 # Health Center
 
-[IBM Monitoring and Diagnostics for Java - Health Center](https://publib.boulder.ibm.com/httpserv/cookbook/Major_Tools-IBM_Java_Health_Center.html) is free and shipped with IBM Java. Among other things, Health Center includes a statistical CPU profiler that samples Java stacks that are using CPU at a very high rate to determine what Java methods are using CPU. Health Center generally has an overhead of less than 1% and is suitable for production use. In recent versions, it may also be enabled dynamically without restarting the JVM.
+[IBM Monitoring and Diagnostics for Java - Health Center](https://publib.boulder.ibm.com/httpserv/cookbook/Major_Tools-IBM_Java_Health_Center.html) is free and shipped with IBM Java 8. Among other things, Health Center includes a statistical CPU profiler that samples Java stacks that are using CPU at a very high rate to determine what Java methods are using CPU. Health Center generally has an overhead of less than 1% and is suitable for production use. In recent versions, it may also be enabled dynamically without restarting the JVM.
 
 This lab will demonstrate how to enable Java Health Center, exercise the sample DayTrader application using Apache JMeter, and review the Health Center file in the IBM Java Health Center Client Tool.
 
@@ -1422,6 +1360,68 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 23. If you sort by **Tree %**, skip the framework methods from Java and WAS, and find the first application method. In this example, about 32% of total samples was consumed by com.ibm.websphere.samples.daytrader.web.TradeAppServlet.performTask and all of the methods it called. The **Called Methods** view may be further reviewed to investigate the details of this usage; in this example, doPortfolio drove most of the CPU samples.\
     \
     <img src="./media/image120.png" width="859" height="482" />
+
+#  Methodology
+
+First, let's review some general tips about problem determination and performance methodology:
+
+##  The Scientific Method
+
+Troubleshooting is the act of understanding problems and then changing systems to resolve those problems. The best approach to troubleshooting is the scientific method which is basically as follows:
+
+1.  Observe and measure evidence of the problem. For example: \"Users are receiving HTTP 500 errors when visiting the website.\"
+
+2.  Create prioritized hypotheses about the causes of the problem. For example: \"I found exceptions in the logs. I hypothesize that the exceptions are creating the HTTP 500 errors.\"
+
+3.  Research ways to test the hypotheses using experiments. For example: \"I searched the documentation and previous problem reports and the exceptions may be caused by a default setting configuration. I predict that changing this setting will resolve the problem if this hypothesis is true.\"
+
+4.  Run experiments to test hypotheses. For example: \"Please change this setting and see if the user errors are resolved.\"
+
+5.  Observe and measure experimental evidence. If the problem is not resolved, repeat the steps above; otherwise, create a theory about the cause of the problem.
+
+##  Organizing an Investigation
+
+Keep track of a summary of the situation, a list of problems, hypotheses, and experiments/tests. Use numbered items so that people can easily reference things in phone calls or emails. The summary should be restricted to a single sentence for problems, resolution criteria, statuses, and next steps. Any details are in the subsequent tables. The summary is a difficult skill to learn, so try to constrain yourself to a single (short!) sentence. For example:
+
+### Summary
+
+1.  Problems: 1) Average website response time of 5000ms and 2) website error rate \> 10%.
+
+2.  Resolution criteria: 1) Average response time of 300ms and 2) error rate of \<= 1%.
+
+3.  Statuses: 1) Reduced average response time to 2000ms and 2) error rate to 5%.
+
+4.  Next steps: 1) Investigate database response times and 2) gather diagnostic trace.
+
+### Problems
+
+| \#  | Problem                                  | Case \#     | Status                                                          | Next Steps                                         |
+| :-: | ---------------------------------------- | ----------- | --------------------------------------------------------------- | ------------------------------------- |
+| 1   | Average response time greater than 300ms | TS001234567 | Reduced average response time to 2000ms by increasing heap size | Investigate database response times               |
+| 2   | Website error rate greater than 1%       | TS001234568 | Reduced website error rate to 5% by fixing an application bug.  | Run diagnostic trace for remaining errors |
+
+### Hypotheses for Problem \#1
+
+| \#  | Hypothesis                                                                   | Evidence                                                       | Status                                                                                     |
+| :-: | ---------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 1   | High proportion of time in garbage collection leading to reduced performance | Verbosegc showed proportion of time in GC of 20%                  | Increased Java maximum heap size to -Xmx1g and proportion of time in GC went down to 5% |
+| 2   | Slow database response times                                                 | Thread stacks showed many threads waiting on the database | Gather database re-sponse times                                                         |
+
+### Hypotheses for Problem \#2
+
+| \#  | Hypothesis                                                            | Evidence                                                                       | Status                                                                 |
+| :-: | --------------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| 1 | NullPointerException in com.application.foo is causing errors           | NullPointerExceptions in the logs correlate with HTTP 500 response codes | Application fixed the NullPointerException and error rates were halved |
+| 2 | ConcurrentModificationException in com.websphere.bar is causing errors  | ConcurrentModificationExceptions correlate with HTTP 500 response codes | Gather WAS diagnostic trace capturing some exceptions                  |
+
+### Experiments/Tests
+
+| \#  | Experiment/Test               | Start                   | End                     | Environment        | Changes                       | Results                                              |
+| :-: | ----------------------------- | ----------------------- | ----------------------- | ------------------ | ----------------------------- | ---------------------------------------------------- |
+| 1 | Baseline                        | 2019-01-01 09:00:00 UTC | 2019-01-01 17:00:00 UTC | Production server1 | None                          | Average response time 5000ms; Website error rate 10% |
+| 2 | Reproduce in a test environment | 2019-01-02 11:00:00 UTC | 2019-01-01 12:00:00 UTC | Test server1       | None                          | Average response time 8000ms; Website error rate 15% |
+| 3 | Test problem #1 - hypothesis #1 | 2019-01-03 12:30:00 UTC | 2019-01-01 14:00:00 UTC | Test server1       | Increase Java heap size to 1g | Average response time 4000ms; Website error rate 15% |
+| 4 | Test problem #1 - hypothesis #1 | 2019-01-04 09:00:00 UTC | 2019-01-01 17:00:00 UTC | Production server1 | Increase Java heap size to 1g | Average response time 2000ms; Website error rate 10% |
 
 # Crashes
 
@@ -1922,15 +1922,93 @@ This lab will leak classloaders which use native memory outside the Java heap an
 
 WebSphere Liberty has many built-in troubleshooting and performance features, including:
 
--   Admin Center
--   Request Timing
--   HTTP NCSA access log
--   MXBean Monitoring
--   Server Dumps
--   Event Logging
--   Diagnostic trace
--   Binary logging
--   Timed operations
+- Request Timing
+- HTTP NCSA access log
+- Admin Center
+- MXBean Monitoring
+- Server Dumps
+- Event Logging
+- Diagnostic trace
+- Binary logging
+- Timed operations
+
+## Request Timing
+
+WebSphere Liberty's Slow and Hung Request Detection is optionally enabled with the [requestTiming-1.0](https://openliberty.io/docs/latest/slow-hung-request-detection.html) feature.
+
+The slow request detection part of the feature monitors for HTTP requests that exceed a configured threshold and prints a tree of events breaking down the components of the slow request. The hung request detection part of the feature additionally gathers thread dumps after its threshold is exceeded.
+
+### requestTiming Lab
+
+1. Modify **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/server.xml** to add:
+
+        <featureManager>
+          <feature>requestTiming-1.0</feature>
+        </featureManager>
+        <requestTiming slowRequestThreshold="60s" hungRequestThreshold="180s" sampleRate="1" />
+
+2. Execute a request that takes more than one minute by opening a browser to http://localhost:12000/swat/Sleep?duration=65000
+
+3. After about a minute and the request completes, review the requestTiming warning in **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/logs/messages.log** -- for example:
+
+        [6/10/19 7:13:30:493 UTC] 000002c2 com.ibm.ws.request.timing.manager.SlowRequestManager         W TRAS0112W: Request AAAAXVL5xKX_AAAAAAAAAAA has been running on thread 00000275 for at least 60001.614ms. The following stack trace shows what this thread is currently running.
+
+          at java.lang.Thread.sleep(Native Method)
+          at java.lang.Thread.sleep(Thread.java:942)
+          at com.ibm.Sleep.doSleep(Sleep.java:35)
+          at com.ibm.Sleep.doWork(Sleep.java:18)
+          at com.ibm.BaseServlet.service(BaseServlet.java:73)
+          at javax.servlet.http.HttpServlet.service(HttpServlet.java:791) [...]
+
+        The following table shows the events that have run during this request.
+
+        Duration      Operation
+        5             websphere.sql             | SELECT * FROM ...
+        60007.665ms + websphere.servlet.service | swat | Sleep?duration=65000
+
+    1.  The warning shows a stack at the time requestTiming notices the threshold is breached and it's followed be a tree of components of the request. The plus sign (+) indicates that an operation is still in progress. The indentation level indicates which events requested which other events.
+
+4. Execute a request that takes about three minutes by opening a browser to http://localhost:12000/swat/Sleep?duration=185000
+
+5. After about three minutes and the request completes, review the requestTiming warning in **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/logs/messages.log** -- in addition to the previous warning, multiple thread dumps are produced:
+
+    `[6/10/19 7:27:52:950 UTC] 0000052d com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`\
+    `[6/10/19 7:28:52:950 UTC] 00000556 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`\
+    `[6/10/19 7:29:52:950 UTC] 00000584 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`
+
+    1.  Three thread dumps [will be captured](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/rwlp_requesttiming.html), one minute apart, after the threshold is breached.
+
+When the requestTiming feature is enabled, the server dump command will include a snapshot of all the event trees for all requests thus giving a very nice and lightweight way to see active requests in the system at a detailed level (including URI, etc.), in a similar way that thread dumps do the same for thread stacks.
+
+In general, it is a good practice to use requestTiming, even in production. Configure the thresholds to values that are at the upper end of acceptable times for the users and the business. Configure and test the sampleRate to ensure the overhead of requestTiming is acceptable in production.
+
+## HTTP NCSA Access Log
+
+The Liberty HTTP access log is optionally enabled with the [httpEndpoint accessLogging element](https://openliberty.io/docs/latest/access-logging.html). When enabled, a separate `access.log` file is produced with an NCSA standardized (i.e. httpd-style) line for each HTTP request, including [items such as the URI and response time](https://openliberty.io/docs/latest/access-logging.html#_http_access_log_format), useful for post-mortem corelation and performance analysis. For example,
+
+### HTTP NCSA Access Log Lab
+
+1.  Modify **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/server.xml** to change:
+
+        <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${httpPort}" httpsPort="${httpsPort}" />
+
+2.  To:
+
+        <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${httpPort}" httpsPort="${httpsPort}">
+          <accessLogging filepath="${server.output.dir}/logs/access.log" maxFileSize="250" maxFiles="2" logFormat="%h %i %u %t &quot;%r&quot; %s %b %D" />
+        </httpEndpoint>
+
+3.  Use the **ab** program to execute some calls to the liberty-bikes homepage:
+
+        $ ab -n 100 -c 4 http://localhost:12000/
+
+4.  Review **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/logs/access.log** to see HTTP responses. For example:
+
+        127.0.0.1 - - [10/Jun/2019:07:47:55 +0000] "GET / HTTP/1.0" 200 1034 2070
+        127.0.0.1 - - [10/Jun/2019:07:47:55 +0000] "GET / HTTP/1.0" 200 1034 1594
+        127.0.0.1 - - [10/Jun/2019:07:47:55 +0000] "GET / HTTP/1.0" 200 1034 1612 [...]
+
+5.  The last number is the response time in microseconds. For example, the first one above took 1.6 ms.
 
 ##  Liberty Bikes
 
@@ -2031,84 +2109,6 @@ The Admin Center is a web-based administration and monitoring tool for Liberty s
 
 10. You will see graphs of various statistics for this server. As you configure additional monitoring (which we will do in subsequent sections), the edit button in the top right will show additional metrics.\
     <img src="./media/image126.png" width="608" height="598" />
-
-##  Request Timing
-
-Slow & Hung Request Detection is optionally enabled with the [requestTiming-1.0](http://www.ibm.com/support/knowledgecenter/en//SSAW57_liberty/com.ibm.websphere.wlp.core.doc/ae/rwlp_feature_requestTiming-1.0.html) feature.
-
-The slow request detection part of the feature monitors for HTTP requests that exceed a configured threshold and prints a tree of events breaking down the components of the slow request.
-
-### requestTiming Lab
-
-1.  Modify **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/server.xml** to add:
-
-        <featureManager>
-          <feature>requestTiming-1.0</feature>
-        </featureManager>
-        <requestTiming slowRequestThreshold="60s" hungRequestThreshold="180s" sampleRate="1" />
-
-2.  Execute a request that takes more than one minute by opening a browser to http://localhost:12000/swat/Sleep?duration=65000
-
-3.  After about a minute and the request completes, review the requestTiming warning in **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/logs/messages.log** -- for example:
-
-        [6/10/19 7:13:30:493 UTC] 000002c2 com.ibm.ws.request.timing.manager.SlowRequestManager         W TRAS0112W: Request AAAAXVL5xKX_AAAAAAAAAAA has been running on thread 00000275 for at least 60001.614ms. The following stack trace shows what this thread is currently running.
-
-          at java.lang.Thread.sleep(Native Method)
-          at java.lang.Thread.sleep(Thread.java:942)
-          at com.ibm.Sleep.doSleep(Sleep.java:35)
-          at com.ibm.Sleep.doWork(Sleep.java:18)
-          at com.ibm.BaseServlet.service(BaseServlet.java:73)
-          at javax.servlet.http.HttpServlet.service(HttpServlet.java:791) [...]
-
-        The following table shows the events that have run during this request.
-
-        Duration      Operation
-        5             websphere.sql             | SELECT * FROM ...
-        60007.665ms + websphere.servlet.service | swat | Sleep?duration=65000
-
-    1.  The warning shows a stack at the time requestTiming notices the threshold is breached and it's followed be a tree of components of the request. The plus sign (+) indicates that an operation is still in progress. The indentation level indicates which events requested which other events.
-
-4.  Execute a request that takes about three minutes by opening a browser to http://localhost:12000/swat/Sleep?duration=185000
-
-5.  After about three minutes and the request completes, review the requestTiming warning in **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/logs/messages.log** -- in addition to the previous warning, multiple thread dumps are produced:
-
-    `[6/10/19 7:27:52:950 UTC] 0000052d com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`\
-    `[6/10/19 7:28:52:950 UTC] 00000556 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`\
-    `[6/10/19 7:29:52:950 UTC] 00000584 com.ibm.ws.kernel.launch.internal.FrameworkManager           A CWWKE0067I: Java dump request received.`
-
-    1.  Three thread dumps [will be captured](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/rwlp_requesttiming.html), one minute apart, after the threshold is breached.
-
-When the requestTiming feature is enabled, the server dump command will include a snapshot of all the event trees for all requests thus giving a very nice and lightweight way to see active requests in the system at a detailed level (including URI, etc.), in a similar way that thread dumps do the same for thread stacks.
-
-In general, it is a good practice to use requestTiming, even in production. Configure the thresholds to values that are at the upper end of acceptable times for the users and the business. Configure and test the sampleRate to ensure the overhead of requestTiming is acceptable in production.
-
-##  HTTP NCSA Access Log
-
-The Liberty HTTP access log is optionally enabled with the [httpEndpoint accessLogging element](https://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.ibm.websphere.wlp.core.doc/ae/rwlp_http_accesslogs.html). When enabled, a separate access.log file is produced with an NCSA standardized (i.e. httpd-style) line for each HTTP request, including [items such as the URI and response time](http://www14.software.ibm.com/webapp/wsbroker/redirect?version=phil&product=was-nd-mp&topic=rrun_chain_httpcustom), useful for post-mortem corelation and performance analysis.
-
-### HTTP NCSA Access Log Lab
-
-1.  Modify **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/server.xml** to change:
-
-        <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${httpPort}" httpsPort="${httpsPort}" />
-
-2.  To:
-
-        <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${httpPort}" httpsPort="${httpsPort}">
-          <accessLogging filepath="${server.output.dir}/logs/access.log" maxFileSize="250" maxFiles="2" logFormat="%h %i %u %t &quot;%r&quot; %s %b %D" />
-        </httpEndpoint>
-
-3.  Use the **ab** program to execute some calls to the liberty-bikes homepage:
-
-        $ ab -n 100 -c 4 http://localhost:12000/
-
-4.  Review **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/logs/access.log** to see HTTP responses. For example:
-
-        127.0.0.1 - - [10/Jun/2019:07:47:55 +0000] "GET / HTTP/1.0" 200 1034 2070
-        127.0.0.1 - - [10/Jun/2019:07:47:55 +0000] "GET / HTTP/1.0" 200 1034 1594
-        127.0.0.1 - - [10/Jun/2019:07:47:55 +0000] "GET / HTTP/1.0" 200 1034 1612 [...]
-
-5.  The last number is the response time in microseconds. For example, the first one above took 1.6 ms.
 
 ##  MXBean Monitoring
 
