@@ -2006,7 +2006,7 @@ The Liberty HTTP access log is optionally enabled with the [httpEndpoint accessL
    127.0.0.1 - Admin1 [20/Mar/2022:16:28:23 +0000] "GET /daytrader/app?action=quotes&symbol=s%3A6651 HTTP/1.1" 200 7849 528280 526508
    127.0.0.1 - Admin1 [20/Mar/2022:16:28:23 +0000] "GET /daytrader/app?action=quotes&symbol=s%3A9206 HTTP/1.1" 200 7849 528556 526676
    ```
-6. The second-to-last number is the response time in microseconds. In the example above, the response time was 397.114 milliseconds. The last number is the time until the first byte of the response was sent back which may help investigate network slowdowns in front of WebSphere.
+6. The second-to-last number is the response time in microseconds. In the example above, the first response time was 397.114 milliseconds. The last number is the time until the first byte of the response was sent back which may help investigate network slowdowns in front of WebSphere.
 
 There are various scripts and tools available publicly ([example](https://raw.githubusercontent.com/kgibm/problemdetermination/master/scripts/general/ncsa_response_times.awk)) to post-process NCSA-style access logs to create statistics and graphs.
 
