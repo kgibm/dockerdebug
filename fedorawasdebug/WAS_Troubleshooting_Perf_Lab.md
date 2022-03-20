@@ -267,7 +267,6 @@ If you are using `podman` for this lab instead of Docker Desktop:
 
 The following section on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Apache JMeter](#apache-jmeter).
 
-
 ### Start with Docker Desktop
 
 If you are using Docker Desktop for this lab instead of `podman`:
@@ -1982,27 +1981,36 @@ The Liberty HTTP access log is optionally enabled with the [httpEndpoint accessL
 
 ### HTTP NCSA Access Log Lab
 
-1.  Modify **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/server.xml** to change:
+1. Modify `/config/server.xml` to change the following element:
+   ```
+   <httpEndpoint id="defaultHttpEndpoint"
+              host="*"
+              httpPort="9080"
+              httpsPort="9443" />
+   ```
+2. To the following (note that the `<httpEndpoint>` element must no longer be self-closing):
+   ```
+   <httpEndpoint id="defaultHttpEndpoint"
+              host="*"
+              httpPort="9080"
+              httpsPort="9443">
+     <accessLogging filepath="${server.output.dir}/logs/access.log" maxFileSize="250" maxFiles="2" logFormat="%h %i %u %t &quot;%r&quot; %s %b %D %{R}W" />
+   </httpEndpoint>
+   ```
+3. [Start JMeter](#start-jmeter)
+4. Run the test for a couple of minutes.
+5. [Stop JMeter](#stop-jmeter)
+6. Review `/opt/ibm/wlp/output/defaultServer/logs/access.log` to see HTTP responses. For example:
+   ```
+   127.0.0.1 - Admin1 [20/Mar/2022:16:28:23 +0000] "GET /daytrader/app?action=portfolio HTTP/1.1" 200 12927 397114 390825
+   127.0.0.1 - Admin1 [20/Mar/2022:16:28:23 +0000] "GET /daytrader/app?action=quotes&symbol=s%3A6651 HTTP/1.1" 200 7849 528280 526508
+   127.0.0.1 - Admin1 [20/Mar/2022:16:28:23 +0000] "GET /daytrader/app?action=quotes&symbol=s%3A9206 HTTP/1.1" 200 7849 528556 526676
+   ```
+6. The second-to-last number is the response time in microseconds. In the example above, the response time was 397.114 milliseconds. The last number is the time until the first byte of the response was sent back which may help investigate network slowdowns in front of WebSphere.
 
-        <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${httpPort}" httpsPort="${httpsPort}" />
+There are various scripts and tools available publicly ([example](https://raw.githubusercontent.com/kgibm/problemdetermination/master/scripts/general/ncsa_response_times.awk)) to post-process NCSA-style access logs to create statistics and graphs.
 
-2.  To:
-
-        <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${httpPort}" httpsPort="${httpsPort}">
-          <accessLogging filepath="${server.output.dir}/logs/access.log" maxFileSize="250" maxFiles="2" logFormat="%h %i %u %t &quot;%r&quot; %s %b %D" />
-        </httpEndpoint>
-
-3.  Use the **ab** program to execute some calls to the liberty-bikes homepage:
-
-        $ ab -n 100 -c 4 http://localhost:12000/
-
-4.  Review **\~/liberty-bikes/build/wlp/usr/servers/frontendServer/logs/access.log** to see HTTP responses. For example:
-
-        127.0.0.1 - - [10/Jun/2019:07:47:55 +0000] "GET / HTTP/1.0" 200 1034 2070
-        127.0.0.1 - - [10/Jun/2019:07:47:55 +0000] "GET / HTTP/1.0" 200 1034 1594
-        127.0.0.1 - - [10/Jun/2019:07:47:55 +0000] "GET / HTTP/1.0" 200 1034 1612 [...]
-
-5.  The last number is the response time in microseconds. For example, the first one above took 1.6 ms.
+In general, it is a good practice to use `accessLogging`, even in production, if the performance overhead is acceptable.
 
 ##  Liberty Bikes
 
