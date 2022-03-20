@@ -553,8 +553,7 @@ Next, let's simulate a thread that is using a lot of CPU:
 
         <img src="./media/image49.png" width="720" height="347" />
 
-6.  Take a thread dump of the parent process:\
-    \
+6.  Take a thread dump of the parent process:
 
         pkill -3 -f defaultServer
 
