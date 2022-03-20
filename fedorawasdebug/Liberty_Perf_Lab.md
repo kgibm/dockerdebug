@@ -949,7 +949,7 @@ Keep track of a summary of the situation, a list of problems, hypotheses, and ex
 
 ### Liberty Performance Tuning Recipe
 
-The IBM WebSphere Application Server Performance Cookbook provides a [recipe for common tuning of Liberty and underlying components](https://publib.boulder.ibm.com/httpserv/cookbook/Recipes-WAS_Liberty_Recipes.html):
+The IBM WebSphere Application Server Performance Cookbook provides a [recipe for common tuning of Liberty and underlying components](https://publib.boulder.ibm.com/httpserv/cookbook/Recipes-WAS_Liberty_Recipes.html).
 
 # WebSphere Liberty
 
