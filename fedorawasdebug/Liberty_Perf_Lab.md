@@ -660,7 +660,7 @@ Next, let's simulate a memory issue.
 
     1.  Stop Liberty:
 
-        `/opt/ibm/wlp/bin/server stop defaultServer`
+        /opt/ibm/wlp/bin/server stop defaultServer
 
     1.  Edit **/opt/ibm/wlp/usr/servers/defaultServer/jvm.options**, add an explicit maximum heap size of 256MB on a new line and save the file:
 
@@ -670,7 +670,7 @@ Next, let's simulate a memory issue.
 
     1.  Start Liberty
 
-        `/opt/ibm/wlp/bin/server start defaultServer`
+        /opt/ibm/wlp/bin/server start defaultServer
 
 1.  [Start JMeter](#start-jmeter)
 
@@ -797,11 +797,11 @@ Consider always enabling [HealthCenter in headless mode](https://publib.boulder.
 
 3.  Stop the server:
 
-        `/opt/ibm/wlp/bin/server stop defaultServer`
+        /opt/ibm/wlp/bin/server stop defaultServer
 
 4.  Start the server
 
-        `/opt/ibm/wlp/bin/server start defaultServer`
+        /opt/ibm/wlp/bin/server start defaultServer
 
 5.  [Start JMeter](#start-jmeter) and run it for 5 minutes.
 
