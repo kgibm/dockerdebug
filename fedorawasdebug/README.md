@@ -146,8 +146,14 @@ Tip: To share files with your host machine, add the following to the `docker run
 1. Generate lab PDF (yes, this is before building the final image):
    ```
    sed 's/<img src="\(.*\)" width.*\/>/![](\1)/g' WAS_Troubleshooting_Perf_Lab.md > WAS_Troubleshooting_Perf_Lab_imagesconverted.md
-   pandoc --pdf-engine=xelatex -V geometry:margin=1in -s -o WAS_Troubleshooting_Perf_Lab.pdf --metadata title="WebSphere Application Server Troubleshooting and Performance Lab on Docker" WAS_Troubleshooting_Perf_Lab_imagesconverted.md
+   pandoc --pdf-engine=xelatex -V geometry:margin=1in -s -o WAS_Troubleshooting_Perf_Lab.pdf --metadata title="WebSphere Application Server Troubleshooting and Performance Lab" WAS_Troubleshooting_Perf_Lab_imagesconverted.md
    rm WAS_Troubleshooting_Perf_Lab_imagesconverted.md
+   ```
+1. Generate Liberty lab PDF:
+   ```
+   sed 's/<img src="\(.*\)" width.*\/>/![](\1)/g' Liberty_Perf_Lab.md > Liberty_Perf_Lab_imagesconverted.md
+   pandoc --pdf-engine=xelatex -V geometry:margin=1in -s -o Liberty_Perf_Lab.pdf --metadata title="Liberty Performance Lab" Liberty_Perf_Lab_imagesconverted.md
+   rm Liberty_Perf_Lab_imagesconverted.md
    ```
 1. `git` add, commit, and push the `WAS_Troubleshooting_Perf_Lab.*` files.
 1. `podman pull websphere-liberty`
