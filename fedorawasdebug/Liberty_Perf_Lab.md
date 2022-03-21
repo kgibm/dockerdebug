@@ -70,7 +70,7 @@ The IBM Java virtual machine (named J9) has become largely open sourced into the
 
 # Core Concepts
 
-Problem determination and performance tuning are best done with all layers of the stack in mind. This lab will focus on the layers in bold below:
+Performance tuning is best done with all layers of the stack in mind. This lab will focus on the layers in bold below:
 
 <img src="./media/image4.png" width="530" height="493" />
 
