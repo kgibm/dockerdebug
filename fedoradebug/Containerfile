@@ -684,7 +684,7 @@ RUN xdg-mime default xreader.desktop application/pdf && \
 # Last statement must be switching to root for supervisord
 USER root
 
-EXPOSE 22 3389 5901 5902
+EXPOSE 3389 5901 5902
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
