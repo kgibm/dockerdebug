@@ -20,6 +20,9 @@
 -   [WebSphere Liberty](#websphere-liberty)
     -   [Request Timing](#request-timing)
     -   [HTTP NCSA Access Log](#http-ncsa-access-log)
+-   [Methodology](#methodology)
+    -   [Performance Tuning Tips](#performance-tuning-tips)
+    -   [Liberty Performance Tuning Recipe](#liberty-performance-tuning-recipe)
 -   [Appendix](#appendix)
     -   [Windows Remote Desktop Client](#windows-remote-desktop-client)
 
