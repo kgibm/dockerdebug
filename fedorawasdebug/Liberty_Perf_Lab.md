@@ -28,7 +28,6 @@
     -   [HTTP NCSA Access Log](#http-ncsa-access-log)
 -   [Appendix](#appendix)
     -   [Windows Remote Desktop Client](#windows-remote-desktop-client)
-    -   [Manually accessing/testing Liberty and tWAS](#manually-accessingtesting-liberty-and-twas)
 
 # Introduction
 
@@ -1116,12 +1115,6 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
        \
        <img src="./media/image139.png" width="343" height="224" />
     1. Microsoft [requires](https://social.msdn.microsoft.com/Forums/en-US/872129e4-07a5-48c3-86f7-996854e7a920/how-to-connect-via-rdp-to-container?forum=windowscontainers) the above steps and the use of port 3390 instead of directly connecting to 3389.
-
-##  Manually accessing/testing Liberty and tWAS
-
-1.  Test Liberty by going to http://localhost:9080/daytrader/ in your host browser or the remote desktop/VNC browser.
-
-    User = wsadmin, Password = websphere
 
 ##  Changing Java
 
