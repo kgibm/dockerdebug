@@ -170,6 +170,11 @@ The following section on `podman` should be skipped since you are using Docker D
 
 ## Start the container
 
+Depending on whether you installed `podman` or Docker Desktop, start the container:
+
+* [Start with `podman`](#start-with-podman)
+* [Start with Docker Desktop](#start-with-docker-desktop)
+
 ### Start with podman
 
 The following section is the start of the lab. If you were only preparing for the lab by installing and downloading the lab before the lab begins, then you may stop at this point until the instructor provides further direction.
