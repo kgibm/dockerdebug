@@ -139,7 +139,7 @@ If you are using Docker Desktop instead of `podman`, perform the following steps
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
     \
     macOS:\
-    <img src="./media/image153.png" width="267" height="449" />\
+    <img src="./media/image148.png" width="295" height="467" />\
     \
     Windows:\
     <img src="./media/image152.png" width="368" height="522" />
@@ -1089,11 +1089,11 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
 
 3.  Run the following command in **PowerShell**:
 
-    `New-NetFirewallRule -Name \"myRDP\" -DisplayName \"Remote Desktop Protocol\" -Protocol TCP -LocalPort @(3389) -Action Allow`
+    `New-NetFirewallRule -Name "myRDP" -DisplayName "Remote Desktop Protocol" -Protocol TCP -LocalPort @(3389) -Action Allow`
 
 4.  Run the following command in **PowerShell**:
 
-    `New-NetFirewallRule -Name \"myContainerRDP\" -DisplayName \"RDP Port for connecting to Container\" -Protocol TCP -LocalPort @(3390) -Action Allow`
+    `New-NetFirewallRule -Name "myContainerRDP" -DisplayName "RDP Port for connecting to Container" -Protocol TCP -LocalPort @(3390) -Action Allow`
 
 5.  Run **Remote Desktop**\
     \
