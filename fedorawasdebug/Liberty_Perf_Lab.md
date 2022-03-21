@@ -1083,9 +1083,9 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
     \
     <img src="./media/image132.png" width="451" height="645" />
 
-2.  Run **ipconfig** and copy the **IPv4** address of the **DockerNAT** adapter. For example:\
+2.  Run **ipconfig** and copy the **IPv4** address of the **WSL** adapter. For example, **172.24.0.1**:\
     \
-    <img src="./media/image133.png" width="562" height="325" />
+    <img src="./media/image154.png" width="543" height="133" />
 
 3.  Run the following command in **PowerShell**:
 
