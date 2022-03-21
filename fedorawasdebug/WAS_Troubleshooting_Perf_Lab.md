@@ -71,8 +71,6 @@ IBM® [WebSphere® Application Server](https://www.ibm.com/cloud/websphere-appli
 
 WAS traditional and Liberty share some source code but [differ in significant ways](http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/documentation/ChoosingTraditionalWASorLiberty-16.0.0.4.pdf).
 
-Both WAS traditional and Liberty come in different flavors including *Base* and *Network Deployment (ND)* in which ND layers additional features such as advanced high availability on top of Base, although ND capabilities are generally not used in orchestrated cloud environments like Kubernetes as such capabilities are built-in.
-
 ## Lab Screenshots
 
 <img src="./media/image2.png" width="1024" height="788" />
