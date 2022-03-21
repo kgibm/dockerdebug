@@ -52,7 +52,7 @@ WAS traditional and Liberty share some source code but [differ in significant wa
 
 This lab covers the major tools and techniques for performance tuning WebSphere Liberty. This is a subset of the [WebSphere Performance and Troubleshooting Lab](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md) which also covers WAS traditional, and troubleshooting labs.
 
-This lab container image come with WebSphere Liberty pre-installed so installation and configuration steps are skipped.
+This lab container image comes with WebSphere Liberty pre-installed so installation and configuration steps are skipped.
 
 The way we are using these container images is to run multiple services in the same container (e.g. VNC, Remote Desktop, WebSphere Liberty, a full GUI server, etc.) and although this approach is [valid and supported](https://docs.docker.com/config/containers/multi-service_container/), it is generally not recommended for real-world application deployment usage. For labs that demonstrate how to use WAS in production, see [WebSphere Application Server and Docker Tutorials](https://github.com/WASdev/ci.docker.tutorials).
 
