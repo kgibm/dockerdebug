@@ -165,7 +165,7 @@ If you are using Docker Desktop instead of `podman`, perform the following steps
     docker pull quay.io/kgibm/fedorawasdebug
     ```
 
-The following section on `podman` should be skipped since you are using Docker Desktop. The next section for Docker Desktop is [Start with Docker Desktop](start-with-docker-desktop).
+The following section on `podman` should be skipped since you are using Docker Desktop. The next section for Docker Desktop is [Start with Docker Desktop](#start-with-docker-desktop).
 
 ## Start the container
 
