@@ -249,13 +249,13 @@ If you are using `podman` for this lab instead of Docker Desktop, then perform t
                 * You may need to [install](https://publib.boulder.ibm.com/httpserv/cookbook/Operating_Systems-Linux.html#Operating_Systems-Linux-Installing_Programs) `vncviewer` first.
             2.  Password: **websphere**
 
-    1.  Windows 3<sup>rd</sup> party VNC client:
-
-        i.  If you are able to install and use a 3<sup>rd</sup> party VNC client (there are a few free options online), then connect to **localhost** on port **5902** with password **websphere**.
-
     1.  Windows Remote Desktop client:
 
         i.  Windows requires a few steps to make Remote Desktop work with a Docker container. See [Appendix: Windows Remote Desktop Client](#windows-remote-desktop-client) for instructions.
+
+    1.  Windows 3<sup>rd</sup> party VNC client:
+
+        i.  If you are able to install and use a 3<sup>rd</sup> party VNC client (there are a few free options online), then connect to **localhost** on port **5902** with password **websphere**.
 
 4.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
     \
@@ -305,13 +305,13 @@ If you are using Docker Desktop for this lab instead of `podman`:
                 * You may need to [install](https://publib.boulder.ibm.com/httpserv/cookbook/Operating_Systems-Linux.html#Operating_Systems-Linux-Installing_Programs) `vncviewer` first.
             2.  Password: **websphere**
 
-    1.  Windows 3<sup>rd</sup> party VNC client:
-
-        i.  If you are able to install and use a 3<sup>rd</sup> party VNC client (there are a few free options online), then connect to **localhost** on port **5902** with password **websphere**.
-
     1.  Windows Remote Desktop client:
 
         i.  Windows requires a few steps to make Remote Desktop work with a Docker container. See [Appendix: Windows Remote Desktop Client](#windows-remote-desktop-client) for instructions.
+
+    1.  Windows 3<sup>rd</sup> party VNC client:
+
+        i.  If you are able to install and use a 3<sup>rd</sup> party VNC client (there are a few free options online), then connect to **localhost** on port **5902** with password **websphere**.
 
 6.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
     \
