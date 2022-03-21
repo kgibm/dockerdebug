@@ -117,7 +117,7 @@ If you are using `podman` instead of Docker Desktop, perform the following steps
    ```
    podman pull quay.io/kgibm/fedorawasdebug
    ```
-   This command may not show any output for a long time.
+   This command may not show any output for a long time while the download completes.
 
 The following section on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Start with podman](#start-with-podman).
 
