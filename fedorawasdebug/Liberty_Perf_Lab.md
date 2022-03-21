@@ -103,10 +103,9 @@ If you are using `podman` instead of Docker Desktop, perform the following steps
        ```
        podman system connection default podman-machine-default-root
        ```
-    1. Run the following commands to allow producing core dumps within the container:
+    1. Run the following command to allow producing core dumps within the container:
        ```
-       podman machine ssh ln -sf /dev/null /etc/sysctl.d/50-coredump.conf
-       podman machine ssh sysctl -w kernel.core_pattern=core
+       podman machine ssh "sh -c 'ln -sf /dev/null /etc/sysctl.d/50-coredump.conf && sysctl -w kernel.core_pattern=core'"
        ```
 1. Download the image:
    ```
