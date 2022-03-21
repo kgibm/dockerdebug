@@ -1079,47 +1079,44 @@ In a separate command prompt or terminal window, execute one of the following co
 
 Windows requires [extra steps to configure remote desktop to connect to a container](https://social.msdn.microsoft.com/Forums/en-US/872129e4-07a5-48c3-86f7-996854e7a920/how-to-connect-via-rdp-to-container?forum=windowscontainers):
 
-1.  Open **PowerShell** as Administrator:\
-    \
-    <img src="./media/image132.png" width="451" height="645" />
+1. Open **PowerShell** as Administrator:\
+   \
+   <img src="./media/image132.png" width="451" height="645" />
 
-2.  Run **ipconfig** and copy the **IPv4** address of the **WSL** adapter. For example, **172.24.0.1**:\
-    \
-    <img src="./media/image154.png" width="543" height="133" />
+1. Run **ipconfig** and copy the **IPv4** address of the **WSL** adapter. For example, **172.24.0.1**:\
+   \
+   <img src="./media/image154.png" width="543" height="133" />
 
-3.  Run the following command in **PowerShell**:
+1. Run the following command in **PowerShell**:
+   ```
+   New-NetFirewallRule -Name "myContainerRDP" -DisplayName "RDP Port for connecting to Container" -Protocol TCP -LocalPort @(3390) -Action Allow
+   ```
 
-    `New-NetFirewallRule -Name "myRDP" -DisplayName "Remote Desktop Protocol" -Protocol TCP -LocalPort @(3389) -Action Allow`
+1. Run **Remote Desktop**\
+   \
+   <img src="./media/image134.png" width="462" height="709" />
 
-4.  Run the following command in **PowerShell**:
+1. Enter the WSL IP address (for example, 172.24.0.1) followed by :3390 as **Computer** and click **Connect**:\
+   \
+   <img src="./media/image156.png" width="542" height="311" />
 
-    `New-NetFirewallRule -Name "myContainerRDP" -DisplayName "RDP Port for connecting to Container" -Protocol TCP -LocalPort @(3390) -Action Allow`
+1. You\'ll see a certificate warning because of the name mismatch. Click **Yes** to connect:\
+   \
+   <img src="./media/image155.png" width="522" height="577" />
 
-5.  Run **Remote Desktop**\
-    \
-    <img src="./media/image134.png" width="462" height="709" />
+1. Type username = **was** and password = **websphere**\
+   \
+   <img src="./media/image137.png" width="1015" height="759" />
 
-6.  Enter the WSL IP address (for example, 172.24.0.1) followed by :3390 as **Computer** and click **Connect**:\
-    \
-    <img src="./media/image156.png" width="542" height="311" />
+1. You should now be remote desktop'ed into the container:\
+   \
+   <img src="./media/image138.png" width="1015" height="767" />
 
-7.  You\'ll see a certificate warning because of the name mismatch. Click **Yes** to connect:\
-    \
-    <img src="./media/image155.png" width="522" height="577" />
-
-8.  Type username = **was** and password = **websphere**\
-    \
-    <img src="./media/image137.png" width="1015" height="759" />
-
-9.  You should now be remote desktop'ed into the container:\
-    \
-    <img src="./media/image138.png" width="1015" height="767" />
-
-10. Note: In some cases, only the **Remote Desktop Connection** application worked, and [**not** **Remote Desktop**](https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-app-compare):\
-    \
-    <img src="./media/image139.png" width="343" height="224" />
-
-11. Also note: Microsoft [requires](https://social.msdn.microsoft.com/Forums/en-US/872129e4-07a5-48c3-86f7-996854e7a920/how-to-connect-via-rdp-to-container?forum=windowscontainers) the above steps and the use of port 3390 instead of directly connecting to 3389.
+1. Notes:
+    1. In some cases, only the **Remote Desktop Connection** application worked, and [**not** **Remote Desktop**](https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-app-compare):\
+       \
+       <img src="./media/image139.png" width="343" height="224" />
+    1. Microsoft [requires](https://social.msdn.microsoft.com/Forums/en-US/872129e4-07a5-48c3-86f7-996854e7a920/how-to-connect-via-rdp-to-container?forum=windowscontainers) the above steps and the use of port 3390 instead of directly connecting to 3389.
 
 ##  Manually accessing/testing Liberty and tWAS
 
