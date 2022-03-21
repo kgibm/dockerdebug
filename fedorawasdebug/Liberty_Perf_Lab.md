@@ -1105,7 +1105,7 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
 
 1. Type username = **was** and password = **websphere**\
    \
-   <img src="./media/image137.png" width="1015" height="759" />
+   <img src="./media/image158.png" width="881" height="1015" />
 
 1. You should now be remote desktop'ed into the container:\
    \
