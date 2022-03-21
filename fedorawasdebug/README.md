@@ -2,61 +2,8 @@
 
 A lab on Troubleshooting and Performance Tuning WebSphere Liberty and WAS traditional covering various topics like CPU usage, thread dumps, garbage collection, memory analysis, profiling, and more. The Docker container provides a full Linux VM with GUI (see screenshots below) which runs on Windows, Mac, and Linux hosts.
 
-Full lab instructions: https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#websphere-application-server-troubleshooting-and-performance-lab-on-docker
-
-## Quick Start
-
-Watch a Quick Start video: https://www.youtube.com/watch?v=7o25Sq_-T44
-
-Note: You'll need more than 40GB of disk space and configure Docker/podman with 4GB or more of RAM. For details on how to install and configure, see the [lab instructions](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#lab).
-
-1. `docker run --cap-add SYS_PTRACE --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it quay.io/kgibm/fedorawasdebug`
-1. The container is fully started after about 2 minutes when the output shows:
-   ```
-   =========
-   = READY =
-   =========
-   ```
-1. Remote into the docker image with password `websphere`:
-    1. Linux: `vncviewer localhost:5902`
-    1. Mac: `open vnc://localhost:5902`
-    1. Windows: Remote desktop (see lab instructions), or use a free VNC client.
-1. Perform the lab: <https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#websphere-application-server-troubleshooting-and-performance-lab-on-docker>
-
-Tip: To share files with your host machine, add the following to the `docker run` command above (before `-it kgibm/fedoradebug`):
-
-* Linux: `-v /:/host/`
-* Windows: `-v //c/:/host/`
-* macOS: `-v /tmp/:/hosttmp/`
-    * Enable non-standard folders with [File Sharing](https://docs.docker.com/docker-for-mac/#preferences)
-
-## Screenshots
-
-![Fedora Desktop Screenshot](https://raw.githubusercontent.com/kgibm/dockerdebug/master/fedorawasdebug/supplemental/screenshots/screenshot1.png)
-
-![Screenshot showing browsers to the major apps installed](https://raw.githubusercontent.com/kgibm/dockerdebug/master/fedorawasdebug/supplemental/screenshots/screenshot2b.png)
-
-## Lab Highlights
-
-* [Using Apache JMeter to run a stress test on WebSphere Liberty or WAS traditional](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#apache-jmeter)
-* [Basic Linux CPU and memory analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#linux-cpu-and-memory-usage)
-* [IBM Java thread dump analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#ibm-java-and-openj9-thread-dumps)
-* [IBM Java garbage collection analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#garbage-collection)
-* [Java heap analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#heap-dumps)
-* [IBM Java CPU sampling profiler analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#health-center)
-* [Native crash analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#crashes)
-* [Native memory leak analysis](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#native-memory-leaks)
-* WebSphere Liberty
-    * [Admin Center](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#admin-center)
-    * [Request Timing](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#request-timing)
-    * [HTTP access log](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#http-ncsa-access-log)
-    * [MXBean monitoring](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#mxbean-monitoring)
-    * [Server dumps](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#server-dumps)
-    * [Event Logging](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#event-logging)
-    * [Diagnostic Trace](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#diagnostic-trace)
-    * [Binary Logging](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#binary-logging)
-* WAS traditional
-    * [Diagnostic Plans](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md#diagnostic-plans)
+* Full lab instructions: <https://ibm.biz/websphere_perf_pd_lab>
+* Liberty performance tuning lab: <https://ibm.biz/liberty_performance_lab>
 
 ## Installation Highlights
 
@@ -111,8 +58,7 @@ Tip: To share files with your host machine, add the following to the `docker run
 
 ## Notes
 
-* Docker Hub page: https://hub.docker.com/r/kgibm/fedorawasdebug
-* This lab is based on a Java Dockerfile (https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Dockerfile) which is based on a Fedora Dockerfile (https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Dockerfile).
+* This lab is based on a Java Containerfile (https://github.com/kgibm/dockerdebug/blob/master/fedorajavadebug/Containerfile) which is based on a Fedora Containerfile (https://github.com/kgibm/dockerdebug/blob/master/fedoradebug/Containerfile).
 
 ## Known Limitations
 
