@@ -39,7 +39,7 @@
 -   [Native Memory Leaks](#native-memory-leaks)
     -   [Native Memory Theory](#native-memory-theory)
     -   [Native Memory Leak Lab](#native-memory-leak-lab)
--   [WebSphere Liberty](#was-liberty)
+-   [WebSphere Liberty](#websphere-liberty)
     -   [Liberty Bikes](#liberty-bikes)
     -   [Server Configuration (server.xml)](#server-configuration-serverxml)
     -   [Java Arguments](#java-arguments)
