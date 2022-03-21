@@ -1099,13 +1099,13 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
     \
     <img src="./media/image134.png" width="462" height="709" />
 
-6.  Enter the DockerNAT IP address (for example, 10.0.75.1) followed by :3390 as **Computer** and click **Connect**:\
+6.  Enter the WSL IP address (for example, 172.24.0.1) followed by :3390 as **Computer** and click **Connect**:\
     \
     <img src="./media/image135.png" width="542" height="312" />
 
 7.  You\'ll see a certificate warning because of the name mismatch. Click **Yes** to connect:\
     \
-    <img src="./media/image136.png" width="995" height="683" />
+    <img src="./media/image155.png" width="522" height="577" />
 
 8.  Type username = **was** and password = **websphere**\
     \
