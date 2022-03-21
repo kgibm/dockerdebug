@@ -139,36 +139,26 @@ If you are using Docker Desktop instead of `podman`, perform the following steps
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
     \
     macOS:\
-    <img src="./media/image5.png" width="319" height="455" />
+    <img src="./media/image148.png" width="295" height="467" />
 
 2.  Windows:\
     <img src="./media/image6.png" width="568" height="444" />
 
 3.  Ensure that Docker receives sufficient resources, particularly memory:
 
-    1.  Click the Docker Desktop icon and select **Preferences...** (on macOS) or **Settings** (on Windows)
+    1.  Click the Docker Desktop icon and select **Dashboard** (on macOS) or **Settings** (on Windows)
 
-    1.  Select the **Advanced** tab.
+    1.  Click the **Settings** gear icon in the top right, then click **Resources** on the left.
 
-    1.  Ensure **Memory** is at least 4GB and, ideally, at least 8GB. The lab may work with less memory although this has not been tested.
+    1.  Configure sufficient memory (at least 4GB and, ideally, at least 8GB), CPU, and disk.
 
-    1.  Click **Apply**\
+    1.  Click **Apply & Restart**\
         \
         macOS:\
-        <img src="./media/image140.png" width="1037" height="656" />\
+        <img src="./media/image149.png" width="672" height="720" />\
         \
         Windows:\
         \
-        <img src="./media/image10.png" width="600" height="419" />
-
-    1.  Select the **Disk** tab.
-
-    1.  Increase the **Disk image size** to at least **100GB** and click **Apply**:\
-        \
-        macOS:\
-        <img src="./media/image140.png" width="1037" height="656" />\
-        \
-        Windows:\
         <img src="./media/image10.png" width="600" height="419" />
 
 4.  Open a terminal or command prompt and download the image:
