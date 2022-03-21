@@ -158,7 +158,6 @@ If you are using Docker Desktop instead of `podman`, perform the following steps
         <img src="./media/image149.png" width="672" height="720" />\
         \
         Windows:\
-        \
         <img src="./media/image10.png" width="600" height="419" />
 
 4.  Open a terminal or command prompt and download the image:
