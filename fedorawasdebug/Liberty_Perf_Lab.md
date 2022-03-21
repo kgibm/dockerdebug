@@ -916,7 +916,7 @@ When the requestTiming feature is enabled, the server dump command will include 
 
 ## HTTP NCSA Access Log
 
-The Liberty HTTP access log is optionally enabled with the [httpEndpoint accessLogging element](https://openliberty.io/docs/latest/access-logging.html). When enabled, a separate `access.log` file is produced with an NCSA standardized (i.e. httpd-style) line for each HTTP request, including [items such as the URI and response time](https://openliberty.io/docs/latest/access-logging.html#_http_access_log_format), useful for post-mortem corelation and performance analysis. For example,
+The Liberty HTTP access log is optionally enabled with the [httpEndpoint accessLogging element](https://openliberty.io/docs/latest/access-logging.html). When enabled, a separate `access.log` file is produced with an NCSA standardized (i.e. httpd-style) line for each HTTP request, including [items such as the URI and response time](https://openliberty.io/docs/latest/access-logging.html#_http_access_log_format), useful for post-mortem corelation and performance analysis.
 
 ### HTTP NCSA Access Log Lab
 
