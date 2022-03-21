@@ -1,6 +1,6 @@
-# WebSphere Application Server Troubleshooting and Performance Lab on Docker
+# WebSphere Application Server Troubleshooting and Performance Lab
 
-A lab on Troubleshooting and Performance Tuning WebSphere Liberty and WAS traditional covering various topics like CPU usage, thread dumps, garbage collection, memory analysis, profiling, and more. The Docker container provides a full Linux VM with GUI (see screenshots below) which runs on Windows, Mac, and Linux hosts.
+A lab on Troubleshooting and Performance Tuning WebSphere Liberty and WAS traditional covering various topics like CPU usage, thread dumps, garbage collection, memory analysis, profiling, and more. The container provides a full Linux VM with GUI (see screenshots below) which runs on Windows, Mac, and Linux hosts.
 
 * Full lab instructions: <https://ibm.biz/websphere_perf_pd_lab>
 * Liberty performance tuning lab: <https://ibm.biz/liberty_performance_lab>
@@ -62,11 +62,11 @@ A lab on Troubleshooting and Performance Tuning WebSphere Liberty and WAS tradit
 
 ## Known Limitations
 
-* Audio is not configured. In theory, it should be possible by configuring the host and `docker run` commands for audio passthrough and starting pulseaudio in the container with `pulseaudio -D`.
+* Audio is not configured. In theory, it should be possible by configuring the host and `run` commands for audio passthrough and starting pulseaudio in the container with `pulseaudio -D`.
 
 ## Development
 
-### Rebuilding the WebSphere Application Server Troubleshooting and Performance Lab on Docker
+### Rebuilding the WebSphere Application Server Troubleshooting and Performance Lab
 
 1. Prepare:
     1. macOS: Install the following and then open a new terminal window.
