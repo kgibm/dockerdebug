@@ -657,7 +657,7 @@ We will review the thread dumps gathered by linperf.sh above:
 
 1.  Complete the *linperf.sh Lab* above which includes producing thread dumps.
 
-2.  From the desktop, double click on **TMDA**:
+2.  From the desktop, double click on **TMDA**.
 
 3.  Click Open Thread Dumps and select all of the **javacore\*.txt** files using the Shift key. These may be in your home directory (**/home/was**) if you moved them in the previous exercise; otherwise, they're in the default working directory (Liberty: **/opt/ibm/wlp/output/defaultServer** ; WAS traditional: **/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/**):\
     \

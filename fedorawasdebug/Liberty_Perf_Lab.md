@@ -424,7 +424,7 @@ We will gather and review thread dumps:
 
 8.  At this point, if you were creating a support case, you would upload **linperf_RESULTS.tar.gz**, **javacore\***, and all the Liberty logs; however, instead, we will analyze the results.
 
-9.  From the desktop, double click on **TMDA**:
+9.  From the desktop, double click on **TMDA**.
 
 10.  Click Open Thread Dumps and select all of the **javacore\*.txt** files using the Shift key. These will be in your home directory (**/home/was**) if you moved them above; otherwise, they're in the default working directory (**/opt/ibm/wlp/output/defaultServer**):\
     \
