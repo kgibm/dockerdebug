@@ -2575,46 +2575,50 @@ Saving state of a Docker container would be useful for situations such as multi-
 
 There are many different versions and types of Java in the image. To list them, run:
 
-    $ alternatives --display java | grep "^/"
-    /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.fc30.x86_64/jre/bin/java - family java-1.8.0-openjdk.x86_64 priority 1800222
-    /opt/ibm/java/bin/java - family ibmjava priority 99999999
-    /opt/openjdk8_openj9/jdk/bin/java - family openjdk priority 89999999
-    /opt/openjdk8_hotspot/jdk/bin/java - family openjdk priority 89999999
-    /opt/openjdk11_openj9/jdk/bin/java - family openjdk priority 89999999
-    /opt/openjdk11_hotspot/jdk/bin/java - family openjdk priority 89999999
-    /opt/openjdk14_openj9/jdk/bin/java - family openjdk priority 89999999
-    /opt/openjdk14_hotspot/jdk/bin/java - family openjdk priority 89999999
+```
+$ alternatives --display java | grep "^/"
+/usr/lib/jvm/java-11-openjdk-11.0.14.1.1-5.fc35.x86_64/bin/java - family java-11-openjdk.x86_64 priority 11001421
+/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.322.b06-6.fc35.x86_64/jre/bin/java - family java-1.8.0-openjdk.x86_64 priority 1
+/opt/ibm/java/bin/java - family ibmjava priority 99999999
+/opt/openjdk8_hotspot/jdk/bin/java - family openjdk priority 89999999
+/opt/openjdk11_hotspot/jdk/bin/java - family openjdk priority 89999999
+/opt/openjdk17_hotspot/jdk/bin/java - family openjdk priority 89999999
+/opt/openjdk8_ibm/jdk/bin/java - family openjdk priority 89999999
+/opt/openjdk11_ibm/jdk/bin/java - family openjdk priority 89999999
+/opt/openjdk17_ibm/jdk/bin/java - family openjdk priority 89999999
+```
 
-To change the Java that is on the path, run the following command and enter the number of the Java that you wish to change to and press Enter. The directory name tells you the type of Java; for example, OpenJ9 or HotSpot. The directory name also tells you the version of Java (for example, openjdk13 is Java 13).
+To change the Java that is on the path, run the following command and enter the number of the Java that you wish to change to and press Enter. The directory name tells you the type of Java; for example, OpenJ9 or HotSpot. The directory name also tells you the version of Java (for example, openjdk17 is Java 17).
 
-    $ sudo alternatives --config java
+```
+$ sudo alternatives --config java
+sudo: unable to send audit message: Operation not permitted
 
-    There are 10 programs which provide 'java'.
+There are 9 programs which provide 'java'.
 
-      Selection    Command
-    -----------------------------------------------
-      1           java-1.8.0-openjdk.x86_64 (/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.fc30.x86_64/jre/bin/java)
-    *+2           ibmjava (/opt/ibm/java/bin/java)
-      3           openjdk (/opt/openjdk8_openj9/jdk/bin/java)
-      4           openjdk (/opt/openjdk8_hotspot/jdk/bin/java)
-      5           openjdk (/opt/openjdk11_openj9/jdk/bin/java)
-      6           openjdk (/opt/openjdk11_hotspot/jdk/bin/java)
-      7           openjdk (/opt/openjdk14_openj9/jdk/bin/java)
-      8           openjdk (/opt/openjdk14_hotspot/jdk/bin/java)
+  Selection    Command
+-----------------------------------------------
+   1           java-11-openjdk.x86_64 (/usr/lib/jvm/java-11-openjdk-11.0.14.1.1-5.fc35.x86_64/bin/java)
+   2           java-1.8.0-openjdk.x86_64 (/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.322.b06-6.fc35.x86_64/jre/bin/java)
+*+ 3           ibmjava (/opt/ibm/java/bin/java)
+   4           openjdk (/opt/openjdk8_hotspot/jdk/bin/java)
+   5           openjdk (/opt/openjdk11_hotspot/jdk/bin/java)
+   6           openjdk (/opt/openjdk17_hotspot/jdk/bin/java)
+   7           openjdk (/opt/openjdk8_ibm/jdk/bin/java)
+   8           openjdk (/opt/openjdk11_ibm/jdk/bin/java)
+   9           openjdk (/opt/openjdk17_ibm/jdk/bin/java)
 
-    Enter to keep the current selection[+], or type selection number:
+Enter to keep the current selection[+], or type selection number: 9
+$ java -version
+openjdk version "17.0.2" 2022-01-18
+IBM Semeru Runtime Open Edition 17.0.2.0 (build 17.0.2+8)
+Eclipse OpenJ9 VM 17.0.2.0 (build openj9-0.30.0, JRE 17 Linux amd64-64-Bit Compressed References 20220128_115 (JIT enabled, AOT enabled)
+OpenJ9   - 9dccbe076
+OMR      - dac962a28
+JCL      - 64cd399ca28 based on jdk-17.0.2+8)
+```
 
-The alternatives command has the concept of groups of commands so when you change Java using the method above, other commands like **jar**, **javac**, etc. also change.
-
-Show the Java version to verify the change (in this case, I chose option 7 and this confirms that Java 13 on OpenJ9 is being used):
-
-    $ java -version
-    openjdk version "13.0.1" 2019-10-15
-    OpenJDK Runtime Environment AdoptOpenJDK (build 13.0.1+9)
-    Eclipse OpenJ9 VM AdoptOpenJDK (build openj9-0.17.0, JRE 13 Linux amd64-64-Bit Compressed References 20191021_96 (JIT enabled, AOT enabled)
-    OpenJ9   - 77c1cf708
-    OMR      - 20db4fbc
-    JCL      - 74a8738189 based on jdk-13.0.1+9)
+The `alternatives` command has the concept of groups of commands so when you change Java using the method above, other commands like **jar**, **javac**, etc. also change.
 
 Any currently running Java programs will need to be restarted if you want them to use the different version of Java (WAS traditional is an exception because it uses a bundled version of Java).
 

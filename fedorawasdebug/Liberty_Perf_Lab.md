@@ -1163,7 +1163,7 @@ OMR      - dac962a28
 JCL      - 64cd399ca28 based on jdk-17.0.2+8)
 ```
 
-The alternatives command has the concept of groups of commands so when you change Java using the method above, other commands like **jar**, **javac**, etc. also change.
+The `alternatives` command has the concept of groups of commands so when you change Java using the method above, other commands like **jar**, **javac**, etc. also change.
 
 Any currently running Java programs will need to be restarted if you want them to use the different version of Java (WAS traditional is an exception because it uses a bundled version of Java).
 
