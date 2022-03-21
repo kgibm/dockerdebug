@@ -182,7 +182,7 @@ The following section is the start of the lab. If you were only preparing for th
 
 ### Start with podman
 
-If you are using `podman` for this lab instead of Docker Desktop:
+If you are using `podman` for this lab instead of Docker Desktop, then perform the following steps. If you are using Docker Desktop, [skip down to Start with Docker Desktop](start-with-docker-desktop).
 
 1.  Start the lab:
 
