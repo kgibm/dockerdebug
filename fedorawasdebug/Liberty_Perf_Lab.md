@@ -366,7 +366,7 @@ Thread dumps generally do not contain sensitive information about user requests,
 
 ## linperf.sh
 
-IBM WebSphere Support provides a script called **linperf.sh** as part of the document, ["MustGather: Performance, hang, or high CPU issues with WebSphere Application Server on Linux"](https://www-01.ibm.com/support/docview.wss?uid=swg21115785) (similar scripts exist for other operating systems). Such a script should be pre-installed on all machines where you run Liberty and it should be run when you have performance or hang issues and the resulting files should be uploaded if you open such a support case with IBM.
+IBM WebSphere Support provides a script called **linperf.sh** as part of the document, ["MustGather: Performance, hang, or high CPU issues with WebSphere Application Server on Linux"](https://www-01.ibm.com/support/docview.wss?uid=swg21115785) (similar scripts exist for other operating systems). This script will be used to gather thread dumps in this lab. Such a script should be pre-installed on all machines where you run Liberty and it should be run when you have performance or hang issues and the resulting files should be uploaded if you open such a support case with IBM.
 
 The linperf.sh script is pre-installed in the lab image at **/opt/linperf/linperf.sh**.
 
