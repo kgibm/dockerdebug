@@ -1183,8 +1183,8 @@ The clipboard may not be shared when using VNC. There are two workarounds:
 This is a known issue that will be fixed on the next build of the lab. Until then, the workaround is:
 
 1. Start a new command prompt or terminal and execute one of the following commands depending on whether you're using `podman` or Docker Desktop:
-    * `podman exec -u was -it $(podman ps -q) bash`
-    * `docker exec -u was -it $(podman ps -q) bash`
+    * `podman exec -u root -it $(podman ps -q) bash`
+    * `docker exec -u root -it $(podman ps -q) bash`
 2. Then execute the following command:
    ```
    sed -i '1 i\auth sufficient pam_succeed_if.so user = was' /etc/pam.d/xfce4-screensaver
