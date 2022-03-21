@@ -1215,3 +1215,5 @@ Thank you to those that helped build and test this lab:
 -   Andrea Pichler
 -   Kazuma Tanabe
 -   Shinichi Kako
+
+For the full lab, see <https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md>
