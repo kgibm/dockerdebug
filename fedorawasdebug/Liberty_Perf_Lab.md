@@ -139,9 +139,9 @@ If you are using Docker Desktop instead of `podman`, perform the following steps
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
     \
     macOS:\
-    <img src="./media/image148.png" width="295" height="467" />
-
-2.  Windows:\
+    <img src="./media/image148.png" width="295" height="467" />\
+    \
+    Windows:\
     <img src="./media/image6.png" width="568" height="444" />
 
 3.  Ensure that Docker receives sufficient resources, particularly memory:
