@@ -139,7 +139,7 @@ If you are using Docker Desktop instead of `podman`, perform the following steps
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
     \
     macOS:\
-    <img src="./media/image148.png" width="295" height="467" />\
+    <img src="./media/image153.png" width="267" height="449" />\
     \
     Windows:\
     <img src="./media/image152.png" width="368" height="522" />
