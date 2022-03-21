@@ -142,7 +142,7 @@ If you are using Docker Desktop instead of `podman`, perform the following steps
     <img src="./media/image148.png" width="295" height="467" />\
     \
     Windows:\
-    <img src="./media/image151.png" width="368" height="522" />
+    <img src="./media/image152.png" width="368" height="522" />
 
 3.  Ensure that Docker receives sufficient resources, particularly memory:
 
