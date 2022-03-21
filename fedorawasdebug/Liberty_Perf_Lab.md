@@ -50,7 +50,7 @@ WAS traditional and Liberty share some source code but [differ in significant wa
 
 ### What's in the lab?
 
-This lab covers the major tools and techniques for performance tuning WebSphere Liberty. This is a subset of the [WebSphere Performance and Troubleshooting Lab](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md) which also covers WAS traditional.
+This lab covers the major tools and techniques for performance tuning WebSphere Liberty. This is a subset of the [WebSphere Performance and Troubleshooting Lab](https://github.com/kgibm/dockerdebug/blob/master/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.md) which also covers WAS traditional, and troubleshooting labs.
 
 This lab container image come with WebSphere Liberty pre-installed so installation and configuration steps are skipped.
 
