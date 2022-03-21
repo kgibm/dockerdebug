@@ -144,21 +144,21 @@ If you are using Docker Desktop instead of `podman`, perform the following steps
     Windows:\
     <img src="./media/image152.png" width="368" height="522" />
 
-3.  Ensure that Docker receives sufficient resources, particularly memory:
+3.  Ensure that Docker receives sufficient resources, particularly memory (at least 4GB and, ideally, at least 8GB), CPU, and disk:
+    1. macOS:
 
-    1.  Click the Docker Desktop icon and select **Dashboard** (on macOS) or **Settings** (on Windows)
+        1.  Click the Docker Desktop icon and select **Dashboard**
 
-    1.  Click the **Settings** gear icon in the top right, then click **Resources** on the left.
+        1.  Click the **Settings** gear icon in the top right, then click **Resources** on the left.
 
-    1.  Configure sufficient memory (at least 4GB and, ideally, at least 8GB), CPU, and disk.
+        1.  Configure sufficient memory (at least 4GB and, ideally, at least 8GB), CPU, and disk.
 
-    1.  Click **Apply & Restart**\
-        \
-        macOS:\
-        <img src="./media/image149.png" width="672" height="720" />\
-        \
-        Windows:\
-        <img src="./media/image10.png" width="600" height="419" />
+        1.  Click **Apply & Restart**\
+            \
+            macOS:\
+            <img src="./media/image149.png" width="672" height="720" />
+
+    1. Windows uses the WSL2 backend which defaults to 50% of RAM or 8GB, whichever is less, and the same number of CPUs as the host. This may be overridden
 
 4.  Open a terminal or command prompt and download the image:
     ```
