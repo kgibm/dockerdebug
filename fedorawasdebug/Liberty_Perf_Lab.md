@@ -158,7 +158,12 @@ If you are using Docker Desktop instead of `podman`, perform the following steps
             macOS:\
             <img src="./media/image149.png" width="672" height="720" />
 
-    1. Windows uses the WSL2 backend which defaults to 50% of RAM or 8GB, whichever is less, and the same number of CPUs as the host. This may be overridden
+    1. Windows uses the WSL2 backend which defaults to 50% of RAM or 8GB, whichever is less, and the same number of CPUs as the host. This may be overridden with a [`%UserProfile%\.wslconfig` file](https://docs.microsoft.com/en-us/windows/wsl/wsl-config#configuration-setting-for-wslconfig) with, for example:
+       ```
+       [wsl2]
+       memory=10GB
+       processors=4
+       ```
 
 4.  Open a terminal or command prompt and download the image:
     ```
