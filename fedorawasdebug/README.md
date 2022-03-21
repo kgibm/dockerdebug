@@ -155,7 +155,7 @@ Tip: To share files with your host machine, add the following to the `docker run
    pandoc --pdf-engine=xelatex -V geometry:margin=1in -s -o Liberty_Perf_Lab.pdf --metadata title="Liberty Performance Lab" Liberty_Perf_Lab_imagesconverted.md
    rm Liberty_Perf_Lab_imagesconverted.md
    ```
-1. `git` add, commit, and push the `WAS_Troubleshooting_Perf_Lab.*` files.
+1. `git` add, commit, and push the `WAS_Troubleshooting_Perf_Lab.*` and `Liberty_Perf_Lab.*` files.
 1. `podman pull websphere-liberty`
 1. `podman pull ibmcom/websphere-traditional`
 1. If needed, update Liberty build in `MAVEN_LIBERTY_VERSION` in `fedorawasdebug/Containerfile`
