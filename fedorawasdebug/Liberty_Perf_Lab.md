@@ -16,7 +16,7 @@
     -   [Start with Docker Desktop](#start-with-docker-desktop)
 -   [IBM Java and OpenJ9 Thread Dumps](#ibm-java-and-openj9-thread-dumps)
 -   [Garbage Collection](#garbage-collection)
--   [Health Center](#health-center)
+-   [Health Center Sampling Profiler](#health-center)
 -   [WebSphere Liberty](#websphere-liberty)
     -   [Request Timing](#request-timing)
     -   [HTTP NCSA Access Log](#http-ncsa-access-log)
