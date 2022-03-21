@@ -916,7 +916,9 @@ RUN ( \
       sudo git pull && \
       echo "Don't use --metadata title= here and just ignore the warning about it missing" && \
       sudo pandoc -s -o WAS_Troubleshooting_Perf_Lab.html WAS_Troubleshooting_Perf_Lab.md && \
-      ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" \
+      ln -s "/opt/dockerdebug/fedorawasdebug/WAS_Troubleshooting_Perf_Lab.html" "/home/was/Desktop/" && \
+      sudo pandoc -s -o Liberty_Perf_Lab.html Liberty_Perf_Lab.md && \
+      ln -s "/opt/dockerdebug/fedorawasdebug/Liberty_Perf_Lab.html" "/home/was/Desktop/" \
     )
 
 EXPOSE 8080 8081 8082 9080 9081 9082 9083 9443 9444 9445 12000 12005
