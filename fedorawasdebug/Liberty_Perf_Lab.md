@@ -323,6 +323,12 @@ If you are using Docker Desktop for this lab instead of `podman`:
 
     <img src="./media/image20.png" width="716" height="140" />
 
+# Mousepad
+
+If you would like to open text files in the container using a GUI tool, you may use a program such as **mousepad**:
+
+<img src="./media/image21.png" width="323" height="442" />
+
 # IBM Java and OpenJ9 Thread Dumps
 
 Thread dumps are snapshots of process activity, including the thread stacks that show what each thread is doing. Thread dumps are one of the best places to start to investigate problems. If a lot of threads are in similar stacks, then that behavior might be an issue or a symptom of an issue.
