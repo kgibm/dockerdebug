@@ -2,7 +2,7 @@
 
 A lab on Troubleshooting and Performance Tuning WebSphere Liberty and WAS traditional covering various topics like CPU usage, thread dumps, garbage collection, memory analysis, profiling, and more. The container provides a full Linux VM with GUI (see screenshots below) which runs on Windows, Mac, and Linux hosts.
 
-* Full lab instructions: <https://ibm.biz/websphere_perf_pd_lab>
+* Full lab: <https://ibm.biz/websphere_perf_pd_lab>
 * Liberty performance tuning lab: <https://ibm.biz/liberty_performance_lab>
 
 ## Installation Highlights
