@@ -333,7 +333,7 @@ If you are using Docker Desktop for this lab instead of `podman`:
 
 # Mousepad
 
-If you would like to open text files in the container using a GUI tool, you may use a program such as **mousepad**:
+If you would like to view or edit text files in the container using a GUI tool, you may use a program such as **mousepad**:
 
 <img src="./media/image21.png" width="323" height="442" />
 
