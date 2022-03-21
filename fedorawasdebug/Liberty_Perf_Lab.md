@@ -2,7 +2,6 @@
 
 - Author: [Kevin Grigorenko](mailto:kevin.grigorenko@us.ibm.com)
 - Version: V18 (March 20, 2022)
-- Source: [https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug](https://github.com/kgibm/dockerdebug/tree/master/fedorawasdebug)
 
 # Table of Contents
 
@@ -1207,72 +1206,6 @@ This is a known issue that will be fixed on the next build of the lab. Until the
    sed -i '1 i\auth sufficient pam_succeed_if.so user = was' /etc/pam.d/xfce4-screensaver
    ```
 3. Try unlocking the screen again.
-
-## Version History
-
-* V18 (March 14, 2022):
-    * Add workaround for [Liberty Issue 20082](https://github.com/OpenLiberty/open-liberty/issues/20082)
-    * Add Eclipse Mission Control 8.1
-* V17 (February 21, 2022):
-    * Add podman instructions in addition to Docker Desktop
-    * Upgrade to tWAS 9.0.5.10
-    * Upgrade to Liberty 22.0.0.1
-    * Add IBM Semeru runtimes
-    * Update MAT, GCMV, and HealthCenter
-    * Update Request Metrics Analyzer Next
-    * Update to Eclipse 2021-12
-    * Update WAS Configuration Visualizer
-    * Switch to IBM HTTP Server archive install
-    * Update Performance Tuning Toolkit
-    * Add IBM Service Integration Bus Destination Handler
-* V16 (April 13, 2021):
-    * Upgrade to Liberty 21.0.0.3
-    * Update to TMDA 4.6.9
-    * Add AdoptOpenJDK Java 16 (J9 and HotSpot)
-    * Change Health Center to use Eclipse 2020-03 because Luna is no longer available. The known StackOverflowError on 2020-03 doesn't always happen.
-    * Upgrade Request Metrics Analyzer to 2.0.20210111
-    * Increase Eclipse 2020-03 max heap to 4g
-* V15 (February 15, 2021):
-    * Fix [issue 2](https://github.com/kgibm/dockerdebug/issues/2) by upgrading to Liberty 21.0.0.1
-    * Upgrade to tWAS 9.0.5.6
-* V14 (January 12, 2021): Fix issue tailing tWAS logs
-* V13 (January 11, 2021): Refresh software:
-    * Upgrade to Fedora 33
-    * Upgrade to Liberty 20.0.0.12
-    * Upgrade PTT to V1.0.20200908
-    * Update to TMDA 4.6.8
-* V12 (August 3, 2020): Refresh software:
-    * Upgrade to Fedora 32
-    * Upgrade to Liberty 20.0.0.8
-    * Upgrade to tWAS 9.0.5.3
-    * Upgrade to Eclipse 2020-03
-    * Add OpenJDK 14
-    * Upgrade to PTT V1.0.20200728
-    * Upgrade Apache Ant
-    * Upgrade Apache JMeter
-    * Upgrade Gradle
-    * Upgrade Eclipse MAT
-    * Upgrade to TMDA 4.6.7
-    * Increase HealthCenter -Xmx
-    * Upgrade Eclipse SWT
-    * Add libertymon
-    * Upgrade Request Analyzer Next
-    * Upgrade WebSphere Application Server Configuration Comparison Tool
-    * Add PostgreSQL
-    * Add -Xnoloa to tWAS as temporary workaround for crash issue
-* V11 (December 16, 2019): Add Performance Tuning Toolkit and required 32-bit libraries and XULRunner. Fix intermittent issue where screen lock gets wrong timeout value. Upgrade Request Metrics Analyzer.
-* V10 (November 27, 2019): Add tWAS SIBExplorer and SIBPerf tools. Disable Xfce desktop tooltips. Resolve rare VNC deadlock issue. Upgrade TMDA. Add IBM Channel Framework Analyzer. Add IBM Web Server Plug-in Analyzer for WebSphere Application Server (WSPA). Add Connection and Configuration Verification Tool for SSL/TLS. Add WebSphere Application Server Configuration Visualizer. Add Problem Diagnostics Lab Toolkit. Add Eclipse SWT.
-* V9 (November 12, 2019): Fix being unable to unlock screensaver after idling 10 minutes. Change screensaver lock time to 30 minutes. Add Totem video player and VP9/webm codec.
-* V8 (November 6, 2019): Fix errors re-launching Eclipse. Add example lab data.
-* V7 (November 6, 2019): Minor fix for the crash lab test if the server is restarted in an unexpected way.
-* V6 (November 5, 2019): Enable tWAS and Liberty Application Security for DayTrader to use local OpenLDAP. Increase recommended Docker disk space to \>100GB. Enable OpenLDAP logging. Change DayTrader7 to runtimeMode=1 to avoid WebSocket security issues calling EJBs with application security enabled. Remove OpenJDK12. Upgrade to Fedora 31. Send tWAS traffic through IHS.
-* V5 (October 23, 2019): Add OpenLDAP and integrate it into tWAS. Update the lab instructions to include tWAS. Add VS Code. Add JDKs to alternatives. Update Eclipse to 2019-06. Add OpenJ9 source. Add IHS connected to tWAS.
-* V4 (August 14, 2019): Add tWAS DayTrader7.
-* V3 (July 2, 2019): Updates based on customer feedback.
-* V2 (May 20, 2019): Convert to Docker and modernize.
-* V1 (December 14, 2016): First version on VMWare.
-
-Tip: to compare between tags; for example: [https://github.com/kgibm/dockerdebug/compare/V11...V12](https://github.com/kgibm/dockerdebug/compare/V11...V12)
 
 ##  Acknowledgments
 
