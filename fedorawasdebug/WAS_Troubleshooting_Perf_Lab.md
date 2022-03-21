@@ -11,7 +11,7 @@
 -   [Installation](#installation)
     -   [With podman](#installing-podman)
     -   [With Docker Desktop](#installing-docker-desktop)
--   Starting the lab
+-   [Starting the lab](#start-the-container)
     -   [Start with podman](#start-with-podman)
     -   [Start with Docker Desktop](#start-with-docker-desktop)
 -   [Linux CPU and Memory Usage](#linux-cpu-and-memory-usage)
@@ -119,7 +119,9 @@ The image is about 20GB. If you plan to run this in a classroom setting, perform
 
 ### Installing podman
 
-If you are using `podman` instead of Docker Desktop:
+If you are using `podman` instead of Docker Desktop, perform the following steps to install `podman` and then perform the [podman post-installation steps](#podman-post-installation-steps). If you are using Docker Desktop, [skip down to Installing Docker Desktop](#installing-docker-desktop).
+
+`podman` installation instructions:
 
 * Windows: <https://podman.io/getting-started/installation#windows>
 * macOS: <https://podman.io/getting-started/installation#macos>
@@ -150,13 +152,13 @@ If you are using `podman` instead of Docker Desktop:
    ```
    podman pull quay.io/kgibm/fedorawasdebug
    ```
-   This command may not show any output for a long time.
+   This command may not show any output for a long time while the download completes.
 
 The following section on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Start with podman](#start-with-podman).
 
 ### Installing Docker Desktop
 
-If you are using Docker Desktop instead of `podman`:
+If you are using Docker Desktop instead of `podman`, perform the following steps to install Docker Desktop and then perform the [Docker Desktop post-installation steps](#docker-desktop-post-installation-steps):
 
 * Windows ("Requires Microsoft Windows 10 Professional or Enterprise 64-bit.")
     * Download: <https://hub.docker.com/editions/community/docker-ce-desktop-windows>
@@ -172,50 +174,54 @@ If you are using Docker Desktop instead of `podman`:
 1.  Ensure that Docker is started. For example, start Docker Desktop and ensure it is running:\
     \
     macOS:\
-    <img src="./media/image5.png" width="319" height="455" />
+    <img src="./media/image153.png" width="267" height="449" />\
+    \
+    Windows:\
+    <img src="./media/image152.png" width="368" height="522" />
 
-2.  Windows:\
-    <img src="./media/image6.png" width="568" height="444" />
+3.  Ensure that Docker receives sufficient resources, particularly memory (at least 4GB and, ideally, at least 8GB), CPU, and disk:
+    1. macOS:
 
-3.  Ensure that Docker receives sufficient resources, particularly memory:
+        1.  Click the Docker Desktop icon and select **Dashboard**
 
-    1.  Click the Docker Desktop icon and select **Preferences...** (on macOS) or **Settings** (on Windows)
+        1.  Click the **Settings** gear icon in the top right, then click **Resources** on the left.
 
-    1.  Select the **Advanced** tab.
+        1.  Configure sufficient memory (at least 4GB and, ideally, at least 8GB), CPU, and disk.
 
-    1.  Ensure **Memory** is at least 4GB and, ideally, at least 8GB. The lab may work with less memory although this has not been tested.
+        1.  Click **Apply & Restart**\
+            \
+            macOS:\
+            <img src="./media/image149.png" width="672" height="720" />
 
-    1.  Click **Apply**\
-        \
-        macOS:\
-        <img src="./media/image140.png" width="1037" height="656" />\
-        \
-        Windows:\
-        \
-        <img src="./media/image10.png" width="600" height="419" />
-
-    1.  Select the **Disk** tab.
-
-    1.  Increase the **Disk image size** to at least **100GB** and click **Apply**:\
-        \
-        macOS:\
-        <img src="./media/image140.png" width="1037" height="656" />\
-        \
-        Windows:\
-        <img src="./media/image10.png" width="600" height="419" />
+    1. Windows uses the WSL2 backend which defaults to 50% of RAM or 8GB, whichever is less, and the same number of CPUs as the host. This may be overridden with a [`%UserProfile%\.wslconfig` file](https://docs.microsoft.com/en-us/windows/wsl/wsl-config#configuration-setting-for-wslconfig) with, for example:
+       ```
+       [wsl2]
+       memory=10GB
+       processors=4
+       ```
 
 4.  Open a terminal or command prompt and download the image:
     ```
     docker pull quay.io/kgibm/fedorawasdebug
     ```
 
-The following section on `podman` should be skipped since you are using Docker Desktop. The next section for Docker Desktop is [Start with Docker Desktop](start-with-docker-desktop).
+The following section on `podman` should be skipped since you are using Docker Desktop. The next section for Docker Desktop is [Start with Docker Desktop](#start-with-docker-desktop).
 
 ## Start the container
 
 ### Start with podman
 
-If you are using `podman` for this lab instead of Docker Desktop:
+The following section is the start of the lab. If you were only preparing for the lab by installing and downloading the lab before the lab begins, then you may stop at this point until the instructor provides further direction.
+
+If you are using `podman` for this lab instead of Docker Desktop, then perform the following steps. If you are using Docker Desktop, [skip down to Start with Docker Desktop](#start-with-docker-desktop).
+
+1.  Open a terminal or command prompt:\
+    \
+    macOS:\
+    <img src="./media/image11.png" width="588" height="108" />\
+    \
+    Windows:\
+    <img src="./media/image12.png" width="463" height="393" />
 
 1.  Start the lab:
 
@@ -268,6 +274,8 @@ If you are using `podman` for this lab instead of Docker Desktop:
 The following section on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Apache JMeter](#apache-jmeter).
 
 ### Start with Docker Desktop
+
+The following section is the start of the lab. If you were only preparing for the lab by installing and downloading the lab before the lab begins, then you may stop at this point until the instructor provides further direction.
 
 If you are using Docker Desktop for this lab instead of `podman`:
 
