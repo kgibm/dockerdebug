@@ -180,9 +180,9 @@ The following section on `podman` should be skipped since you are using Docker D
 
 ## Start the container
 
-The following section is the start of the lab. If you were only preparing for the lab by installing and downloading the lab before the lab begins, then you may stop at this point until the instructor provides further direction.
-
 ### Start with podman
+
+The following section is the start of the lab. If you were only preparing for the lab by installing and downloading the lab before the lab begins, then you may stop at this point until the instructor provides further direction.
 
 If you are using `podman` for this lab instead of Docker Desktop, then perform the following steps. If you are using Docker Desktop, [skip down to Start with Docker Desktop](#start-with-docker-desktop).
 
@@ -237,6 +237,8 @@ If you are using `podman` for this lab instead of Docker Desktop, then perform t
 The following section on Docker Desktop should be skipped since you are using `podman`. The next section for `podman` is [Apache JMeter](#apache-jmeter).
 
 ### Start with Docker Desktop
+
+The following section is the start of the lab. If you were only preparing for the lab by installing and downloading the lab before the lab begins, then you may stop at this point until the instructor provides further direction.
 
 If you are using Docker Desktop for this lab instead of `podman`:
 
