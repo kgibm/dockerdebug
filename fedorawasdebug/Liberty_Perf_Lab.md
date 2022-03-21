@@ -1088,9 +1088,8 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
    <img src="./media/image154.png" width="543" height="133" />
 
 1. Run the following command in **PowerShell**:
-   ```
-   New-NetFirewallRule -Name "myContainerRDP" -DisplayName "RDP Port for connecting to Container" -Protocol TCP -LocalPort @(3390) -Action Allow
-   ```
+   
+   `New-NetFirewallRule -Name "myContainerRDP" -DisplayName "RDP Port for connecting to Container" -Protocol TCP -LocalPort @(3390) -Action Allow`
 
 1. Run **Remote Desktop**\
    \
@@ -1110,7 +1109,7 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
 
 1. You should now be remote desktop'ed into the container:\
    \
-   <img src="./media/image138.png" width="1015" height="767" />
+   <img src="./media/image157.png" width="1024" height="576" />
 
 1. Notes:
     1. In some cases, only the **Remote Desktop Connection** application worked, and [**not** **Remote Desktop**](https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-app-compare):\
