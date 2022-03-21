@@ -11,7 +11,7 @@
 -   [Installation](#installation)
     -   [With podman](#installing-podman)
     -   [With Docker Desktop](#installing-docker-desktop)
--   Starting the lab
+-   [Starting the lab](#start-the-container)
     -   [Start with podman](#start-with-podman)
     -   [Start with Docker Desktop](#start-with-docker-desktop)
 -   [IBM Java and OpenJ9 Thread Dumps](#ibm-java-and-openj9-thread-dumps)
