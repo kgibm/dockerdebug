@@ -217,14 +217,6 @@ If you are using `podman` for this lab instead of Docker Desktop, then perform t
 
         i.  Windows requires a few steps to make Remote Desktop work with a Docker container. See [Appendix: Windows Remote Desktop Client](#windows-remote-desktop-client) for instructions.
 
-    1.  SSH:
-
-        1.  If you want to simulate production-like access, you can SSH into the container (e.g. using terminal ssh or PuTTY) although you'll need one of the GUI methods above to run most of this lab:
-
-            1.  **ssh was\@localhost**
-
-            2.  Password: **websphere**
-
 4.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
     \
     <img src="./media/image13.png" width="1160" height="615" />
@@ -280,14 +272,6 @@ If you are using Docker Desktop for this lab instead of `podman`:
     1.  Windows Remote Desktop client:
 
         i.  Windows requires a few steps to make Remote Desktop work with a Docker container. See [Appendix: Windows Remote Desktop Client](#windows-remote-desktop-client) for instructions.
-
-    1.  SSH:
-
-        1.  If you want to simulate production-like access, you can SSH into the container (e.g. using terminal ssh or PuTTY) although you'll need one of the GUI methods above to run most of this lab:
-
-            1.  **ssh was\@localhost**
-
-            2.  Password: **websphere**
 
 6.  When using VNC, you may change the display resolution from within the container and the VNC client will automatically adapt. For example:\
     \
