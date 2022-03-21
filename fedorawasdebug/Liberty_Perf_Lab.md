@@ -1101,7 +1101,7 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
 
 6.  Enter the WSL IP address (for example, 172.24.0.1) followed by :3390 as **Computer** and click **Connect**:\
     \
-    <img src="./media/image135.png" width="542" height="312" />
+    <img src="./media/image156.png" width="542" height="311" />
 
 7.  You\'ll see a certificate warning because of the name mismatch. Click **Yes** to connect:\
     \
