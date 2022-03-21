@@ -54,7 +54,7 @@ This lab covers the major tools and techniques for performance tuning WebSphere 
 
 This lab container image comes with WebSphere Liberty pre-installed so installation and configuration steps are skipped.
 
-The way we are using these container images is to run multiple services in the same container (e.g. VNC, Remote Desktop, WebSphere Liberty, a full GUI server, etc.) and although this approach is [valid and supported](https://docs.docker.com/config/containers/multi-service_container/), it is generally not recommended for real-world application deployment usage. For labs that demonstrate how to use WAS in production, see [WebSphere Application Server and Docker Tutorials](https://github.com/WASdev/ci.docker.tutorials).
+The way we are using these container images is to run multiple services in the same container (e.g. VNC, Remote Desktop, WebSphere Liberty, a full GUI server, etc.) and although this approach is [valid and supported](https://docs.docker.com/config/containers/multi-service_container/), it is generally not recommended for real-world application deployment usage. For labs that demonstrate how to use WebSphere in containers in production, see [WebSphere Application Server and Docker Tutorials](https://github.com/WASdev/ci.docker.tutorials).
 
 ## Operating System
 
