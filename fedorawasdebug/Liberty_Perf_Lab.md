@@ -956,8 +956,6 @@ For additional labs on Liberty, review the main lab sections on [WebSphere Liber
 
 ##  The Scientific Method
 
-Troubleshooting is the act of understanding problems and then changing systems to resolve those problems. The best approach to troubleshooting is the scientific method which is basically as follows:
-
 1.  Observe and measure evidence of the problem. For example: \"Users are receiving HTTP 500 errors when visiting the website.\"
 
 2.  Create prioritized hypotheses about the causes of the problem. For example: \"I found exceptions in the logs. I hypothesize that the exceptions are creating the HTTP 500 errors.\"
