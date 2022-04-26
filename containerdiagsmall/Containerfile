@@ -1,5 +1,5 @@
-# docker build -t containerdiagsmall .
-# docker run --rm -it containerdiagsmall
+# podman build -t containerdiagsmall .
+# podman run --rm -it containerdiagsmall
 #
 # Notes:
 #   * As of writing this note, this image is about 440MB
@@ -12,7 +12,7 @@
 #   * Therefore, the rest of the utilities are about 100MB
 #   * Deleting files in the parent (e.g. /usr/lib64/python*/__pycache__) isn't useful because it's still in that layer
 
-FROM redhat/ubi8
+FROM fedora
 LABEL maintainer="kevin.grigorenko@us.ibm.com"
 
 RUN dnf install -y \
@@ -52,6 +52,8 @@ RUN dnf install -y \
             /usr/share/vim/*/spell/ \
             /usr/share/vim/*/tutor/
 
+COPY *.sh /opt/
+
 RUN get_git() { \
       wget -q -O /tmp/$1_$2_master.zip https://github.com/$1/$2/archive/master.zip; \
       unzip -q /tmp/$1_$2_master.zip -d /opt/; \
@@ -62,9 +64,11 @@ RUN get_git() { \
     ln -s /opt/kgibm_problemdetermination/scripts/java/j9/j9javacores.awk /usr/local/bin/ && \
     ln -s /opt/kgibm_problemdetermination/scripts/ihs/ihs_mpmstats.awk /usr/local/bin/ && \
     ln -s /opt/kgibm_problemdetermination/scripts/was/twas_pmi_threadpool.awk /usr/local/bin/ && \
-    wget -q -O /opt/linperf.sh https://www.ibm.com/support/pages/system/files/inline-files/linperf_1.sh && \
+    wget -q -O /opt/linperf.sh https://www.ibm.com/support/pages/system/files/inline-files/linperf.sh && \
     chmod a+x /opt/linperf.sh && \
     ln -s /opt/linperf.sh /usr/local/bin/ && \
-    sed -i 's/-eq 0/-eq -1/g' /opt/linperf.sh
+    sed -i 's/-eq 0/-eq -1/g' /opt/linperf.sh && \
+    chmod a+x /opt/findpodpids.sh && \
+    ln -s /opt/findpodpids.sh /usr/local/bin/
 
 # Defer to the ENTRYPOINT/CMD of Fedora which is bash
