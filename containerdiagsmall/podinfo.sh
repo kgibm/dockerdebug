@@ -1,9 +1,10 @@
 #!/bin/sh
 
 usage() {
-  printf "Usage: %s: [-n] [-v] PODNAME...\n" $0
+  printf "Usage: %s: [-pr] [-v] PODNAME...\n" $0
   cat <<"EOF"
-          -n: Use local runc instead of chroot /host runc
+          -p: Default. Print space-delimited list of PIDs matching PODNAME(s)
+          -r: Print space-delimited list of root filesystem paths matching PODNAME(s)
           -v: verbose output to stderr
 EOF
   exit 2
@@ -16,9 +17,10 @@ printVerbose() {
 RUNC="chroot /host runc"
 DEBUG=0
 VERBOSE=0
+OUTPUTTYPE=0
 
 OPTIND=1
-while getopts "dhnv?:" opt; do
+while getopts "dhnprv?:" opt; do
   case "$opt" in
     d)
       DEBUG=1
@@ -28,6 +30,12 @@ while getopts "dhnv?:" opt; do
       ;;
     n)
       RUNC="runc"
+      ;;
+    p)
+      OUTPUTTYPE=0
+      ;;
+    r)
+      OUTPUTTYPE=1
       ;;
     v)
       VERBOSE=1
@@ -53,7 +61,7 @@ fi
 if [ "${DEBUG}" -eq "0" ]; then
   RUNCLIST="$(${RUNC} list)"
 else
-  RUNCLIST="$(cat example_runclist.txt)"
+  RUNCLIST="$(cat debug/example_runclist.txt)"
 fi
 
 [ "${VERBOSE}" -eq "1" ] && printVerbose "${RUNCLIST}"
@@ -64,7 +72,7 @@ for ID in $(echo "${RUNCLIST}" | awk 'NF > 3 && $3 != "stopped" && $3 != "STATUS
   if [ "${DEBUG}" -eq "0" ]; then
     RUNCSTATE="$(${RUNC} state ${ID})"
   else
-    RUNCSTATE="$(cat example_runcstate.txt)"
+    RUNCSTATE="$(cat debug/example_runcstate.txt)"
   fi
 
   [ "${VERBOSE}" -eq "1" ] && printVerbose "${RUNCSTATE}"
@@ -79,7 +87,11 @@ for ID in $(echo "${RUNCLIST}" | awk 'NF > 3 && $3 != "stopped" && $3 != "STATUS
       if [ "${FOUND}" -gt 0 ]; then
         printf " "
       fi
-      printf "${PID}"
+      if [ "${OUTPUTTYPE}" -eq "0" ]; then
+        printf "${PID}"
+      elif [ "${OUTPUTTYPE}" -eq "1" ]; then
+        printf "${ROOTFS}"
+      fi
       FOUND="$(((${FOUND}+1)))"
     fi
   done

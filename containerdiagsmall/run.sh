@@ -80,7 +80,36 @@ pushd "${TARGETDIR}" || exit 4
 # Now we can finally start the execution
 OUTPUTFILE="stdouterr.log"
 
-printInfo "containerdiag: started on $(hostname)"
+printInfo "containerdiag: started on $(hostname). Gathering first set of system info."
+
+nodeinfo() {
+  mkdir -p node/$1
+  chroot /host journalctl -b | head -2000 &> node/$1/journalctl_head.txt
+  chroot /host journalctl -b -n 2000 &> node/$1/journalctl_tail.txt
+  chroot /host journalctl -p warning -n 500 &> node/$1/journalctl_errwarn.txt
+  chroot /host sysctl -a &> node/$1/sysctl.txt
+  chroot /host lscpu &> node/$1/lscpu.txt
+  top -b -d 2 -n 2 &> node/$1/top.txt
+  top -H -b -d 2 -n 2 &> node/$1/topthreads.txt
+  ps -elfyww &> node/$1/ps.txt
+  cat /host/proc/meminfo &> node/$1/meminfo.txt
+  chroot /host df -h &> node/$1/df.txt
+  iostat -xm 2 2 &> node/$1/iostat.txt
+  ip addr &> node/$1/ipaddr.txt
+  ip -s link &> node/$1/iplink.txt
+  ss --summary &> node/$1/sssummary.txt
+  ss -amponeti &> node/$1/ssdetails.txt
+  nstat -saz &> node/$1/nstat.txt
+  netstat -i &> node/$1/netstati.txt
+  netstat -s &> node/$1/netstats.txt
+  netstat -anop &> node/$1/netstat.txt
+  ulimit -a &> node/$1/ulimit.txt
+  uptime &> node/$1/uptime.txt
+  hostname &> node/$1/hostname.txt
+}
+
+# Gather the first set of node info
+nodeInfo "iteration1_$(date +"%Y%m%d_%H%M%S")"
 
 # We can't just run the process directly because some kube/oc debug
 # sessions will timeout if nothing happens for a while, so we put
@@ -104,32 +133,9 @@ if [ -d /proc/${BGPID} ]; then
   done
 fi
 
-printInfo "containerdiag: command completed. Gathering system info."
+printInfo "containerdiag: command completed. Gathering second set of system info."
 
-mkdir node
-
-chroot /host journalctl -b | head -2000 &> node/journalctl_head.txt
-chroot /host journalctl -b -n 2000 &> node/journalctl_tail.txt
-chroot /host journalctl -p warning -n 500 &> node/journalctl_errwarn.txt
-chroot /host sysctl -a &> node/sysctl.txt
-chroot /host lscpu &> node/lscpu.txt
-top -b -d 2 -n 2 &> node/top.txt
-top -H -b -d 2 -n 2 &> node/topthreads.txt
-ps -elfyww &> node/ps.txt
-cat /host/proc/meminfo &> node/meminfo.txt
-chroot /host df -h &> node/df.txt
-iostat -xm 2 2 &> node/iostat.txt
-ip addr &> node/ipaddr.txt
-ip -s link &> node/iplink.txt
-ss --summary &> node/sssummary.txt
-ss -amponeti &> node/ssdetails.txt
-nstat -saz &> node/nstat.txt
-netstat -i &> node/netstati.txt
-netstat -s &> node/netstats.txt
-netstat -anop &> node/netstat.txt
-ulimit -a &> node/ulimit.txt
-uptime &> node/uptime.txt
-hostname &> node/hostname.txt
+nodeInfo "iteration1_$(date +"%Y%m%d_%H%M%S")"
 
 printInfo "containerdiag: All data gathering complete. Packaging for download."
 
@@ -154,7 +160,7 @@ touch /tmp/${TMPNAME}
 
 [ "${VERBOSE}" -eq "1" ] && printVerbose "Touched /tmp/${TMPNAME}"
 
-DEBUGPODINFO="$(ps -elf | grep debug-node | /opt/debugpodinfo.awk -v "fssearch=/tmp/${TMPNAME}")"
+DEBUGPODINFO="$(ps -elf | grep debug-node | /opt/debugpodinfo.awk -v "fssearch=/tmp/${TMPNAME}" 2>/dev/null)"
 
 [ "${VERBOSE}" -eq "1" ] && printVerbose "debugpodinfo.awk output: ${DEBUGPODINFO}"
 
