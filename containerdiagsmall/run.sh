@@ -85,7 +85,7 @@ printInfo "containerdiag: started on $(hostname)"
 # We can't just run the process directly because some kube/oc debug
 # sessions will timeout if nothing happens for a while, so we put
 # it in the background and then wait until it's done
-"$@" >> "${OUTPUTFILE}" 2>&1 &
+( "$@" 2>&1 | tee -a "${OUTPUTFILE}" ) &
 
 BGPID="${!}"
 
@@ -96,7 +96,7 @@ sleep 5
 
 if [ -d /proc/${BGPID} ]; then
   while true; do
-    echo "[$(date '+%Y-%m-%d %H:%M:%S.%N %Z')] Waiting for script to complete"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S.%N %Z')] containerdiag: Waiting for script to complete"
     sleep ${DELAY}
     if [ ! -d /proc/${BGPID} ]; then
       break
@@ -104,7 +104,34 @@ if [ -d /proc/${BGPID} ]; then
   done
 fi
 
-printInfo "containerdiag: commands completed. Packaging output."
+printInfo "containerdiag: command completed. Gathering system info."
+
+mkdir node
+
+chroot /host journalctl -b | head -2000 &> node/journalctl_head.txt
+chroot /host journalctl -b -n 2000 &> node/journalctl_tail.txt
+chroot /host journalctl -p warning -n 500 &> node/journalctl_errwarn.txt
+chroot /host sysctl -a &> node/sysctl.txt
+chroot /host lscpu &> node/lscpu.txt
+top -b -d 2 -n 2 &> node/top.txt
+top -H -b -d 2 -n 2 &> node/topthreads.txt
+ps -elfyww &> node/ps.txt
+cat /host/proc/meminfo &> node/meminfo.txt
+chroot /host df -h &> node/df.txt
+iostat -xm 2 2 &> node/iostat.txt
+ip addr &> node/ipaddr.txt
+ip -s link &> node/iplink.txt
+ss --summary &> node/sssummary.txt
+ss -amponeti &> node/ssdetails.txt
+nstat -saz &> node/nstat.txt
+netstat -i &> node/netstati.txt
+netstat -s &> node/netstats.txt
+netstat -anop &> node/netstat.txt
+ulimit -a &> node/ulimit.txt
+uptime &> node/uptime.txt
+hostname &> node/hostname.txt
+
+printInfo "containerdiag: All data gathering complete. Packaging for download."
 
 # After we're done, we want to package everything up into a tgz
 # and show an example command of how to download it.
