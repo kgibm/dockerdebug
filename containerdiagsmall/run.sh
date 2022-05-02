@@ -82,7 +82,7 @@ OUTPUTFILE="stdouterr.log"
 
 printInfo "containerdiag: started on $(hostname). Gathering first set of system info."
 
-nodeinfo() {
+nodeInfo() {
   mkdir -p node/$1
   chroot /host journalctl -b | head -2000 &> node/$1/journalctl_head.txt
   chroot /host journalctl -b -n 2000 &> node/$1/journalctl_tail.txt
