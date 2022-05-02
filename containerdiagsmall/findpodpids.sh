@@ -3,8 +3,8 @@
 usage() {
   printf "Usage: %s: [-n] [-v] PODNAME...\n" $0
   cat <<"EOF"
-          -n: Use runc without `--root /host/run/runc`
-          -v: printVerbose output to stderr
+          -n: Use local runc instead of chroot /host runc
+          -v: verbose output to stderr
 EOF
   exit 2
 }
@@ -13,7 +13,7 @@ printVerbose() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S.%N %Z')] ${@}" >> /dev/stderr
 }
 
-RUNC="runc --root /host/run/runc"
+RUNC="chroot /host runc"
 DEBUG=0
 VERBOSE=0
 
@@ -56,7 +56,7 @@ else
   RUNCLIST="$(cat example_runclist.txt)"
 fi
 
-[ "${VERBOSE}" -eq "1" ] && printVerbose "${RUNCLIST}"=
+[ "${VERBOSE}" -eq "1" ] && printVerbose "${RUNCLIST}"
 FOUND=0
 for ID in $(echo "${RUNCLIST}" | awk 'NF > 3 && $3 != "stopped" && $3 != "STATUS" {print $1}' -); do
   [ "${VERBOSE}" -eq "1" ] && printVerbose "${RUNC} state ${ID}"
