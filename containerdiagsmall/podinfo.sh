@@ -1,11 +1,12 @@
 #!/bin/sh
 
 usage() {
-  printf "Usage: %s: [-pr] [-v] PODNAME...\n" $0
+  printf "Usage: %s: [-oprv] PODNAME...\n" $0
   cat <<"EOF"
-            -p: Default. Print space-delimited list of PIDs matching PODNAME(s)
-            -r: Print space-delimited list of root filesystem paths matching PODNAME(s)
-            -v: verbose output to stderr
+             -o: Print space-delimited list of stdout/stderr file paths matching PODNAME(s)
+             -p: Default. Print space-delimited list of PIDs matching PODNAME(s)
+             -r: Print space-delimited list of root filesystem paths matching PODNAME(s)
+             -v: verbose output to stderr
 EOF
   exit 2
 }
@@ -20,7 +21,7 @@ VERBOSE=0
 OUTPUTTYPE=0
 
 OPTIND=1
-while getopts "dhnprv?" opt; do
+while getopts "dhnoprv?" opt; do
   case "$opt" in
     d)
       DEBUG=1
@@ -30,6 +31,9 @@ while getopts "dhnprv?" opt; do
       ;;
     n)
       RUNC="runc"
+      ;;
+    o)
+      OUTPUTTYPE=2
       ;;
     p)
       OUTPUTTYPE=0
@@ -91,6 +95,8 @@ for ID in $(echo "${RUNCLIST}" | awk 'NF > 3 && $3 != "stopped" && $3 != "STATUS
         printf "${PID}"
       elif [ "${OUTPUTTYPE}" -eq "1" ]; then
         printf "${ROOTFS}"
+      elif [ "${OUTPUTTYPE}" -eq "2" ]; then
+        printf "${STDOUTERR}"
       fi
       FOUND="$(((${FOUND}+1)))"
     fi

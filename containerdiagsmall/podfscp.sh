@@ -1,10 +1,11 @@
 #!/bin/sh
 
 usage() {
-  printf "Usage: %s: [-r] [-p PODNAME]... FILE...\n" $0
+  printf "Usage: %s: [-ov] [-p PODNAME]... FILE...\n" $0
   cat <<"EOF"
-            -p: PODNAME. May be specified multiple times.
-            -v: verbose output to stderr
+             -o: Gather stdout/stderr log of each pod as well.
+             -p: PODNAME. May be specified multiple times.
+             -v: verbose output to stderr
 EOF
   exit 2
 }
@@ -15,12 +16,16 @@ printVerbose() {
 
 PODNAMES=""
 VERBOSE=0
+CPSTDOUTERR=0
 
 OPTIND=1
-while getopts "hp:v?" opt; do
+while getopts "hop:v?" opt; do
   case "$opt" in
     h|\?)
       usage
+      ;;
+    o)
+      CPSTDOUTERR=1
       ;;
     p)
       PODNAMES="${PODNAMES} ${OPTARG}"
@@ -67,6 +72,15 @@ processPod() {
       printVerbose "Path ${ARG} for pod ${PODNAME} does not evaluate to a real path within ${PODFS}"
     fi
   done
+
+  if [ "${CPSTDOUTERR}" -eq "1" ]; then
+    PODSTDOUTERR="$(podinfo.sh -o "${PODNAME}")"
+    if [ "${PODSTDOUTERR}" != "" ]; then
+      cp "/host/${PODSTDOUTERR}" pods/${PODNAME}/stdouterr.log
+    else
+      printVerbose "Stdout/stderr file for pod ${PODNAME} is blank"
+    fi
+  fi
 }
 
 for PODNAME in ${PODNAMES}; do

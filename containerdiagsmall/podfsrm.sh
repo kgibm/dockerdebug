@@ -1,10 +1,10 @@
 #!/bin/sh
 
 usage() {
-  printf "Usage: %s: [-r] [-p PODNAME]... FILE...\n" $0
+  printf "Usage: %s: [-v] [-p PODNAME]... FILE...\n" $0
   cat <<"EOF"
-            -p: PODNAME. May be specified multiple times.
-            -v: verbose output to stderr
+             -p: PODNAME. May be specified multiple times.
+             -v: verbose output to stderr
 EOF
   exit 2
 }

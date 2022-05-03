@@ -7,10 +7,10 @@
 # oc debug node/$NODE -t --image=quay.io/kgibm/containerdiagsmall -- run.sh sh -c 'echo "Hello World"'
 
 usage() {
-  printf "Usage: %s: [-v] [-s] COMMAND [ARGUMENTS]\n" $0
+  printf "Usage: %s: [-sv] COMMAND [ARGUMENTS]\n" $0
   cat <<"EOF"
-            -s: Skip statistics collection
-            -v: verbose output to stderr
+             -s: Skip statistics collection
+             -v: verbose output to stderr
 EOF
   exit 2
 }
