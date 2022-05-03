@@ -57,15 +57,13 @@ processPod() {
   for ARG in "${@}"; do
     [ "${VERBOSE}" -eq "1" ] && printVerbose "processPod ARG=${ARG}"
 
-    # We need to get the absolute path because symlinks won't work as it assumes
-    # a chroot, and we can't chroot, because then we can't copy out
-    REALPATH="$(chroot "/host/${PODFS}/" sh -c "cd \$(dirname \"${ARG}\") && pwd -P")"
+    REALPATH="$(podfspath.sh "${PODFS}" "${ARG}")"
+
     [ "${VERBOSE}" -eq "1" ] && printVerbose "processPod REALPATH=${REALPATH}"
 
     if [ "${REALPATH}" != "" ]; then
-      ARG="/host/${PODFS}/${REALPATH}/$(basename "${ARG}")"
-      printVerbose "Removing ${ARG} for pod ${PODNAME}"
-      rm -r ${ARG}
+      printVerbose "Removing ${REALPATH} for pod ${PODNAME}"
+      rm -r ${REALPATH}
     else
       printVerbose "Path ${ARG} for pod ${PODNAME} does not evaluate to a real path within ${PODFS}"
     fi

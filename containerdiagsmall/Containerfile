@@ -78,6 +78,7 @@ RUN get_git() { \
     chmod a+x /opt/linperf.sh && ln -s /opt/linperf.sh /usr/local/bin/ && \
     sed -i 's/-eq 0/-eq -1/g' /opt/linperf.sh && \
     chmod a+x /opt/podinfo.sh && ln -s /opt/podinfo.sh /usr/local/bin/ && \
+    chmod a+x /opt/podfspath.sh && ln -s /opt/podfspath.sh /usr/local/bin/ && \
     chmod a+x /opt/podfscp.sh && ln -s /opt/podfscp.sh /usr/local/bin/ && \
     chmod a+x /opt/podfsrm.sh && ln -s /opt/podfsrm.sh /usr/local/bin/ && \
     chmod a+x /opt/debugpodinfo.awk && ln -s /opt/debugpodinfo.awk /usr/local/bin/ && \
