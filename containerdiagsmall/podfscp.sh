@@ -95,9 +95,9 @@ processPod() {
       CGROUP="$(cat "/host/proc/${PODPID}/cgroup" | awk -F: 'NR==1 {print $3;}')"
       if [ "${CGROUP}" != "" ]; then
         [ "${VERBOSE}" -eq "1" ] && printVerbose "processPod CGROUP=${CGROUP}"
-        cp -r /host/sys/fs/cgroup/cpu/${CGROUP} pods/${PODNAME}/cgroup/cpu/
-        cp -r /host/sys/fs/cgroup/memory/${CGROUP} pods/${PODNAME}/cgroup/memory/
-        cp /host/sys/fs/cgroup/cpuset/cpuset.cpus /host/sys/fs/cgroup/cpuset/cpuset.effective_cpus pods/${PODNAME}/cgroup/cpuset/ 2>/dev/null
+        cp -r /host/sys/fs/cgroup/cpu/${CGROUP} pods/${PODNAME}/cgroup/cpu/ 2>>cmderr.txt
+        cp -r /host/sys/fs/cgroup/memory/${CGROUP} pods/${PODNAME}/cgroup/memory/ 2>>cmderr.txt
+        cp /host/sys/fs/cgroup/cpuset/cpuset.cpus /host/sys/fs/cgroup/cpuset/cpuset.effective_cpus pods/${PODNAME}/cgroup/cpuset/ 2>>cmderr.txt
       fi
     else
       printVerbose "PID for pod ${PODNAME} is blank"

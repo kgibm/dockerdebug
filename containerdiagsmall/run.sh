@@ -139,6 +139,7 @@ if [ "${SKIPSTATS}" -eq "0" ]; then
 fi
 
 mkdir -p node/info
+chroot /host date &> node/info/date.txt
 chroot /host uname -a &> node/info/uname.txt
 chroot /host journalctl -b | head -2000 &> node/info/journalctl_head.txt
 chroot /host journalctl -b -n 2000 &> node/info/journalctl_tail.txt
