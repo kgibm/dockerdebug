@@ -15,7 +15,6 @@ EOF
   exit 2
 }
 
-#DESTDIR="/host/tmp"
 DESTDIR="/tmp"
 DEBUG=0
 VERBOSE=0
