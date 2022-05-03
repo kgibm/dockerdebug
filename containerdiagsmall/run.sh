@@ -7,8 +7,9 @@
 # oc debug node/$NODE -t --image=quay.io/kgibm/containerdiagsmall -- run.sh sh -c 'echo "Hello World"'
 
 usage() {
-  printf "Usage: %s: [-sv] COMMAND [ARGUMENTS]\n" $0
+  printf "Usage: %s: [-sv] [-d DELAY] COMMAND [ARGUMENTS]\n" $0
   cat <<"EOF"
+             -d: DELAY in seconds between checking command and download completion.
              -s: Skip statistics collection
              -v: verbose output to stderr
 EOF
@@ -16,18 +17,16 @@ EOF
 }
 
 DESTDIR="/tmp"
-DEBUG=0
 VERBOSE=0
 SKIPSTATS=0
 DELAY=30
 OUTPUTFILE="stdouterr.log"
 
 OPTIND=1
-while getopts "dhsv?" opt; do
+while getopts "d:hsv?" opt; do
   case "$opt" in
     d)
-      DEBUG=1
-      DESTDIR="/tmp"
+      DELAY="${OPTARG}"
       ;;
     h|\?)
       usage
@@ -164,12 +163,7 @@ printInfo "containerdiag: All data gathering complete. Packaging for download."
 TARFILE="${TARGETDIR%/}.tar.gz"
 tar -czf "${TARFILE}" -C "${TARGETDIR}" . || exit 5
 
-if [ "${DEBUG}" -eq "0" ]; then
-  rm -rf "${TARGETDIR}"
-else
-  popd
-  tree -f "${TARGETDIR}"
-fi
+rm -rf "${TARGETDIR}"
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S.%N %Z')] Finished with output in ${TARFILE}"
 
