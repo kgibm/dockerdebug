@@ -7,20 +7,24 @@
 # oc debug node/$NODE -t --image=quay.io/kgibm/containerdiagsmall -- run.sh sh -c 'echo "Hello World"'
 
 usage() {
-  printf "Usage: %s: [-v] COMMAND [ARGUMENTS]\n" $0
+  printf "Usage: %s: [-v] [-s] COMMAND [ARGUMENTS]\n" $0
   cat <<"EOF"
-          -v: verbose output to stderr
+            -s: Skip statistics collection
+            -v: verbose output to stderr
 EOF
   exit 2
 }
 
-DESTDIR="/host/tmp"
+#DESTDIR="/host/tmp"
+DESTDIR="/tmp"
 DEBUG=0
 VERBOSE=0
+SKIPSTATS=0
 DELAY=30
+OUTPUTFILE="stdouterr.log"
 
 OPTIND=1
-while getopts "dhv?:" opt; do
+while getopts "dhsv?" opt; do
   case "$opt" in
     d)
       DEBUG=1
@@ -28,6 +32,9 @@ while getopts "dhv?:" opt; do
       ;;
     h|\?)
       usage
+      ;;
+    s)
+      SKIPSTATS=1
       ;;
     v)
       VERBOSE=1
@@ -78,22 +85,13 @@ echo "Writing to ${TARGETDIR}"
 pushd "${TARGETDIR}" || exit 4
 
 # Now we can finally start the execution
-OUTPUTFILE="stdouterr.log"
-
 printInfo "containerdiag: started on $(hostname). Gathering first set of system info."
 
 nodeInfo() {
   mkdir -p node/$1
-  chroot /host journalctl -b | head -2000 &> node/$1/journalctl_head.txt
-  chroot /host journalctl -b -n 2000 &> node/$1/journalctl_tail.txt
-  chroot /host journalctl -p warning -n 500 &> node/$1/journalctl_errwarn.txt
-  chroot /host sysctl -a &> node/$1/sysctl.txt
-  chroot /host lscpu &> node/$1/lscpu.txt
   top -b -d 2 -n 2 &> node/$1/top.txt
   top -H -b -d 2 -n 2 &> node/$1/topthreads.txt
   ps -elfyww &> node/$1/ps.txt
-  cat /host/proc/meminfo &> node/$1/meminfo.txt
-  chroot /host df -h &> node/$1/df.txt
   iostat -xm 2 2 &> node/$1/iostat.txt
   ip addr &> node/$1/ipaddr.txt
   ip -s link &> node/$1/iplink.txt
@@ -103,13 +101,12 @@ nodeInfo() {
   netstat -i &> node/$1/netstati.txt
   netstat -s &> node/$1/netstats.txt
   netstat -anop &> node/$1/netstat.txt
-  ulimit -a &> node/$1/ulimit.txt
-  uptime &> node/$1/uptime.txt
-  hostname &> node/$1/hostname.txt
 }
 
 # Gather the first set of node info
-nodeInfo "iteration1_$(date +"%Y%m%d_%H%M%S")"
+if [ "${SKIPSTATS}" -eq "0" ]; then
+  nodeInfo "stats_iteration1_$(date +"%Y%m%d_%H%M%S")"
+fi
 
 # We can't just run the process directly because some kube/oc debug
 # sessions will timeout if nothing happens for a while, so we put
@@ -135,7 +132,21 @@ fi
 
 printInfo "containerdiag: command completed. Gathering second set of system info."
 
-nodeInfo "iteration1_$(date +"%Y%m%d_%H%M%S")"
+if [ "${SKIPSTATS}" -eq "0" ]; then
+  nodeInfo "stats_iteration1_$(date +"%Y%m%d_%H%M%S")"
+fi
+
+mkdir -p node/info
+chroot /host journalctl -b | head -2000 &> node/info/journalctl_head.txt
+chroot /host journalctl -b -n 2000 &> node/info/journalctl_tail.txt
+chroot /host journalctl -p warning -n 500 &> node/info/journalctl_errwarn.txt
+chroot /host sysctl -a &> node/info/sysctl.txt
+chroot /host lscpu &> node/info/lscpu.txt
+ulimit -a &> node/info/ulimit.txt
+uptime &> node/info/uptime.txt
+hostname &> node/info/hostname.txt
+cat /host/proc/meminfo &> node/info/meminfo.txt
+chroot /host df -h &> node/info/df.txt
 
 printInfo "containerdiag: All data gathering complete. Packaging for download."
 

@@ -3,9 +3,9 @@
 usage() {
   printf "Usage: %s: [-pr] [-v] PODNAME...\n" $0
   cat <<"EOF"
-          -p: Default. Print space-delimited list of PIDs matching PODNAME(s)
-          -r: Print space-delimited list of root filesystem paths matching PODNAME(s)
-          -v: verbose output to stderr
+            -p: Default. Print space-delimited list of PIDs matching PODNAME(s)
+            -r: Print space-delimited list of root filesystem paths matching PODNAME(s)
+            -v: verbose output to stderr
 EOF
   exit 2
 }
@@ -20,7 +20,7 @@ VERBOSE=0
 OUTPUTTYPE=0
 
 OPTIND=1
-while getopts "dhnprv?:" opt; do
+while getopts "dhnprv?" opt; do
   case "$opt" in
     d)
       DEBUG=1
