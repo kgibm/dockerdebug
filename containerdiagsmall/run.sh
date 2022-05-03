@@ -190,14 +190,14 @@ DEBUGPODNAMESPACE="$(echo "${DEBUGPODINFO}" | awk 'NR==2')"
 echo "[$(date '+%Y-%m-%d %H:%M:%S.%N %Z')] Debug pod is ${DEBUGPODNAME} in namespace ${DEBUGPODNAMESPACE}"
 
 while true; do
-  echo "[$(date '+%Y-%m-%d %H:%M:%S.%N %Z')] Files ready for download. Download with the following command in another window:"
+  echo "[$(date '+%Y-%m-%d %H:%M:%S.%N %Z')] Files are ready for download. Download with the following command in another window:"
   echo ""
   echo "  kubectl cp ${DEBUGPODNAME}:${TARFILE} $(basename "${TARFILE}") --namespace=${DEBUGPODNAMESPACE}"
   echo ""
-  echo "After download is complete, press ENTER to end this script and clean up: "
-  if read -t ${DELAY} READSTR; then
+  if read -p "After the download is complete, press ENTER to end this script and clean up: " -t ${DELAY} READSTR; then
     break
   fi
+  echo ""
 done
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S.%N %Z')] Processing finished. Deleting ${TARFILE}"
