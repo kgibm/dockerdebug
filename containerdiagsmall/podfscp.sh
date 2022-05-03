@@ -1,10 +1,10 @@
 #!/bin/sh
 
 usage() {
-  printf "Usage: %s: [-ov] [-p PODNAME]... FILE...\n" $0
+  printf "Usage: %s: [-sv] [-p PODNAME]... FILE...\n" $0
   cat <<"EOF"
-             -o: Gather stdout/stderr log of each pod as well.
              -p: PODNAME. May be specified multiple times.
+             -s: Gather standard files of each pod as well.
              -v: verbose output to stderr
 EOF
   exit 2
@@ -16,19 +16,19 @@ printVerbose() {
 
 PODNAMES=""
 VERBOSE=0
-CPSTDOUTERR=0
+GETSTANDARD=0
 
 OPTIND=1
-while getopts "hop:v?" opt; do
+while getopts "hp:sv?" opt; do
   case "$opt" in
     h|\?)
       usage
       ;;
-    o)
-      CPSTDOUTERR=1
-      ;;
     p)
       PODNAMES="${PODNAMES} ${OPTARG}"
+      ;;
+    s)
+      GETSTANDARD=1
       ;;
     v)
       VERBOSE=1
@@ -73,12 +73,34 @@ processPod() {
     fi
   done
 
-  if [ "${CPSTDOUTERR}" -eq "1" ]; then
+  if [ "${GETSTANDARD}" -eq "1" ]; then
     PODSTDOUTERR="$(podinfo.sh -o "${PODNAME}")"
     if [ "${PODSTDOUTERR}" != "" ]; then
       cp "/host/${PODSTDOUTERR}" pods/${PODNAME}/stdouterr.log
     else
       printVerbose "Stdout/stderr file for pod ${PODNAME} is blank"
+    fi
+
+    # Next let's grab various cgroup info
+    # /sys/fs/cgroup/cpuset/cpuset.memory_pressure
+    # /sys/fs/cgroup/cpuset/cpuset.cpus /sys/fs/cgroup/cpuset/cpuset.effective_cpus
+    PODPID="$(podinfo.sh "${PODNAME}")"
+    if [ "${PODPID}" != "" ]; then
+      [ "${VERBOSE}" -eq "1" ] && printVerbose "processPod PODPID=${PODPID}"
+      mkdir -p pods/${PODNAME}/cgroup/cpuset
+      echo "${PODPID}" > pods/${PODNAME}/pid.txt
+      cp "/host/proc/${PODPID}/cgroup" pods/${PODNAME}/cgroup/
+
+      # Grab the actual cgroup name
+      CGROUP="$(cat "/host/proc/${PODPID}/cgroup" | awk -F: 'NR==1 {print $3;}')"
+      if [ "${CGROUP}" != "" ]; then
+        [ "${VERBOSE}" -eq "1" ] && printVerbose "processPod CGROUP=${CGROUP}"
+        cp -r /host/sys/fs/cgroup/cpu/${CGROUP} pods/${PODNAME}/cgroup/cpu/
+        cp -r /host/sys/fs/cgroup/memory/${CGROUP} pods/${PODNAME}/cgroup/memory/
+        cp /host/sys/fs/cgroup/cpuset/cpuset.cpus /host/sys/fs/cgroup/cpuset/cpuset.effective_cpus pods/${PODNAME}/cgroup/cpuset/ 2>/dev/null
+      fi
+    else
+      printVerbose "PID for pod ${PODNAME} is blank"
     fi
   fi
 }

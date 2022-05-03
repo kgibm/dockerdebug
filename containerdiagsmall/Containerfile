@@ -50,6 +50,7 @@ RUN dnf install -y \
         tcpdump \
         telnet \
         traceroute \
+        tree \
         unzip \
         util-linux \
         vim \

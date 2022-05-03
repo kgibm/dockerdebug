@@ -89,10 +89,10 @@ printInfo "containerdiag: started on $(hostname). Gathering first set of system 
 
 nodeInfo() {
   mkdir -p node/$1
-  top -b -d 2 -n 2 &> node/$1/top.txt
-  top -H -b -d 2 -n 2 &> node/$1/topthreads.txt
+  top -b -d 1 -n 2 &> node/$1/top.txt
+  top -H -b -d 1 -n 2 &> node/$1/topthreads.txt
   ps -elfyww &> node/$1/ps.txt
-  iostat -xm 2 2 &> node/$1/iostat.txt
+  iostat -xm 1 2 &> node/$1/iostat.txt
   ip addr &> node/$1/ipaddr.txt
   ip -s link &> node/$1/iplink.txt
   ss --summary &> node/$1/sssummary.txt
@@ -101,6 +101,8 @@ nodeInfo() {
   netstat -i &> node/$1/netstati.txt
   netstat -s &> node/$1/netstats.txt
   netstat -anop &> node/$1/netstat.txt
+  chroot /host systemd-cgtop -b --depth=5 -d 1 -n 2 &> node/$1/cgtop.txt
+  cat /proc/loadavg &> node/$1/loadavg.txt
 }
 
 # Gather the first set of node info
@@ -133,10 +135,11 @@ fi
 printInfo "containerdiag: command completed. Gathering second set of system info."
 
 if [ "${SKIPSTATS}" -eq "0" ]; then
-  nodeInfo "stats_iteration1_$(date +"%Y%m%d_%H%M%S")"
+  nodeInfo "stats_iteration2_$(date +"%Y%m%d_%H%M%S")"
 fi
 
 mkdir -p node/info
+chroot /host uname -a &> node/info/uname.txt
 chroot /host journalctl -b | head -2000 &> node/info/journalctl_head.txt
 chroot /host journalctl -b -n 2000 &> node/info/journalctl_tail.txt
 chroot /host journalctl -p warning -n 500 &> node/info/journalctl_errwarn.txt
@@ -145,8 +148,14 @@ chroot /host lscpu &> node/info/lscpu.txt
 ulimit -a &> node/info/ulimit.txt
 uptime &> node/info/uptime.txt
 hostname &> node/info/hostname.txt
+cat /host/proc/cpuinfo &> node/info/cpuinfo.txt
 cat /host/proc/meminfo &> node/info/meminfo.txt
+cat /host/proc/version &> node/info/version.txt
+cp -r /host/proc/pressure node/info/ 2>/dev/null
+cat /host/etc/*elease* &> node/info/release.txt
 chroot /host df -h &> node/info/df.txt
+chroot /host systemctl list-units &> node/info/systemctlunits.txt
+chroot /host systemd-cgls &> node/info/cgroups.txt
 
 printInfo "containerdiag: All data gathering complete. Packaging for download."
 
