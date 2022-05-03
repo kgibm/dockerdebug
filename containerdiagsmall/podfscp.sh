@@ -98,6 +98,7 @@ processPod() {
         cp -r /host/sys/fs/cgroup/cpu/${CGROUP} pods/${PODNAME}/cgroup/cpu/ 2>>cmderr.txt
         cp -r /host/sys/fs/cgroup/memory/${CGROUP} pods/${PODNAME}/cgroup/memory/ 2>>cmderr.txt
         cp /host/sys/fs/cgroup/cpuset/cpuset.cpus /host/sys/fs/cgroup/cpuset/cpuset.effective_cpus pods/${PODNAME}/cgroup/cpuset/ 2>>cmderr.txt
+        chmod -R a+w pods/${PODNAME}/cgroup 2>>cmderr.txt
       fi
     else
       printVerbose "PID for pod ${PODNAME} is blank"

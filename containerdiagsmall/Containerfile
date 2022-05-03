@@ -75,9 +75,7 @@ RUN get_git() { \
     ln -s /opt/kgibm_problemdetermination/scripts/java/j9/j9javacores.awk /usr/local/bin/ && \
     ln -s /opt/kgibm_problemdetermination/scripts/ihs/ihs_mpmstats.awk /usr/local/bin/ && \
     ln -s /opt/kgibm_problemdetermination/scripts/was/twas_pmi_threadpool.awk /usr/local/bin/ && \
-    wget -q -O /opt/linperf.sh https://www.ibm.com/support/pages/system/files/inline-files/linperf.sh && \
     chmod a+x /opt/linperf.sh && ln -s /opt/linperf.sh /usr/local/bin/ && \
-    sed -i 's/-eq 0/-eq -1/g' /opt/linperf.sh && \
     chmod a+x /opt/podinfo.sh && ln -s /opt/podinfo.sh /usr/local/bin/ && \
     chmod a+x /opt/podfspath.sh && ln -s /opt/podfspath.sh /usr/local/bin/ && \
     chmod a+x /opt/podfscp.sh && ln -s /opt/podfscp.sh /usr/local/bin/ && \
