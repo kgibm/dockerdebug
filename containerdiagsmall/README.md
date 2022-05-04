@@ -1,5 +1,7 @@
 # containerdiagsmall
 
+Available at <https://quay.io/repository/kgibm/containerdiagsmall>
+
 Examples:
 
 * WebSphere Liberty:
