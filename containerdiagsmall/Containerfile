@@ -7,9 +7,6 @@
 #   podman login quay.io
 #   podman push quay.io/kgibm/containerdiagsmall
 #
-# https://quay.io/repository/kgibm/containerdiagsmall?tab=tags
-# 
-#
 # Notes:
 #   * As of writing this note, this image is about 440MB
 #   * Base fedora:latest is about 175MB
