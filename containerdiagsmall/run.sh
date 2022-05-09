@@ -1,8 +1,7 @@
 #!/bin/sh
 # Kubernetes debug pods are transient but we normally want to save output
-# for download. The idea of this script is that we create a temporary directory
-# in /host/, change to that directory, and then run the specified commands.
-# The files may then be downloaded (and deleted) after the debug pod exits.
+# for download. The idea of this script is that we run the specified commands
+# and then pause for download.
 # Example:
 # oc debug node/$NODE -t --image=quay.io/kgibm/containerdiagsmall -- run.sh sh -c 'echo "Hello World"'
 
