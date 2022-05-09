@@ -109,11 +109,17 @@ processPod() {
       # Grab the actual cgroup name
       CGROUP="$(cat "/host/proc/${PODPID}/cgroup" | awk -F: 'NR==1 {print $3;}')"
       if [ "${CGROUP}" != "" ]; then
-        [ "${VERBOSE}" -eq "1" ] && printVerbose "processPod CGROUP=${CGROUP}"
-        cp -r /host/sys/fs/cgroup/cpu/${CGROUP} pods/${PODNAME}/cgroup/cpu/ 2>>cmderr.txt
-        cp -r /host/sys/fs/cgroup/memory/${CGROUP} pods/${PODNAME}/cgroup/memory/ 2>>cmderr.txt
-        cp /host/sys/fs/cgroup/cpuset/cpuset.cpus /host/sys/fs/cgroup/cpuset/cpuset.effective_cpus pods/${PODNAME}/cgroup/cpuset/ 2>>cmderr.txt
-        chmod -R a+w pods/${PODNAME}/cgroup 2>>cmderr.txt
+        ERROUTPUT="/dev/null"
+        if [ "${VERBOSE}" -eq "1" ]; then
+          printVerbose "processPod CGROUP=${CGROUP}"
+          ERROUTPUT="cmderr.txt"
+        fi
+        cp -r /host/sys/fs/cgroup/cpu/${CGROUP} pods/${PODNAME}/cgroup/cpu/ 2>>${ERROUTPUT}
+        cp -r /host/sys/fs/cgroup/memory/${CGROUP} pods/${PODNAME}/cgroup/memory/ 2>>${ERROUTPUT}
+        cp /host/sys/fs/cgroup/cpuset/cpuset.cpus /host/sys/fs/cgroup/cpuset/cpuset.effective_cpus pods/${PODNAME}/cgroup/cpuset/ 2>>${ERROUTPUT}
+        
+        # This is just a convenience after download
+        chmod -R a+w pods/${PODNAME}/cgroup 2>>${ERROUTPUT}
       fi
     else
       printVerbose "PID for pod ${PODNAME} is blank"
