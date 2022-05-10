@@ -1,10 +1,17 @@
 # containerdiagsmall
 
-Available at <https://quay.io/repository/kgibm/containerdiagsmall>
+## Examples
 
-Examples:
+### WebSphere Liberty performance, hang, or high CPU issues
 
-* WebSphere Liberty:
-    * Execute `linperf.sh`, gather Liberty logs and javacores, and remove the javacores. Replace `$NODE` with the node name and `$POD` with the pod name:
-      
-      `oc debug node/$NODE -t --image=quay.io/kgibm/containerdiagsmall -- run.sh sh -c 'linperf.sh -q -s 60 $(podinfo.sh -p $POD) && podfscp.sh -s -p $POD /logs /config /output/javacore* && podfsrm.sh -p $POD /output/javacore*'`
+Execute [`linperf.sh`](https://www.ibm.com/support/pages/mustgather-performance-hang-or-high-cpu-issues-websphere-application-server-linux), gather Liberty logs and javacores, and delete the javacores.
+
+Replace `$NODE` with the node name and `$POD` with the pod name:
+
+```
+oc debug node/$NODE -t --image=quay.io/kgibm/containerdiagsmall -- libertyperf.sh $POD
+```
+
+## Repository
+
+<https://quay.io/repository/kgibm/containerdiagsmall>

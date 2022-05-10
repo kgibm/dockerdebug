@@ -13,9 +13,6 @@
 #  * See the License for the specific language governing permissions and
 #  * limitations under the License.
 #  *******************************************************************************/
-# Using:
-#   oc debug node/$NODE -t --image=quay.io/kgibm/containerdiagsmall -- sh -c 'findpodpids.sh $POD'
-#
 # Building:
 #   podman build -t containerdiagsmall .
 #   podman tag $(podman images | grep localhost/containerdiagsmall | awk '{print $3}') quay.io/kgibm/containerdiagsmall
@@ -87,12 +84,13 @@ RUN get_git() { \
     ln -s /opt/kgibm_problemdetermination/scripts/java/j9/j9javacores.awk /usr/local/bin/ && \
     ln -s /opt/kgibm_problemdetermination/scripts/ihs/ihs_mpmstats.awk /usr/local/bin/ && \
     ln -s /opt/kgibm_problemdetermination/scripts/was/twas_pmi_threadpool.awk /usr/local/bin/ && \
-    chmod a+x /opt/linperf.sh && ln -s /opt/linperf.sh /usr/local/bin/ && \
-    chmod a+x /opt/podinfo.sh && ln -s /opt/podinfo.sh /usr/local/bin/ && \
-    chmod a+x /opt/podfspath.sh && ln -s /opt/podfspath.sh /usr/local/bin/ && \
-    chmod a+x /opt/podfscp.sh && ln -s /opt/podfscp.sh /usr/local/bin/ && \
-    chmod a+x /opt/podfsrm.sh && ln -s /opt/podfsrm.sh /usr/local/bin/ && \
     chmod a+x /opt/debugpodinfo.awk && ln -s /opt/debugpodinfo.awk /usr/local/bin/ && \
+    chmod a+x /opt/libertyperf.sh && ln -s /opt/libertyperf.sh /usr/local/bin/ && \
+    chmod a+x /opt/linperf.sh && ln -s /opt/linperf.sh /usr/local/bin/ && \
+    chmod a+x /opt/podfscp.sh && ln -s /opt/podfscp.sh /usr/local/bin/ && \
+    chmod a+x /opt/podfspath.sh && ln -s /opt/podfspath.sh /usr/local/bin/ && \
+    chmod a+x /opt/podfsrm.sh && ln -s /opt/podfsrm.sh /usr/local/bin/ && \
+    chmod a+x /opt/podinfo.sh && ln -s /opt/podinfo.sh /usr/local/bin/ && \
     chmod a+x /opt/run.sh && ln -s /opt/run.sh /usr/local/bin/
 
 # Defer to the ENTRYPOINT/CMD of Fedora which is bash
