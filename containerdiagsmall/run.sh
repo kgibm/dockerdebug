@@ -21,7 +21,7 @@
 # oc debug node/$NODE -t --image=quay.io/kgibm/containerdiagsmall -- run.sh sh -c 'echo "Hello World"'
 
 usage() {
-  printf "Usage: %s [-sv] [-d DELAY] COMMAND [ARGUMENTS]\n" $0
+  printf "Usage: %s [-sv] [-d DELAY] COMMAND [ARGUMENTS]\n" "$(basename "${0}")"
   cat <<"EOF"
              -d: DELAY in seconds between checking command and download completion.
              -s: Skip statistics collection
