@@ -16,7 +16,7 @@
 #  *******************************************************************************/
 
 usage() {
-  printf "Usage: %s: [-oprv] PODNAME...\n" $0
+  printf "Usage: %s [-oprv] PODNAME...\n" $0
   cat <<"EOF"
              -o: Print space-delimited list of stdout/stderr file paths matching PODNAME(s)
              -p: Default. Print space-delimited list of PIDs matching PODNAME(s)

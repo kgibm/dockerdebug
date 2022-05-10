@@ -16,7 +16,7 @@
 #  *******************************************************************************/
 
 usage() {
-  printf "Usage: %s: [-sv] [-p PODNAME]... FILE...\n" $0
+  printf "Usage: %s [-sv] [-p PODNAME]... FILE...\n" $0
   cat <<"EOF"
              -p: PODNAME. May be specified multiple times.
              -s: Gather standard files of each pod as well.
