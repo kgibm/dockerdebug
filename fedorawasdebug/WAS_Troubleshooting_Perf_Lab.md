@@ -2477,7 +2477,25 @@ Windows requires [extra steps to configure remote desktop to connect to a contai
 
     User = wsadmin, Password = websphere
 
-##  Sharing Files Between Host and Container
+##  Sharing Files Between Host and Container with podman
+
+By default, the podman container does not have access to the host filesystem and vice versa. To share files between the two:
+
+1. Linux: Add `-v /:/host/` to the `docker run` command. For example:
+   ```
+   podman run ... -v /:/host/ -it quay.io/kgibm/fedorawasdebug
+   ```
+1. Windows and macOS:
+    1. Re-create the `podman machine` with a shared folder; for example:
+       ```
+       podman machine init --cpus 4 --memory 10240 --disk-size 100 -v $HOME:/mnt/host
+       ```
+    1. Run the `podman run` command as before but now mount the machine mount; for example:
+       ```
+       podman run ... -v /mnt/host:/mnt/host -it quay.io/kgibm/fedorawasdebug
+       ```
+
+##  Sharing Files Between Host and Container with Docker
 
 By default, the Docker container does not have access to the host filesystem and vice versa. To share files between the two:
 
@@ -2494,71 +2512,103 @@ By default, the Docker container does not have access to the host filesystem and
   docker run ... -v /tmp/:/hosttmp/ -it quay.io/kgibm/fedorawasdebug
   ```
 
-##  Saving State
+## Saving State
 
-Saving state of a Docker container would be useful for situations such as multi-day labs that cannot leave computers running overnight. Unfortunately, Docker does not currently have an easy way to do this. Here are a few ideas:
+Saving state of a container would be useful for situations such as multi-day labs that cannot leave computers running overnight. Unfortunately, there is no easy way to do this. Here are a few ideas:
 
-1.  Hibernate the computer. This should save and restore the full in-memory state of everything.
+1. Hibernate the computer. This should save and restore the full in-memory state of everything.
+2. Sleep the computer. This should only be done if the computers are plugged into power sources.
+3. Commit the filesystem state to a new image and then launch a new container with that state. See the section below based on whether you're using Docker or podman:
 
-2.  Sleep the computer. This should only be done if the computers are plugged into power sources.
+### Saving State with podman
 
-3.  Use Docker to commit the filesystem state to a new image and then launch a new container with that state (note that no processes will be running in the new container so everything will need to be re-launched, including Liberty, tWAS, etc.):
+1. Find the container ID with `podman ps`:
+   
+   ```
+   $ podman ps -a
+   CONTAINER ID   IMAGE                          COMMAND             CREATED             STATUS              PORTS           NAMES
+   0a041815fbc2   quay.io/kgibm/fedorawasdebug   "/entrypoint.sh"    9 seconds ago       Up 7 seconds        0.0.0.0:22...   nostalgic_zhukovsky
+   ```
+1. Commit the container:
+   ```
+   $ podman commit 0a041815fbc2 fedorawasdebug:saved
+   sha256:c8ff7d9946cca20531f70c89b99f9148841dc4bdf074413f810eeb82e2bd6f77
+   ```
+1. Then, when you want to "restore" the container, perform the same `podman run` as before but with the new image you created above:
+   `docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it fedorawasdebug:saved`
+1. Find the new running container ID:
+   ```
+   $ podman ps -a
+   CONTAINER ID        IMAGE                     COMMAND             CREATED             STATUS              PORTS                     NAMES
+   b54e4412f98b        fedorawasdebug:20190819   "/entrypoint.sh"    2 minutes ago       Up 2 minutes        0.0.0.0:22...             inspiring_kirch
+   ```
+1. Shell into the container, replacing `b54e4412f98b` below with the container ID from the output of your command above:
+   ```
+   $ podman exec -it b54e4412f98b bash
+   ```
+1. Remove temporary X-related files:
+   ```
+   $ rm -rf /tmp/.X*
+   ```
+1. The VNC server should automatically restart after a few seconds.
+1. Use the image as normal although you may need to restart some services.
 
-    1.  Find the container ID with **docker ps**:
+### Saving State with Docker
 
-            $ docker ps -a
-            CONTAINER ID   IMAGE                          COMMAND             CREATED             STATUS              PORTS           NAMES
-            0a041815fbc2   quay.io/kgibm/fedorawasdebug   "/entrypoint.sh"    9 seconds ago       Up 7 seconds        0.0.0.0:22...   nostalgic_zhukovsky
-
-    1.  Commit the container:
-
-            $ docker commit 0a041815fbc2 fedorawasdebug:saved
-            sha256:c8ff7d9946cca20531f70c89b99f9148841dc4bdf074413f810eeb82e2bd6f77
-
-    1.  Then, when you want to \"restore\" the container, perform the same **docker run** but with the new image you created above:
-
-        `docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 22:22 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it fedorawasdebug:saved`
-
-    1.  The VNC server will need to be manually restarted. Find the running container ID:
-
-            $ docker ps -a
-            CONTAINER ID        IMAGE                     COMMAND             CREATED             STATUS              PORTS                     NAMES
-            b54e4412f98b        fedorawasdebug:20190819   "/entrypoint.sh"    2 minutes ago       Up 2 minutes        0.0.0.0:22...             inspiring_kirch
-
-    1.  Shell into the container, replacing **b54e4412f98b** below with the container ID from the output of your command above:
-
-            $ docker exec -it b54e4412f98b bash
-
-    1.  Remove temporary X-related files:
-
-            $ rm -rf /tmp/.X*
-
-    1.  Restart the VNC servers (use password **websphere**):
-
-            # supervisorctl 
-            Server requires authentication
-            Username:root
-            Password:
-
-            debugsupervisord                 EXITED    Aug 19 03:44 PM
-            finished                         EXITED    Aug 19 03:46 PM
-            liberty                          RUNNING   pid 20, uptime 0:04:54
-            liberty2                         EXITED    Aug 19 03:44 PM
-            mysql                            RUNNING   pid 16, uptime 0:04:54
-            rsyslog                          FATAL     Exited too quickly (process log may have details)
-            ssh                              RUNNING   pid 19, uptime 0:04:54
-            twas                             RUNNING   pid 21, uptime 0:04:54
-            vncserver1                       FATAL     Exited too quickly (process log may have details)
-            vncserver2                       FATAL     Exited too quickly (process log may have details)
-            xrdp                             RUNNING   pid 15, uptime 0:04:54
-            xrdp-sesman                      RUNNING   pid 17, uptime 0:04:54
-            supervisor> start vncserver1
-            vncserver1: started
-            supervisor> start vncserver2
-            vncserver2: started
-            supervisor> exit
-
-    1.  Use the image as normal.
+1. Find the container ID with **docker ps**:
+   
+   ```
+   $ docker ps -a
+   CONTAINER ID   IMAGE                          COMMAND             CREATED             STATUS              PORTS           NAMES
+   0a041815fbc2   quay.io/kgibm/fedorawasdebug   "/entrypoint.sh"    9 seconds ago       Up 7 seconds        0.0.0.0:22...   nostalgic_zhukovsky
+   ```
+1. Commit the container:
+   ```
+   $ docker commit 0a041815fbc2 fedorawasdebug:saved
+   sha256:c8ff7d9946cca20531f70c89b99f9148841dc4bdf074413f810eeb82e2bd6f77
+   ```
+1. Then, when you want to \"restore\" the container, perform the same **docker run** but with the new image you created above:
+   `docker run --cap-add SYS_PTRACE --cap-add NET_ADMIN --ulimit core=-1 --ulimit memlock=-1 --ulimit stack=-1 --shm-size="256m" --rm -p 9080:9080 -p 9443:9443 -p 9043:9043 -p 9081:9081 -p 9444:9444 -p 5901:5901 -p 5902:5902 -p 3390:3389 -p 9082:9082 -p 9083:9083 -p 9445:9445 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 12000:12000 -p 12005:12005 -it fedorawasdebug:saved`
+1. The VNC server will need to be manually restarted. Find the running container ID:
+   ```
+   $ docker ps -a
+   CONTAINER ID        IMAGE                     COMMAND             CREATED             STATUS              PORTS                     NAMES
+   b54e4412f98b        fedorawasdebug:20190819   "/entrypoint.sh"    2 minutes ago       Up 2 minutes        0.0.0.0:22...             inspiring_kirch
+   ```
+1. Shell into the container, replacing **b54e4412f98b** below with the container ID from the output of your command above:
+   ```
+   $ docker exec -it b54e4412f98b bash
+   ```
+1. Remove temporary X-related files:
+   ```
+   $ rm -rf /tmp/.X*
+   ```
+1. Restart the VNC servers (use password **websphere**):
+   ```
+   # supervisorctl 
+   Server requires authentication
+   Username:root
+   Password:
+   
+   debugsupervisord                 EXITED    Aug 19 03:44 PM
+   finished                         EXITED    Aug 19 03:46 PM
+   liberty                          RUNNING   pid 20, uptime 0:04:54
+   liberty2                         EXITED    Aug 19 03:44 PM
+   mysql                            RUNNING   pid 16, uptime 0:04:54
+   rsyslog                          FATAL     Exited too quickly (process log may have details)
+   ssh                              RUNNING   pid 19, uptime 0:04:54
+   twas                             RUNNING   pid 21, uptime 0:04:54
+   vncserver1                       FATAL     Exited too quickly (process log may have details)
+   vncserver2                       FATAL     Exited too quickly (process log may have details)
+   xrdp                             RUNNING   pid 15, uptime 0:04:54
+   xrdp-sesman                      RUNNING   pid 17, uptime 0:04:54
+   supervisor> start vncserver1
+   vncserver1: started
+   supervisor> start vncserver2
+   vncserver2: started
+   supervisor> exit
+   ```
+1. Use the image as normal although you may need to restart some services.
 
 ##  Changing Java
 
