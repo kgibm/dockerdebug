@@ -880,7 +880,7 @@ SHELL_X=0\n\
       cd /opt/sibdesthandler/ && \
       sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/sibdesthandler/SIBDestinationHandler-2.0.20221122.jar && \
       printf '#!/bin/sh\n\
-        java -Djavax.net.ssl.trustStore=/opt/local/software/websphere/v9/profiles/Dmgr01/etc/DummyClientTrustFile.jks -Djavax.net.ssl.trustStorePassword=WebAS -Xmx1g -jar /opt/sibdesthandler/SIBDestinationHandler-2.0.20221122.jar\n\
+        java -Djavax.net.ssl.trustStore=/IBM/WebSphere/AppServer/profiles/Dmgr01/etc/DummyClientTrustFile.jks -Djavax.net.ssl.trustStorePassword=WebAS -Xmx1g -jar /opt/sibdesthandler/SIBDestinationHandler-2.0.20221122.jar\n\
       ' | sudo tee /opt/sibdesthandler/sibdesthandler.sh && \
       sudo chmod a+x /opt/sibdesthandler/sibdesthandler.sh && \
       sudo mkdir /home/was/sibdesthandler/ && \
