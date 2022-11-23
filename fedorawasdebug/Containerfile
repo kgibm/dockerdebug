@@ -875,12 +875,12 @@ SHELL_X=0\n\
       sudo ln -s /opt/programs/ptt.desktop /home/was/Desktop/ \
     ) && \
     ( \
-      echo "# IBM Service Integration Bus Destination Handler: https://www.ibm.com/support/pages/ibm-service-integration-bus-destination-handler-version-11" && \
+      echo "# IBM Service Integration Bus Destination Handler: https://www.ibm.com/support/pages/ibm-service-integration-bus-destination-handler" && \
       sudo mkdir /opt/sibdesthandler/ && \
       cd /opt/sibdesthandler/ && \
-      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/sibdesthandler/SIBDestinationHandler-2.0.20211229.jar && \
+      sudo wget -q https://public.dhe.ibm.com/software/websphere/appserv/support/tools/sibdesthandler/SIBDestinationHandler-2.0.20221122.jar && \
       printf '#!/bin/sh\n\
-        java -Xmx1g -jar /opt/sibdesthandler/SIBDestinationHandler-2.0.20211229.jar\n\
+        java -Djavax.net.ssl.trustStore=/opt/local/software/websphere/v9/profiles/Dmgr01/etc/DummyClientTrustFile.jks -Djavax.net.ssl.trustStorePassword=WebAS -Xmx1g -jar /opt/sibdesthandler/SIBDestinationHandler-2.0.20221122.jar\n\
       ' | sudo tee /opt/sibdesthandler/sibdesthandler.sh && \
       sudo chmod a+x /opt/sibdesthandler/sibdesthandler.sh && \
       sudo mkdir /home/was/sibdesthandler/ && \
